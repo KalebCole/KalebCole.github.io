@@ -1,0 +1,14 @@
+---
+interface Props {
+  src?: string;
+  alt?: string;
+}
+const {
+  src = 'https://picsum.photos/seed/kc/360/440',
+  alt = 'Placeholder photo of Kaleb',
+} = Astro.props;
+// TODO: when the user drops a real photo at /me.jpg, default `src` to '/me.jpg'.
+---
+<span class="polaroid">
+  <img src={src} alt={alt} />
+</span>
