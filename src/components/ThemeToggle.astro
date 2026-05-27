@@ -1,0 +1,38 @@
+---
+// Pure client-side toggle. Reads/writes `theme-mode` in localStorage and
+// flips `data-mode` on <html>. The initial value was set by the inline
+// bootstrap script in Layout.astro, so this only handles user clicks.
+---
+<button
+  type="button"
+  class="theme-toggle"
+  aria-label="Toggle color theme"
+  data-theme-toggle
+>
+  <span data-icon-light>☀</span>
+  <span data-icon-dark style="display:none">☾</span>
+</button>
+
+<script is:inline>
+  (function () {
+    var btn = document.querySelector('[data-theme-toggle]');
+    if (!btn) return;
+    var light = btn.querySelector('[data-icon-light]');
+    var dark = btn.querySelector('[data-icon-dark]');
+
+    function sync() {
+      var mode = document.documentElement.getAttribute('data-mode') || 'light';
+      light.style.display = mode === 'light' ? '' : 'none';
+      dark.style.display  = mode === 'dark'  ? '' : 'none';
+    }
+    sync();
+
+    btn.addEventListener('click', function () {
+      var current = document.documentElement.getAttribute('data-mode') || 'light';
+      var next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-mode', next);
+      try { localStorage.setItem('theme-mode', next); } catch (e) {}
+      sync();
+    });
+  })();
+</script>
