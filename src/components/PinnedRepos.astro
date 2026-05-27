@@ -1,0 +1,15 @@
+---
+import { getPinnedRepos } from '../lib/github';
+const repos = await getPinnedRepos();
+---
+{repos.length > 0 && (
+  <ul class="repos">
+    {repos.map((r) => (
+      <li>
+        <a href={r.url} class="repo-name">{r.name}</a>
+        {r.primaryLanguage && <span class="repo-lang">{r.primaryLanguage.name}</span>}
+        {r.description && <p class="repo-desc">{r.description}</p>}
+      </li>
+    ))}
+  </ul>
+)}
