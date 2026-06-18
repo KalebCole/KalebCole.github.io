@@ -29,7 +29,8 @@ const {
       (function () {
         try {
           var saved = localStorage.getItem('theme-mode');
-          var mode = saved === 'dark' || saved === 'light' ? saved : 'light';
+          var systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var mode = saved === 'dark' || saved === 'light' ? saved : (systemDark ? 'dark' : 'light');
           document.documentElement.setAttribute('data-mode', mode);
         } catch (e) {
           document.documentElement.setAttribute('data-mode', 'light');
