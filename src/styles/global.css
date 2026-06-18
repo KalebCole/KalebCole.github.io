@@ -93,12 +93,12 @@ a:hover { text-decoration-color: var(--accent); color: var(--accent); }
 }
 @media (max-width: 640px) {
   .polaroid {
-    float: none;
-    width: min(260px, 65vw);
-    height: auto;
-    aspect-ratio: 180 / 220;
-    margin: 24px auto 28px;
-    transform: rotate(-2deg);
+    float: right;
+    width: 140px;
+    height: 172px;
+    margin: 4px -20px 8px 16px;
+    padding: 8px 8px 28px;
+    transform: rotate(2.5deg);
   }
 }
 
