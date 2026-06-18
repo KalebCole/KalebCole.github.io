@@ -31,7 +31,7 @@ h1, h2, h3, .post-title, .site-title {
   letter-spacing: -0.005em;
 }
 
-h1 { font-size: 3rem; line-height: 1.1; margin: 0 0 0.5rem; }
+h1 { font-size: clamp(2.25rem, 9vw, 3rem); line-height: 1.1; margin: 0 0 0.5rem; }
 h2 { font-size: 1.5rem; margin: 3rem 0 1rem; }
 p  { margin: 0 0 1rem; }
 
@@ -53,6 +53,9 @@ a:hover { text-decoration-color: var(--accent); color: var(--accent); }
   padding: 24px 24px 160px;
   position: relative;
 }
+@media (max-width: 640px) {
+  .wrap { padding: 16px 20px 64px; }
+}
 
 /* ---------- Nav ---------- */
 .nav {
@@ -64,6 +67,9 @@ a:hover { text-decoration-color: var(--accent); color: var(--accent); }
 }
 .nav a { margin-right: 1rem; }
 .nav .spacer { flex: 1; }
+@media (max-width: 640px) {
+  .nav { padding: 16px 0 32px; }
+}
 
 /* ---------- Polaroid ---------- */
 .polaroid {
@@ -86,7 +92,14 @@ a:hover { text-decoration-color: var(--accent); color: var(--accent); }
   border-radius: 2px;
 }
 @media (max-width: 640px) {
-  .polaroid { float: none; margin: 16px auto; }
+  .polaroid {
+    float: none;
+    width: min(260px, 65vw);
+    height: auto;
+    aspect-ratio: 180 / 220;
+    margin: 24px auto 28px;
+    transform: rotate(-2deg);
+  }
 }
 
 /* ---------- Post list ---------- */
@@ -149,6 +162,9 @@ a:hover { text-decoration-color: var(--accent); color: var(--accent); }
   line-height: 1;
 }
 .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+@media (max-width: 640px) {
+  .theme-toggle { width: 44px; height: 44px; }
+}
 
 /* ---------- Prose (single post) ---------- */
 .prose { font-size: 1.05rem; }
