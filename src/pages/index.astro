@@ -7,13 +7,14 @@ import PinnedRepos from '../components/PinnedRepos.astro';
 import RecommendCard from '../components/RecommendCard.astro';
 import { getPublishedRecommends } from '../lib/recommends';
 
+const RECENT_ITEMS_COUNT = 3;
+
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const recentPosts = allPosts
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
+  .slice(0, RECENT_ITEMS_COUNT);
 
-const RECENT_RECOMMENDS_COUNT = 3;
-const recentRecommends = (await getPublishedRecommends()).slice(0, RECENT_RECOMMENDS_COUNT);
+const recentRecommends = (await getPublishedRecommends()).slice(0, RECENT_ITEMS_COUNT);
 ---
 <Layout title="Kaleb Cole">
   <main class="wrap">
