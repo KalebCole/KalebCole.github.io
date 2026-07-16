@@ -16,7 +16,6 @@ Here is a demo of how a canvas works:
 </video>
 
 GitHub docs give a great explanation of how canvases work and there's an inbuilt create canvas skill. What I want to focus on is where I think the idea came from, because canvases feel like the next tier of *self-modifiable software.*
-
 ## Origins
 
  Mario Zechner, the creator of [Pi](http://pi.dev/) introduced me to the idea of self-modifying software during
