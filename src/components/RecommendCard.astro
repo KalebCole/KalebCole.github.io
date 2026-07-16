@@ -1,0 +1,50 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  item: CollectionEntry<'recommends'>;
+}
+
+const { item } = Astro.props;
+const mediumMeta = {
+  read: { icon: '\u{1F4D6}', label: 'Read' },
+  watch: { icon: '\u{25B6}', label: 'Watch' },
+  listen: { icon: '\u{1F3A7}', label: 'Listen' },
+};
+const medium = mediumMeta[item.data.medium];
+const formattedDate = item.data.date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+---
+<article class="rec">
+  {item.data.image && (
+    <a
+      href={item.data.url}
+      class="rec-thumb-link"
+      rel="noopener"
+      aria-label={item.data.title}
+    >
+      <img class="rec-thumb" src={item.data.image} alt="" loading="lazy" />
+    </a>
+  )}
+  <div class="rec-body">
+    <p class="rec-meta">
+      <span class={`badge badge-${item.data.medium}`}>{medium.icon} {medium.label}</span>
+      {item.data.source && <span> · {item.data.source}</span>}
+      <span> · {formattedDate}</span>
+    </p>
+    <h3 class="rec-title">
+      <a href={item.data.url} rel="noopener">{item.data.title}</a>
+    </h3>
+    {item.data.author && <p class="rec-author">{item.data.author}</p>}
+    <p class="rec-take">{item.data.take}</p>
+    {item.data.tags.length > 0 && (
+      <p class="rec-tags">
+        {item.data.tags.map((tag) => <span class="tag rec-tag">#{tag}</span>)}
+      </p>
+    )}
+  </div>
+</article>

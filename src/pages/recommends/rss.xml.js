@@ -1,9 +1,8 @@
 import rss from '@astrojs/rss';
-import { getCollection } from 'astro:content';
+import { getPublishedRecommends } from '../../lib/recommends';
 
 export async function GET(context) {
-  const items = (await getCollection('recommends', ({ data }) => !data.draft))
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  const items = await getPublishedRecommends();
 
   return rss({
     title: 'Kaleb Cole — Recommends',
