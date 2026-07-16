@@ -15,7 +15,9 @@ Here is a demo of how a canvas works:
   <a href="/blog/copilot-canvases/canvas-demo.mp4">download the demo instead</a>.
 </video>
 
-GitHub docs give a great explanation of how canvases work and there's an inbuilt create canvas skill. What I want to focus on is where I think the idea came from, because canvases feel like the next tier of *self-modifiable software.*
+GitHub docs give a good explanation of how canvases work (ask your agent to explain), and there's an inbuilt `create-canvas` skill in the app.
+
+For this article, I want to focus on is where I think the idea came from, because canvases feel like the next tier of *self-modifiable software.*
 ## Origins
 
  Mario Zechner, the creator of [Pi](http://pi.dev/) introduced me to the idea of self-modifying software during
