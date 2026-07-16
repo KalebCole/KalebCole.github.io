@@ -30,7 +30,11 @@ const years = [...groups.keys()];
               <a href={`/blog/${post.id}`}>{post.data.title}</a>
             </h3>
             <p class="post-meta">
-              {post.data.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              {post.data.date.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                timeZone: 'UTC',
+              })}
             </p>
             <p class="post-desc">{post.data.description}</p>
           </article>
