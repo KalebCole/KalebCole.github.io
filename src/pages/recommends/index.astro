@@ -1,0 +1,40 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import RecommendCard from '../../components/RecommendCard.astro';
+import SiteNav from '../../components/SiteNav.astro';
+import { getPublishedRecommends } from '../../lib/recommends';
+
+const items = await getPublishedRecommends();
+
+const required = items.filter((i) => i.data.required);
+const recommended = items.filter((i) => !i.data.required);
+---
+<Layout
+  title="Recommends — Kaleb Cole"
+  description="Things worth your time — articles, videos, and audio Kaleb Cole recommends."
+>
+  <main class="wrap">
+    <SiteNav />
+    <h1>Recommends</h1>
+    <p class="muted">
+      Things I think are worth your time. Articles, talks, and audio, with a note on why.
+      <a href="/recommends/rss.xml">RSS</a>
+    </p>
+
+    {required.length > 0 && (
+      <section>
+        <h2 class="rec-band">Required</h2>
+        {required.map((item) => <RecommendCard item={item} />)}
+      </section>
+    )}
+
+    {recommended.length > 0 && (
+      <section>
+        <h2 class="rec-band">Also recommended</h2>
+        {recommended.map((item) => <RecommendCard item={item} />)}
+      </section>
+    )}
+
+    {items.length === 0 && <p class="muted">Nothing here yet. Check back soon.</p>}
+  </main>
+</Layout>
