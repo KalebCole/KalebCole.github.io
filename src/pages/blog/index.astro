@@ -9,7 +9,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
 // Group by year, preserving sort order.
 const groups = new Map<number, typeof posts>();
 for (const post of posts) {
-  const year = post.data.date.getFullYear();
+  const year = post.data.date.getUTCFullYear();
   if (!groups.has(year)) groups.set(year, []);
   groups.get(year)!.push(post);
 }
@@ -30,7 +30,11 @@ const years = [...groups.keys()];
               <a href={`/blog/${post.id}`}>{post.data.title}</a>
             </h3>
             <p class="post-meta">
-              {post.data.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              {post.data.date.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                timeZone: 'UTC',
+              })}
             </p>
             <p class="post-desc">{post.data.description}</p>
           </article>
