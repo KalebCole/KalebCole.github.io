@@ -4,11 +4,16 @@ import Layout from '../layouts/Layout.astro';
 import SiteNav from '../components/SiteNav.astro';
 import Polaroid from '../components/Polaroid.astro';
 import PinnedRepos from '../components/PinnedRepos.astro';
+import RecommendCard from '../components/RecommendCard.astro';
+import { getPublishedRecommends } from '../lib/recommends';
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const recentPosts = allPosts
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
+
+const RECENT_RECOMMENDS_COUNT = 3;
+const recentRecommends = (await getPublishedRecommends()).slice(0, RECENT_RECOMMENDS_COUNT);
 ---
 <Layout title="Kaleb Cole">
   <main class="wrap">
@@ -40,6 +45,13 @@ const recentPosts = allPosts
       </article>
     ))}
     <p style="margin-top: 1rem;"><a href="/blog">All posts →</a></p>
+
+    <h2>Recent recommendations</h2>
+    {recentRecommends.length > 0
+      ? recentRecommends.map((item) => <RecommendCard item={item} />)
+      : <p class="muted">Nothing here yet. Check back soon.</p>
+    }
+    <p style="margin-top: 1rem;"><a href="/recommends">All recommendations →</a></p>
 
     <h2>Projects</h2>
     <PinnedRepos />
