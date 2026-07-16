@@ -9,7 +9,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
 // Group by year, preserving sort order.
 const groups = new Map<number, typeof posts>();
 for (const post of posts) {
-  const year = post.data.date.getFullYear();
+  const year = post.data.date.getUTCFullYear();
   if (!groups.has(year)) groups.set(year, []);
   groups.get(year)!.push(post);
 }
