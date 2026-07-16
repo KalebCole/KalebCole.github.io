@@ -25,7 +25,8 @@ const formattedDate = item.data.date.toLocaleDateString('en-US', {
       href={item.data.url}
       class="rec-thumb-link"
       rel="noopener"
-      aria-label={item.data.title}
+      aria-hidden="true"
+      tabindex="-1"
     >
       <img class="rec-thumb" src={item.data.image} alt="" loading="lazy" />
     </a>
