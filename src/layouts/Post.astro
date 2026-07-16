@@ -11,7 +11,12 @@ interface Props {
 }
 const { title, description, date, updated, tags } = Astro.props;
 const fmt = (d: Date) =>
-  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  d.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
 ---
 <Layout title={`${title} — Kaleb Cole`} description={description}>
   <main class="wrap">
