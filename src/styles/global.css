@@ -6,6 +6,8 @@ html[data-mode="light"] {
   --muted: #6b6b6b;
   --rule: #e6e6e1;
   --accent: #2e7d4f;
+  --link: #2e7d4f;
+  --link-visited: #4f6658;
 }
 
 html[data-mode="dark"] {
@@ -14,6 +16,8 @@ html[data-mode="dark"] {
   --muted: #8a8a85;
   --rule: #232321;
   --accent: #6fcf97;
+  --link: #6fcf97;
+  --link-visited: #a5cbb4;
 }
 
 /* ---------- Base ---------- */
@@ -39,10 +43,31 @@ a {
   color: var(--fg);
   text-decoration: underline;
   text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
-  text-decoration-color: var(--rule);
+  text-decoration-thickness: 0.08em;
+  text-decoration-color: var(--link);
+  text-decoration-skip-ink: auto;
 }
-a:hover { text-decoration-color: var(--accent); color: var(--accent); }
+a:hover {
+  color: var(--link);
+  text-decoration-thickness: 0.12em;
+}
+a:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.prose a,
+.post-title a,
+.repo-name {
+  color: var(--link);
+}
+
+.prose a:visited,
+.post-title a:visited {
+  color: var(--link-visited);
+  text-decoration-color: var(--link-visited);
+}
 
 .muted { color: var(--muted); }
 
@@ -192,7 +217,12 @@ a:hover { text-decoration-color: var(--accent); color: var(--accent); }
   color: var(--muted);
   margin: 1.5rem 0;
 }
-.prose img { max-width: 100%; height: auto; border-radius: 4px; }
+.prose img, .prose video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
 
 /* ---------- Recommends ---------- */
 .rec-band {

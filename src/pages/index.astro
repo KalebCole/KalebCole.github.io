@@ -15,11 +15,11 @@ const recentPosts = allPosts
     <SiteNav />
 
     <h1>Kaleb Cole</h1>
-    <p class="muted">to be determined</p>
+    <p class="muted">to be determined, writing this manually so it doesn't sound like AI</p>
 
     <Polaroid />
     <p>
-      to be determined
+      to be determined, writing this manually so it doesn't sound like AI
     </p>
 
     <h2>Recent writing</h2>
@@ -29,7 +29,12 @@ const recentPosts = allPosts
           <a href={`/blog/${post.id}`}>{post.data.title}</a>
         </h3>
         <p class="post-meta">
-          {post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+          {post.data.date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            timeZone: 'UTC',
+          })}
         </p>
         <p class="post-desc">{post.data.description}</p>
       </article>
