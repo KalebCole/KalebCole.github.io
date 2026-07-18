@@ -129,3 +129,37 @@ and 3px offset. Every interactive target reaches 44px on touch layouts.
 The mode control follows system preference on first visit, remembers an
 explicit choice, names the resulting mode accessibly, and never uses color or
 an unlabeled icon as its only cue.
+
+## Site identity mark and icon assets
+
+Use the **open-tail KC** as the site identity mark. It is a custom, font-free
+single-stroke drawing: a loose cobalt K continues into an open C and ends at
+one coral point. Preserve the same geometry at 16px, 32px, and larger sizes;
+do not substitute a simplified micro-mark, place it in a rounded square, or
+return to the old serif K.
+
+The favicon follows the website palette rather than defining a separate color
+system:
+
+- Light browser chrome uses the light `--blue` stroke and `--coral` endpoint.
+- Dark browser chrome uses the brighter blue-hour `--blue` and `--coral`
+  values.
+- The adaptive SVG uses `prefers-color-scheme` internally so browser chrome
+  receives the correct pair independently of the page's stored mode.
+
+Produce this focused asset set:
+
+| Asset | Requirement |
+| --- | --- |
+| `/favicon.svg` | Adaptive primary icon, no embedded font, exact open-tail KC geometry |
+| `/favicon-16x16.png` | Raster fallback rendered from the approved 16px geometry |
+| `/favicon-32x32.png` | Raster fallback rendered from the approved 32px geometry |
+| `/favicon.ico` | Root legacy fallback containing 16px and 32px images |
+| `/apple-touch-icon.png` | Opaque 180×180 PNG using the cool near-white `--ground`, centered cobalt/coral mark, and no baked-in corner radius |
+
+Do not add 192px or 512px PWA icons or a web manifest unless the site later
+becomes installable. Declare every asset explicitly in `<head>` with correct
+MIME types and sizes, ordering legacy/raster fallbacks before the SVG primary,
+followed by the Apple touch icon. Production verification must include 16px
+and 32px light/dark browser tabs, a clean favicon-cache load, and confirmation
+that no icon request returns a missing asset.
