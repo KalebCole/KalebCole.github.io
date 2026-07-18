@@ -27,3 +27,19 @@ _Avoid_: Review, bookmark
 **Project**:
 Something Kaleb made or is exploring, presented plainly with useful context.
 _Avoid_: Case study, portfolio piece
+
+**Pinned page**:
+The homepage composition that opens with Kaleb's candid introduction and
+portrait, moves directly into recent writing, and deliberately stops there.
+_Avoid_: Portfolio landing page, content dashboard
+
+**Tactile motion**:
+Measured entrance and hover movement that makes the page feel physically
+placed and handled without turning interaction into play.
+_Avoid_: Playful animation, decorative motion
+
+**Blue-hour counterpart**:
+The deliberately art-directed dark presentation of the same visual system,
+using a deep blue-black ground and restrained cobalt light rather than a
+mechanical color inversion.
+_Avoid_: Generic dark mode, inverted theme
