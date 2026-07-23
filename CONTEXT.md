@@ -33,6 +33,16 @@ The homepage composition that opens with Kaleb's candid introduction and
 portrait, moves directly into recent writing, and deliberately stops there.
 _Avoid_: Portfolio landing page, content dashboard
 
+**Pinned writing**:
+The newest writing given stronger visual priority at the top of the writing
+index while earlier writing remains in a chronological archive.
+_Avoid_: Hero article, featured-content carousel
+
+**Author sign-off**:
+The closing signature on each piece of writing: "- Kaleb" followed by the
+piece's date on a separate line.
+_Avoid_: Author bio, byline card
+
 **Tactile motion**:
 Measured entrance and hover movement that makes the page feel physically
 placed and handled without turning interaction into play.

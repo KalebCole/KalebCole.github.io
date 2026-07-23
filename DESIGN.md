@@ -163,3 +163,95 @@ MIME types and sizes, ordering legacy/raster fallbacks before the SVG primary,
 followed by the Apple touch icon. Production verification must include 16px
 and 32px light/dark browser tabs, a clean favicon-cache load, and confirmation
 that no icon request returns a missing asset.
+
+## Writing index and article reading
+
+### Writing index
+
+Treat the newest published piece as **pinned writing**. Give it substantially
+more visual weight than the archive: a large title, publication date, tags,
+and a separate tilted `Why this now` note with the physical border and coral
+offset-shadow treatment already used by the visual system. Populate that note
+from the article description; do not require separate metadata or repeat the
+description beneath the pinned title.
+
+Place earlier writing directly below in reverse chronological order. Use
+simple ruled rows with title, description, and date rather than cards, topic
+filters, or a featured-content carousel. Group a longer archive by year while
+preserving one chronological reading order. Dates may move below titles when
+horizontal space becomes cramped.
+
+Do not add a handwritten explanation beside the Writing heading. The pinned
+composition should explain itself visually.
+
+### Article opening and metadata
+
+Open an article with:
+
+1. A visible `← Writing` return link.
+2. A large Bricolage title.
+3. The article description as a one-sentence summary.
+4. A restrained metadata row containing the publication date, estimated
+   reading time, and tags. Show an updated date when one exists.
+
+Do not add a table of contents, facts box, automatic margin note, author bio,
+or competing side rail. The title and writing remain the dominant material.
+Tags are compact filing metadata, not pill-shaped controls.
+
+### Reading typography and content elements
+
+Keep the prose column between 65 and 70 characters. Use the quiet reading
+treatment:
+
+- Headings use the committed Bricolage scale and normal ink color without
+  decorative underlines or shadows.
+- Links use accessible cobalt underlines with visible hover and focus changes.
+- Lists remain ordinary semantic lists with comfortable indentation and
+  vertical rhythm.
+- Blockquotes use a restrained full outline or subtle blue wash; do not use a
+  colored side stripe, coral offset shadow, or oversized centered treatment.
+- Inline code uses Azeret Mono on a subtle wash.
+- Substantial code blocks use Azeret Mono on the dark code surface with
+  horizontal scrolling as a last resort.
+- Natural-color images and video use descriptive alternatives or captions
+  when context is not already supplied by adjacent prose.
+
+Video, images, and substantial code use a **measured breakout**: prose remains
+at reading width while detailed material may expand to approximately 56rem,
+centered on the reading column. At 760px and below, every breakout collapses
+to the available container width, preserves its intrinsic aspect ratio, and
+never creates horizontal page overflow. Videos expose native controls and a
+download fallback.
+
+### Article ending and navigation
+
+Conclude every piece with the author sign-off, then its date:
+
+```text
+- Kaleb
+
+July 22, 2026
+```
+
+Use the piece's actual publication date in that position. Follow the sign-off
+with two simple text links: `← All writing` and the next piece's title with a
+right arrow. Do not turn these links into cards. On narrow screens, stack them
+in one column. If no next piece exists, show only the return link.
+
+### Theme, responsive behavior, and motion
+
+Apply the approved cool near-white and blue-hour palettes without changing
+content hierarchy. The pinned note retains its physical mount and coral offset
+in both modes, with dark-mode colors chosen from the existing tokens rather
+than mechanically inverted.
+
+At 760px and below, the index, pinned piece, note, archive rows, article
+opening, prose, media, sign-off, and navigation all become one continuous
+source-ordered column. Keep all interactive targets at least 44px and preserve
+reflow at 200% text zoom.
+
+Use tactile settling only on the writing index: the heading, pinned piece, and
+archive may settle upward in a short stagger with
+`cubic-bezier(.16, 1, .3, 1)`. Article content is visible and still by default;
+do not animate prose or media while someone is reading. Remove index entrance
+animation and transforms under `prefers-reduced-motion: reduce`.
