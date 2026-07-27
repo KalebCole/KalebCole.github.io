@@ -5,9 +5,17 @@ interface Props {
 }
 const {
   src = '/me.jpg',
-  alt = 'Kaleb Cole',
+  alt = 'Kaleb Cole smiling in a crowded concert arena',
 } = Astro.props;
 ---
-<span class="polaroid">
-  <img src={src} alt={alt} />
-</span>
+<figure class="portrait-mount">
+  <picture>
+    <source
+      type="image/webp"
+      srcset="/me-300.webp 300w, /me-600.webp 600w"
+      sizes="(max-width: 759px) 190px, 300px"
+    />
+    <img src={src} alt={alt} width="600" height="600" fetchpriority="high" />
+  </picture>
+  <figcaption>Still figuring it out in public.</figcaption>
+</figure>

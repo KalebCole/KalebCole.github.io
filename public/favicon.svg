@@ -1,4 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="6" fill="#0a0a0a"/>
-  <text x="16" y="22" text-anchor="middle" font-family="serif" font-size="18" fill="#4ade80">K</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <style>
+    .ground { fill: oklch(0.975 0.004 260); }
+    .stroke { stroke: oklch(0.49 0.21 267); }
+    .end { fill: oklch(0.64 0.21 28); }
+    @media (prefers-color-scheme: dark) {
+      .ground { fill: oklch(0.17 0.045 265); }
+      .stroke { stroke: oklch(0.72 0.17 267); }
+      .end { fill: oklch(0.70 0.19 28); }
+    }
+  </style>
+  <rect class="ground" width="24" height="24" />
+  <path class="stroke" d="M5 3.5V20.5V12L11.2 4.8L5 12L11.1 19.1C15.8 22.1 21 18.7 21 13.1C21 8.2 17.1 5.3 13.2 7.1" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+  <circle class="end" cx="13.2" cy="7.1" r="1.65" />
 </svg>

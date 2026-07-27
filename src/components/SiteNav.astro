@@ -1,13 +1,28 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
+import KCMark from './KCMark.astro';
 
 const path = Astro.url.pathname;
+interface Props {
+  feedHref?: string;
+  feedTitle?: string;
+}
+const {
+  feedHref = '/rss.xml',
+  feedTitle = 'Writing feed',
+} = Astro.props;
+const feedLabel = /\bfeed\b/i.test(feedTitle) ? feedTitle : `${feedTitle} feed`;
 ---
 <nav class="nav" aria-label="Primary navigation">
-  <a href="/" class="site-home">Kaleb Cole</a>
-  <span class="spacer"></span>
+  <a href="/" class="site-home" aria-current={path === '/' ? 'page' : undefined}>
+    <KCMark class="site-mark" />
+    <span>Kaleb Cole</span>
+  </a>
+  <div class="nav-links">
   <a href="/blog" aria-current={path.startsWith('/blog') ? 'page' : undefined}>Writing</a>
   <a href="/recommends" aria-current={path.startsWith('/recommends') ? 'page' : undefined}>Recommends</a>
-  <a href="/rss.xml">RSS</a>
+  <a href="/projects" aria-current={path.startsWith('/projects') ? 'page' : undefined}>Projects</a>
+  <a href={feedHref} aria-label={feedLabel}>Feed</a>
   <ThemeToggle />
+  </div>
 </nav>
