@@ -21,7 +21,10 @@ _Avoid_: Article, blog content
 
 **Recommend**:
 A contribution that points to someone else's work or to something Kaleb
-values, accompanied by his concise personal reason.
+values. It may include a brief optional annotation called **My thoughts**.
+Recommendations form one chronological list; there is no "required" subtype
+or priority tier. The list is newest-first and readers may filter it by
+medium: read, watch, or listen.
 _Avoid_: Review, bookmark
 
 **Project**:

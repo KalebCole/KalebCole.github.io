@@ -1,11 +1,13 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
+
+const path = Astro.url.pathname;
 ---
-<nav class="nav">
+<nav class="nav" aria-label="Primary navigation">
   <a href="/" class="site-home">Kaleb Cole</a>
   <span class="spacer"></span>
-  <a href="/blog">Writing</a>
-  <a href="/recommends">Recommends</a>
+  <a href="/blog" aria-current={path.startsWith('/blog') ? 'page' : undefined}>Writing</a>
+  <a href="/recommends" aria-current={path.startsWith('/recommends') ? 'page' : undefined}>Recommends</a>
   <a href="/rss.xml">RSS</a>
   <ThemeToggle />
 </nav>

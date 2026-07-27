@@ -50,7 +50,7 @@ personal-brand theme.
 
 - **Writing** develops Kaleb's own idea, experience, or perspective.
 - **Recommends** points to someone else's work or to something Kaleb values,
-  accompanied by a concise personal reason.
+  optionally accompanied by a concise personal thought.
 - **Projects** are things Kaleb made or is exploring, presented plainly with
   useful context rather than inflated case studies, achievement metrics, or
   portfolio theater.
