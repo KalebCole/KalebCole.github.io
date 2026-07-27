@@ -292,3 +292,162 @@ Use the same cool near-white and blue-hour tokens without changing hierarchy.
 At 760px, let the toolbar and rows reflow; at 540px, stack real thumbnails
 above their text. Keep 44px filter and theme targets, immediate visible focus,
 and remove settling transforms when reduced motion is requested.
+
+## Release quality gates
+
+These gates apply to every public route and both color modes. A surface does
+not ship while any gate fails. Meet them by adapting measure, spacing, media,
+and enhancement behavior; do not remove the approved cobalt/coral identity,
+type hierarchy, asymmetry, physical-print treatments, or tactile character to
+make a test pass.
+
+The standards baseline is [WCAG 2.2 Level
+AA](https://www.w3.org/TR/WCAG22/) and the current [Core Web
+Vitals](https://web.dev/articles/vitals). Automated checks support, but never
+replace, the manual checks below.
+
+### Perception and structure
+
+- Text and images of text must reach `4.5:1` contrast, or `3:1` for text at
+  least 24px regular or 18.5px bold. Required control boundaries, icons,
+  selected states, and focus indicators must reach `3:1` against adjacent
+  colors. Ratios are thresholds and must not be rounded up.
+- Verify every token combination in light, blue-hour, hover, visited, focus,
+  active, disabled, and forced-colors states. Coral remains decorative unless
+  its specific foreground/background pairing passes the required ratio.
+- Color is never the only cue. Links in prose retain an underline; current,
+  selected, external, error, and success states also use text, shape, icon, or
+  programmatic state.
+- Each page has one descriptive `h1`, a logical heading outline, unique link
+  and control names, and semantic `header`, `nav`, `main`, and `footer`
+  landmarks. Lists, dates, quotations, code, buttons, and links use their
+  native elements. Visual order must match DOM and reading order.
+- Meaningful images have concise contextual alternatives; decorative images
+  use empty alternatives. Captions do not duplicate adjacent prose. Audio and
+  video require native controls, captions when speech conveys information, a
+  transcript for substantive spoken content, and a download fallback.
+
+### Keyboard, focus, and controls
+
+- The first focusable item is a visible-on-focus skip link to `main`. Every
+  action works with keyboard alone, follows the visual/source order, has no
+  trap, and does not use positive `tabindex`. Focus returns to the initiating
+  control after a temporary surface closes.
+- Focus is never hidden by sticky content. Every focused control shows at
+  least a solid 2px perimeter with 3px offset and `3:1` contrast between
+  focused and unfocused pixels in both modes. Hover must not be required to
+  discover content or operate a feature.
+- Standalone controls and navigation targets are at least 44 by 44 CSS pixels
+  on coarse pointers. All other non-inline targets meet WCAG 2.2 AA's 24 by 24
+  CSS-pixel size or spacing rule. Adjacent controls remain distinguishable at
+  200% text size.
+- Forms and custom controls, if added, require persistent visible labels,
+  accessible names matching visible labels, instructions before use, and
+  specific text errors associated with their fields. Required, invalid,
+  expanded, pressed, and selected states must be exposed programmatically.
+- Dynamic filtering, loading, success, and empty-result changes announce a
+  concise complete status without moving focus. Recommends announces the full
+  result count, such as `3 Watch recommendations`, through a polite atomic
+  status region.
+
+### Theme and motion
+
+- First load follows `prefers-color-scheme`; an explicit choice persists
+  without a wrong-theme flash. The mode control names the action or resulting
+  mode, remains usable if storage is unavailable, and preserves hierarchy and
+  content in both themes.
+- Content is present before animation starts. With
+  `prefers-reduced-motion: reduce`, entrance, scroll-linked, parallax, rotation,
+  translation, and smooth-scrolling effects are removed; state, color, and
+  focus changes are immediate. No essential information or action depends on
+  motion, timing, hover, or gesture.
+- Default motion must not create layout shift, block input, replay on routine
+  navigation, or drop below 60fps on a representative mid-range mobile device.
+
+### Zoom, text, and reflow
+
+- At 200% browser text size and at 400% browser zoom (a 320 CSS-pixel content
+  width), no information or action is clipped, overlapped, truncated, reordered,
+  or lost, and the page does not scroll horizontally. Two-dimensional media or
+  code may scroll inside its own labelled region without widening the page.
+- Applying line height `1.5`, paragraph spacing `2em`, letter spacing `0.12em`,
+  and word spacing `0.16em` causes no loss of content or function.
+- Reading prose remains 57–70 characters at default settings. Long titles,
+  URLs, tags, source names, translated strings at 200% length, and unbroken
+  code-like text wrap or stay within a local overflow region.
+
+### Responsive stress matrix
+
+- Test widths of 320, 360, 390, 540, 760, 1024, 1440, and 1920 CSS pixels;
+  phone landscape at 667 by 375; 200% text size; 400% zoom; coarse pointer;
+  fine pointer with and without hover; and at least one DPR 2 display. At every
+  case, source order, hierarchy, complete content, and 44px touch actions are
+  preserved.
+- At 760px and below, approved multi-column compositions become one continuous
+  source-ordered column. At large widths, shells stop growing at their approved
+  maximum and reading measure never stretches to fill the viewport.
+- No control depends on hover. Landscape and short viewports keep navigation,
+  theme, media controls, and focused items reachable. Fixed or sticky elements
+  never cover focused content or more than 20% of a 320px-wide viewport.
+- Use `viewport-fit=cover` only with padding that honors all
+  `env(safe-area-inset-*)` values. Content and controls must clear notches,
+  rounded corners, browser chrome, and the iOS home indicator in both
+  orientations.
+
+### Media, fonts, and resilience
+
+- Images and video declare intrinsic `width` and `height` or `aspect-ratio`.
+  They never render wider than their container. Raster sources use AVIF or
+  WebP with a supported fallback, `srcset`, and accurate `sizes`; no candidate
+  exceeds twice its largest rendered CSS width.
+- The LCP image is eager, high priority, and never lazy-loaded. Below-fold
+  media uses native lazy loading. A failed, blocked, or slow image leaves useful
+  alternative text and does not hide adjacent content or collapse layout.
+- Approved fonts use WOFF2 subsets, only the required weights and axes, and
+  `font-display: swap` or `optional`. System fallbacks remain readable,
+  preserve hierarchy, and do not cause a layout shift above `0.1`; text is
+  never hidden while a font loads or fails.
+- With JavaScript disabled or failed, every page's content, links, feed links,
+  native media controls, and navigation remain available. The system theme is
+  usable, Recommends shows the complete newest-first list, and enhanced filters
+  degrade to ordinary links or the unfiltered list. A route fails if it is
+  blank, traps navigation, or emits an uncaught console error during its core
+  journey.
+
+### Browser and performance budgets
+
+- Support the current and previous stable releases of Chrome, Edge, Firefox,
+  and Safari, plus current and previous iOS Safari and Chrome for Android.
+  Progressive enhancements may differ visually, but content, navigation,
+  controls, themes, and feeds must remain equivalent. Unsupported CSS must
+  fall back without overlap, invisible text, or lost interaction.
+- Field data passes only when the 75th percentile, assessed separately for
+  mobile and desktop, has LCP at or below `2.5s`, INP at or below `200ms`, and
+  CLS at or below `0.1`.
+- Before representative field data exists, every representative route passes
+  a Lighthouse mobile run at performance 90 or higher and accessibility 100,
+  with total blocking time at or below `200ms`. Test a production build with
+  cold cache, mobile CPU throttling, and simulated slow 4G.
+- Per-route cold-cache transfer budgets are: HTML at most 50KiB compressed,
+  CSS at most 50KiB compressed, first-party JavaScript at most 50KiB
+  compressed, fonts at most 220KiB compressed, the LCP image at most 300KiB,
+  and the complete initial route at most 800KiB across at most 25 requests.
+  Third-party JavaScript is zero by default and requires a documented exception.
+- A budget may change only through an explicit design decision backed by a
+  measured user benefit. Passing Lighthouse does not excuse a budget overrun,
+  and passing a budget does not excuse a Core Web Vitals failure.
+
+### Verification matrix
+
+| Check | Required coverage | Pass threshold |
+| --- | --- | --- |
+| Static and automated accessibility | Every route template, both themes | Valid build; zero axe-core serious or critical violations; Lighthouse accessibility 100 |
+| Keyboard | Homepage, Writing index, article, Recommends filters, theme control | Complete journey with Tab, Shift+Tab, Enter, Space, and Escape; no missing, obscured, or trapped focus |
+| Screen reader | NVDA + Firefox on Windows; VoiceOver + Safari on iOS or macOS | Names, roles, states, heading/landmark navigation, alternatives, and status announcements are accurate and non-duplicative |
+| Visual accessibility | Both themes, forced colors, reduced motion, 200% text, 400% zoom, text-spacing override | No WCAG 2.2 AA failure, loss, overlap, page-level horizontal scroll, or essential motion |
+| Responsive and input | Entire responsive stress matrix; one real iPhone and one real Android device | No clipped content, unreachable action, hover-only behavior, unsafe-area collision, or unexpected page overflow |
+| Browser compatibility | Browser support matrix with JavaScript on and off | Core content and journeys complete without uncaught errors; enhancements degrade as specified |
+| Performance | Production build on homepage, Writing index, longest article, and Recommends | Every lab, transfer, request, and field-data threshold above passes |
+
+Any exception must name the affected route, failed criterion, user impact,
+owner, and expiry issue. An undocumented exception is a failure.
