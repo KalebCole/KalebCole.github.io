@@ -255,3 +255,41 @@ archive may settle upward in a short stagger with
 `cubic-bezier(.16, 1, .3, 1)`. Article content is visible and still by default;
 do not animate prose or media while someone is reading. Remove index entrance
 animation and transforms under `prefers-reduced-motion: reduce`.
+
+## Recommendations index and feed
+
+Treat Recommends as one newest-first list rather than dividing it into required
+and secondary tiers. Introduce it plainly with "Things I thought were
+interesting." Keep the page clearly subordinate to Writing through compact
+rows and restrained hierarchy rather than a featured recommendation.
+
+Each row may contain:
+
+- A Read, Watch, or Listen medium.
+- Source, publication date, title, and optional author.
+- An optional **My thoughts** annotation in the Recursive margin-note voice.
+- Topic tags as quiet, non-interactive Azeret metadata.
+- A real source thumbnail when one is provided. Do not synthesize a placeholder
+  image or reserve an empty image slot when one is absent.
+
+Titles remain ordinary same-tab external links with an external-link cue; do
+not force a new browsing context. Keep the rows compact, separated by rules,
+and free of card containers. Natural thumbnails use the ink outline and small
+coral offset already established by the visual system.
+
+Place an All / Read / Watch / Listen filter above the list. Preserve
+newest-first order within every filter, use native buttons with visible focus
+and `aria-pressed`, reflect the selected medium in the URL, and announce the
+result count. Keep zero-result media available and show the plain state
+`No [medium] recommendations yet.` The collection-level empty state is
+`Nothing here yet.`
+
+Expose a dedicated Recommends RSS feed from visible page copy and a
+`rel="alternate"` head link. Keep it separate from the Writing feed. Feed
+items link directly to the recommended source, carry medium and topic
+categories, and include **My thoughts** when present.
+
+Use the same cool near-white and blue-hour tokens without changing hierarchy.
+At 760px, let the toolbar and rows reflow; at 540px, stack real thumbnails
+above their text. Keep 44px filter and theme targets, immediate visible focus,
+and remove settling transforms when reduced motion is requested.
