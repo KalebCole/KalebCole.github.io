@@ -41,6 +41,11 @@ The newest writing given stronger visual priority at the top of the writing
 index while earlier writing remains in a chronological archive.
 _Avoid_: Hero article, featured-content carousel
 
+**Why this now**:
+The brief personal note paired with pinned writing, derived from that writing's
+description rather than maintained as separate editorial content.
+_Avoid_: Editor's note, featured summary
+
 **Author sign-off**:
 The closing signature on each piece of writing: "- Kaleb" followed by the
 piece's date on a separate line.
@@ -56,6 +61,11 @@ The deliberately art-directed dark presentation of the same visual system,
 using a deep blue-black ground and restrained cobalt light rather than a
 mechanical color inversion.
 _Avoid_: Generic dark mode, inverted theme
+
+**Print mount**:
+The near-white physical backing used for a portrait or brief personal note,
+retaining dark ink in both light and blue-hour presentations.
+_Avoid_: Card, panel
 
 **Open-tail KC**:
 The site's loose, single-gesture identity mark combining Kaleb's initials with
