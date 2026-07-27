@@ -311,7 +311,6 @@ a:hover {
 }
 
 .recent-heading h2 { margin: 0; font-size: clamp(1.8rem, 6vw, 3.2rem); }
-.recent-heading p { max-width: 24ch; margin-top: .75rem; color: var(--muted); }
 .writing-list { border-top: 1px solid var(--rule); }
 
 .writing-row {
