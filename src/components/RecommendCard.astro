@@ -61,10 +61,5 @@ const formattedDate = item.data.date.toLocaleDateString('en-US', {
         <p>{item.data.take}</p>
       </div>
     )}
-    {item.data.tags.length > 0 && (
-      <ul class="rec-tags" aria-label="Topics">
-        {item.data.tags.map((tag) => <li>{tag}</li>)}
-      </ul>
-    )}
   </div>
 </article>

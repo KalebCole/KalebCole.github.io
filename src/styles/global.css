@@ -471,21 +471,6 @@ a:focus-visible {
   line-height: 1.55;
   text-wrap: pretty;
 }
-.rec-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem 0.9rem;
-  margin: 1rem 0 0;
-  padding: 0;
-  list-style: none;
-  color: var(--muted);
-  font-family: 'Azeret Mono', ui-monospace, monospace;
-  font-size: 0.72rem;
-}
-.rec-tags li::before {
-  content: "#";
-  color: var(--blue);
-}
 .rec-no-image {
   grid-template-columns: minmax(0, 1fr);
 }

@@ -268,7 +268,6 @@ Each row may contain:
 - A Read, Watch, or Listen medium.
 - Source, publication date, title, and optional author.
 - An optional **My thoughts** annotation in the Recursive margin-note voice.
-- Topic tags as quiet, non-interactive Azeret metadata.
 - A real source thumbnail when one is provided. Do not synthesize a placeholder
   image or reserve an empty image slot when one is absent.
 
