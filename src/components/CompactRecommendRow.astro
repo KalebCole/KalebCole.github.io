@@ -1,0 +1,32 @@
+---
+import type { Recommend } from '../lib/recommends';
+import { formatRecommendDate, RECOMMEND_MEDIUM_LABELS } from '../lib/recommends';
+
+interface Props {
+  item: Recommend;
+}
+
+const { item } = Astro.props;
+const formattedDate = formatRecommendDate(item.data.date);
+---
+<article class="recommendation-row" data-home-recommendation>
+  <div class="recommendation-row-body">
+    <p class="recommendation-row-meta">
+      <span>{RECOMMEND_MEDIUM_LABELS[item.data.medium]}</span>
+      {item.data.source && <span>{item.data.source}</span>}
+    </p>
+    <h3>
+      <a href={item.data.url}>
+        {item.data.title}<span aria-hidden="true"> ↗</span><span class="sr-only"> (external site)</span>
+      </a>
+    </h3>
+    {item.data.author && <p class="recommendation-row-author">By {item.data.author}</p>}
+    {item.data.take && (
+      <p class="recommendation-row-take">
+        <strong>My thoughts</strong>
+        {item.data.take}
+      </p>
+    )}
+  </div>
+  <time datetime={item.data.date.toISOString()}>{formattedDate}</time>
+</article>

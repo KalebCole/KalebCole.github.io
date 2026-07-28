@@ -375,12 +375,17 @@ a:hover {
   line-height: 1.2;
 }
 
-.recent-writing {
+.recent-writing,
+.recent-recommendations {
   display: grid;
   gap: clamp(2rem, 7vw, 7rem);
   margin-top: 1.25rem;
   padding-block: clamp(4rem, 9vw, 7rem) 0;
   border-top: 2px solid var(--ink);
+}
+
+.recent-recommendations {
+  margin-top: clamp(4rem, 9vw, 7rem);
 }
 
 .recent-heading h2 {
@@ -389,11 +394,23 @@ a:hover {
   line-height: .92;
 }
 
-.writing-list {
+.recent-recommendations .recent-heading h2 {
+  font-size: clamp(2rem, 5vw, 4rem);
+}
+
+.recent-heading p {
+  max-width: 30ch;
+  margin-top: 1rem;
+  color: var(--muted);
+}
+
+.writing-list,
+.recommendation-list {
   border-top: 1px solid var(--rule);
 }
 
-.writing-row {
+.writing-row,
+.recommendation-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: .75rem 1.5rem;
@@ -401,12 +418,14 @@ a:hover {
   border-bottom: 1px solid var(--rule);
 }
 
-.writing-row h3 {
+.writing-row h3,
+.recommendation-row h3 {
   font-size: clamp(1.1rem, 2vw, 1.45rem);
   line-height: 1.15;
 }
 
-.writing-row h3 a {
+.writing-row h3 a,
+.recommendation-row h3 a {
   color: var(--ink);
 }
 
@@ -417,6 +436,8 @@ a:hover {
 }
 
 .writing-row time,
+.recommendation-row time,
+.recommendation-row-meta,
 .meta-line,
 .year-heading,
 .repo-lang {
@@ -427,8 +448,47 @@ a:hover {
   line-height: 1.5;
 }
 
-.writing-row time {
+.writing-row time,
+.recommendation-row time {
   align-self: start;
+}
+
+.recommendation-row-body {
+  min-width: 0;
+}
+
+.recommendation-row-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .25rem 1rem;
+  margin-bottom: .35rem;
+}
+
+.recommendation-row-meta span:first-child {
+  color: var(--blue);
+  font-weight: 600;
+}
+
+.recommendation-row-author {
+  margin-top: .35rem;
+  color: var(--muted);
+  font-size: .9rem;
+}
+
+.recommendation-row-take {
+  max-width: 58ch;
+  margin-top: .75rem;
+  font-family: var(--font-note);
+  font-size: clamp(.95rem, 1.3vw, 1.05rem);
+  font-variation-settings: "CASL" 1, "CRSV" 1;
+  line-height: 1.5;
+}
+
+.recommendation-row-take strong {
+  display: block;
+  margin-bottom: .1rem;
+  color: var(--blue);
+  font-weight: 600;
 }
 
 .all-writing-link {
@@ -1021,6 +1081,10 @@ html[data-mode="dark"] .prose {
     grid-template-columns: minmax(0, 1fr) auto;
   }
 
+  .recommendation-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
   .recommendations-toolbar {
     flex-direction: row;
     align-items: center;
@@ -1044,7 +1108,8 @@ html[data-mode="dark"] .prose {
     justify-self: end;
   }
 
-  .recent-writing {
+  .recent-writing,
+  .recent-recommendations {
     grid-template-columns: minmax(15rem, .42fr) minmax(0, 1fr);
   }
 

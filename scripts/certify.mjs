@@ -162,6 +162,26 @@ assert.match(recommends, /role="status"[^>]*aria-live="polite"[^>]*aria-atomic="
 assert.match(recommends, /class="sr-only"> \(external site\)<\/span>/i, 'external recommendation links must name context');
 assert.doesNotMatch(recommends, /class="rec-tags"/i, 'recommendation topic tags must stay off the page');
 
+const home = text(routes.get('/'));
+const recentWritingPosition = home.indexOf('class="recent-writing"');
+const recentRecommendsPosition = home.indexOf('class="recent-recommendations"');
+assert.ok(recentWritingPosition >= 0, 'homepage must retain Recent writing');
+assert.ok(recentRecommendsPosition > recentWritingPosition, 'Recent recommendations must follow Recent writing');
+assert.match(home, /href="\/recommends"[^>]*>\s*All recommendations\b/i, 'homepage must link to all recommendations');
+assert.doesNotMatch(home, /class="recommendation-tags"/i, 'homepage recommendation topic tags must stay hidden');
+
+const fullRecommendationTitles = matches(recommends, /data-recommendation[\s\S]*?<h2\b[^>]*class="rec-title"[^>]*>\s*<a\b[^>]*>([\s\S]*?)<\/a>/gi)
+  .map((match) => match[1].replace(/<[^>]+>/g, '').replace(/\s*↗\s*$/, '').trim());
+const homeRecommendationTitles = matches(home, /data-home-recommendation[\s\S]*?<h3\b[^>]*>\s*<a\b[^>]*>([\s\S]*?)<\/a>/gi)
+  .map((match) => match[1].replace(/<[^>]+>/g, '').replace(/\s*↗\s*$/, '').trim());
+assert.ok(homeRecommendationTitles.length > 0, 'homepage must include published recommendations');
+assert.ok(homeRecommendationTitles.length <= 2, 'homepage recommendations must honor the deliberate cap');
+assert.deepEqual(
+  homeRecommendationTitles,
+  fullRecommendationTitles.slice(0, homeRecommendationTitles.length),
+  'homepage recommendation order must match the published Recommends feed',
+);
+
 const cssFiles = walk(dist).filter((path) => extname(path) === '.css');
 assert.ok(cssFiles.length > 0, 'production build must emit CSS');
 for (const path of cssFiles) {
