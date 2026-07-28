@@ -11,7 +11,7 @@ const items = await getPublishedRecommends();
   feedHref="/recommends/rss.xml"
   feedTitle="Kaleb Cole recommends"
 >
-  <main id="main-content" class="wrap recommendations-page">
+  <main id="main-content" class="site-shell recommendations-page">
     <header class="recommendations-header">
       <div>
         <h1>Recommends</h1>
@@ -29,13 +29,19 @@ const items = await getPublishedRecommends();
       {items.length > 0 && (
         <section class="recommendations-all" aria-label="Recommendations">
           <div class="recommendations-toolbar">
-            <div class="recommendations-filter" role="group" aria-label="Filter recommendations by media type">
+            <nav class="recommendations-filter-links" aria-label="Filter recommendations by media type">
+              <a href="/recommends">All</a>
+              <a href="/recommends?medium=read">Read</a>
+              <a href="/recommends?medium=watch">Watch</a>
+              <a href="/recommends?medium=listen">Listen</a>
+            </nav>
+            <div class="recommendations-filter" role="group" aria-label="Filter recommendations by media type" hidden>
               <button type="button" data-recommend-filter="all" aria-pressed="true">All</button>
               <button type="button" data-recommend-filter="read" aria-pressed="false">Read</button>
               <button type="button" data-recommend-filter="watch" aria-pressed="false">Watch</button>
               <button type="button" data-recommend-filter="listen" aria-pressed="false">Listen</button>
             </div>
-            <p class="recommendations-count" data-recommendations-count aria-live="polite"></p>
+            <p class="recommendations-count" data-recommendations-count role="status" aria-live="polite" aria-atomic="true"></p>
           </div>
           <p class="recommendations-filter-empty" data-filter-empty hidden></p>
           <div class="recommendations-list">
@@ -57,10 +63,14 @@ const items = await getPublishedRecommends();
   <script is:inline>
     (function () {
       var buttons = Array.from(document.querySelectorAll('[data-recommend-filter]'));
+      var links = document.querySelector('.recommendations-filter-links');
+      var buttonGroup = document.querySelector('.recommendations-filter');
       var items = Array.from(document.querySelectorAll('[data-recommendation]'));
       var count = document.querySelector('[data-recommendations-count]');
       var empty = document.querySelector('[data-filter-empty]');
       var allowed = ['all', 'read', 'watch', 'listen'];
+      if (links) links.hidden = true;
+      if (buttonGroup) buttonGroup.hidden = false;
 
       function applyFilter(medium, updateUrl) {
         var selected = allowed.includes(medium) ? medium : 'all';

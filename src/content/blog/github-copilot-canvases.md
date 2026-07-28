@@ -10,7 +10,7 @@ I want to talk about a new feature of the [GitHub Copilot app](https://github.co
 
 Here is a demo of how a canvas works:
 
-<video controls playsinline preload="metadata" src="/blog/copilot-canvases/canvas-demo.mp4">
+<video controls playsinline preload="metadata" width="2496" height="1664" src="/blog/copilot-canvases/canvas-demo.mp4">
   Your browser does not support embedded video. You can
   <a href="/blog/copilot-canvases/canvas-demo.mp4">download the demo instead</a>.
 </video>
@@ -47,7 +47,10 @@ And so people internally at Microsoft were just coming up with different ways to
 And then, internally, I believe the transition came from Steve Sanderson, who works on the copilot CLI team (and is also so awesome to listen to and so engaging), starting sharing UI-based extensions. Check out this [open source repository](https://github.com/SteveSandersonMS/copilot-webview-creator) which extends the CLI with a custom UI.
 Here's his YouTube video as well: [How to extend Copilot CLI with custom UI](https://www.youtube.com/watch?v=HcjUnrS41II)
 
-![Pasted image 20260716085439](/blog/copilot-canvases/copilot-webview-extension.png)
+<picture>
+  <source type="image/webp" srcset="/blog/copilot-canvases/copilot-webview-extension-1120.webp">
+  <img src="/blog/copilot-canvases/copilot-webview-extension-1120.png" width="1120" height="644" loading="lazy" decoding="async" alt="Copilot CLI beside a canvas extension showing a visual workflow">
+</picture>
 
 This allowed for a visual interface for the Copilot CLI but there is a notable UX limitation: you have two different surfaces that you are working in.
 

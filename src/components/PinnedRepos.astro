@@ -1,8 +1,13 @@
 ---
 import { getPinnedRepos } from '../lib/github';
-const repos = await getPinnedRepos();
+const result = await getPinnedRepos();
+const { repos } = result;
 ---
-{repos.length > 0 ? (
+{result.status === 'unavailable' ? (
+  <p class="empty-state">
+    Projects couldn’t load right now. <a href="https://github.com/KalebCole">Find them on GitHub instead.</a>
+  </p>
+) : repos.length > 0 ? (
   <ul class="repos">
     {repos.map((r) => (
       <li>
