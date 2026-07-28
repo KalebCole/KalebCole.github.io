@@ -1,0 +1,279 @@
+import assert from 'node:assert/strict';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { extname, join, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { gzipSync } from 'node:zlib';
+
+const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const dist = join(root, 'dist');
+const site = 'https://kalebcole.dev';
+const budgets = {
+  html: 50 * 1024,
+  css: 50 * 1024,
+  javascript: 50 * 1024,
+  fonts: 220 * 1024,
+  lcpImage: 300 * 1024,
+  route: 800 * 1024,
+  requests: 25,
+};
+
+function walk(directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(directory, entry.name);
+    return entry.isDirectory() ? walk(path) : [path];
+  });
+}
+
+function text(path) {
+  return readFileSync(path, 'utf8');
+}
+
+function gzipSize(path) {
+  return gzipSync(readFileSync(path)).byteLength;
+}
+
+function matches(source, expression) {
+  return [...source.matchAll(expression)];
+}
+
+function attribute(tag, name) {
+  const match = tag.match(new RegExp(`\\b${name}=(?:"([^"]*)"|'([^']*)')`, 'i'));
+  return match ? (match[1] ?? match[2]) : undefined;
+}
+
+function routeForHtml(path) {
+  const name = relative(dist, path).replaceAll('\\', '/');
+  if (name === 'index.html') return '/';
+  if (name === '404.html') return '/404';
+  return `/${name.replace(/\/index\.html$/, '/').replace(/\.html$/, '')}`;
+}
+
+function outputForPath(pathname) {
+  if (pathname === '/') return join(dist, 'index.html');
+  if (pathname === '/404') return join(dist, '404.html');
+  const clean = pathname.replace(/^\/|\/$/g, '');
+  return join(dist, clean, 'index.html');
+}
+
+function localAsset(url) {
+  const pathname = url.split(/[?#]/)[0];
+  return pathname.startsWith('/') ? join(dist, ...pathname.slice(1).split('/')) : null;
+}
+
+function pngDimensions(path) {
+  const buffer = readFileSync(path);
+  assert.equal(buffer.toString('ascii', 1, 4), 'PNG', `${path} must be PNG`);
+  return [buffer.readUInt32BE(16), buffer.readUInt32BE(20)];
+}
+
+function icoDimensions(path) {
+  const buffer = readFileSync(path);
+  assert.equal(buffer.readUInt16LE(0), 0, 'ICO reserved field');
+  assert.equal(buffer.readUInt16LE(2), 1, 'ICO type');
+  const count = buffer.readUInt16LE(4);
+  return Array.from({ length: count }, (_, index) => {
+    const offset = 6 + index * 16;
+    return [buffer[offset] || 256, buffer[offset + 1] || 256];
+  });
+}
+
+assert.ok(existsSync(dist), 'dist must exist; run the production build first');
+
+const htmlFiles = walk(dist).filter((path) => extname(path) === '.html');
+const xmlFiles = walk(dist).filter((path) => extname(path) === '.xml');
+const routes = new Map(htmlFiles.map((path) => [routeForHtml(path), path]));
+const expectedRoutes = ['/', '/blog/', '/blog/github-copilot-canvases/', '/blog/hello-world/', '/recommends/', '/projects/', '/404'];
+
+for (const route of expectedRoutes) {
+  assert.ok(routes.has(route), `production build must emit ${route}`);
+}
+for (const feed of ['/rss.xml', '/recommends/rss.xml']) {
+  assert.ok(existsSync(localAsset(feed)), `production build must emit ${feed}`);
+}
+
+for (const [route, path] of routes) {
+  const html = text(path);
+  const h1s = matches(html, /<h1\b/gi);
+  const mains = matches(html, /<main\b[^>]*\bid="main-content"/gi);
+  assert.equal(h1s.length, 1, `${route} must have one h1`);
+  assert.equal(mains.length, 1, `${route} must have one named main landmark`);
+  assert.match(html, /<html\b[^>]*\blang="en"/i, `${route} must declare language`);
+  assert.match(html, /<a\b[^>]*class="skip-link"[^>]*href="#main-content"/i, `${route} must have a skip link`);
+  assert.match(html, /<nav\b[^>]*aria-label="Primary navigation"/i, `${route} must name primary navigation`);
+  assert.match(html, /<footer\b/i, `${route} must include the shared footer`);
+  assert.doesNotMatch(html, /\btabindex="[1-9]\d*"/i, `${route} must not use positive tabindex`);
+
+  const canonical = attribute(html.match(/<link\b[^>]*rel="canonical"[^>]*>/i)?.[0] ?? '', 'href');
+  const ogUrl = attribute(html.match(/<meta\b[^>]*property="og:url"[^>]*>/i)?.[0] ?? '', 'content');
+  assert.ok(canonical?.startsWith(`${site}/`), `${route} canonical must be absolute`);
+  assert.equal(ogUrl, canonical, `${route} Open Graph URL must match canonical`);
+  for (const property of ['og:title', 'og:description', 'og:type']) {
+    assert.match(html, new RegExp(`<meta\\b[^>]*property="${property}"[^>]*content="[^"]+"`, 'i'), `${route} must include ${property}`);
+  }
+  for (const name of ['description', 'twitter:card', 'twitter:title', 'twitter:description']) {
+    assert.match(html, new RegExp(`<meta\\b[^>]*name="${name}"[^>]*content="[^"]+"`, 'i'), `${route} must include ${name}`);
+  }
+  assert.equal(matches(html, /<meta\b[^>]*name="theme-color"/gi).length, 2, `${route} must include both theme colors`);
+  assert.match(html, /<link\b[^>]*rel="alternate"[^>]*type="application\/rss\+xml"/i, `${route} must expose a feed`);
+  assert.match(html, /<link\b[^>]*rel="apple-touch-icon"[^>]*sizes="180x180"/i, `${route} must expose the touch icon`);
+
+  for (const match of matches(html, /<img\b[^>]*>/gi)) {
+    const tag = match[0];
+    assert.ok(attribute(tag, 'alt') !== undefined, `${route} image must have alt text`);
+    assert.ok(attribute(tag, 'width') && attribute(tag, 'height'), `${route} image must declare dimensions`);
+  }
+  for (const match of matches(html, /<video\b[^>]*>/gi)) {
+    const tag = match[0];
+    assert.ok(
+      (attribute(tag, 'width') && attribute(tag, 'height')) || attribute(tag, 'style')?.includes('aspect-ratio'),
+      `${route} video must reserve intrinsic space`,
+    );
+  }
+
+  for (const match of matches(html, /\b(?:href|src)="([^"]+)"/gi)) {
+    const url = match[1];
+    if (!url.startsWith('/') || url.startsWith('//')) continue;
+    const pathname = url.split(/[?#]/)[0];
+    if (!pathname || pathname === '/') continue;
+    const asset = localAsset(pathname);
+    const routeOutput = outputForPath(pathname);
+    assert.ok(existsSync(asset) || existsSync(routeOutput), `${route} references missing ${pathname}`);
+  }
+}
+
+const navRoutes = new Map([
+  ['/', ['/', 'Kaleb Cole']],
+  ['/blog/', ['/blog', 'Writing']],
+  ['/recommends/', ['/recommends', 'Recommends']],
+  ['/projects/', ['/projects', 'Projects']],
+]);
+for (const [route, [href, label]] of navRoutes) {
+  const html = text(routes.get(route));
+  const currentLinks = matches(html, /<a\b[^>]*aria-current="page"[^>]*>[\s\S]*?<\/a>/gi);
+  assert.equal(currentLinks.length, 1, `${route} must expose one current-page state`);
+  assert.equal(attribute(currentLinks[0][0], 'href'), href, `${route} current-page link destination`);
+  assert.match(currentLinks[0][0].replace(/<[^>]+>/g, ' '), new RegExp(`\\b${label}\\b`, 'i'), `${route} current-page label`);
+}
+
+const recommends = text(routes.get('/recommends/'));
+assert.match(recommends, /class="recommendations-filter-links"[\s\S]*\?medium=read/i, 'no-JS query filters must exist');
+assert.match(recommends, /data-recommend-filter="all"[^>]*aria-pressed="true"/i, 'enhanced filters must use aria-pressed');
+assert.match(recommends, /role="status"[^>]*aria-live="polite"[^>]*aria-atomic="true"/i, 'filter count must be announced');
+assert.match(recommends, /class="sr-only"> \(external site\)<\/span>/i, 'external recommendation links must name context');
+assert.doesNotMatch(recommends, /class="rec-tags"/i, 'recommendation topic tags must stay off the page');
+
+const cssFiles = walk(dist).filter((path) => extname(path) === '.css');
+assert.ok(cssFiles.length > 0, 'production build must emit CSS');
+for (const path of cssFiles) {
+  assert.ok(gzipSize(path) <= budgets.css, `${relative(dist, path)} exceeds compressed CSS budget`);
+  const css = text(path);
+  assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/i, 'CSS must include reduced-motion handling');
+  assert.match(css, /@media\s*\(forced-colors:\s*active\)/i, 'CSS must include forced-colors handling');
+  assert.match(css, /@media\s*\(hover:\s*hover\)/i, 'CSS must gate hover-only effects');
+  assert.match(css, /env\(safe-area-inset-bottom\)/i, 'CSS must honor safe areas');
+  assert.match(css, /:focus-visible/i, 'CSS must provide visible keyboard focus');
+}
+
+const fontFiles = walk(join(dist, 'fonts')).filter((path) => extname(path) === '.woff2');
+const compressedFonts = fontFiles.reduce((total, path) => total + gzipSize(path), 0);
+assert.ok(compressedFonts <= budgets.fonts, 'compressed font payload exceeds budget');
+assert.ok(statSync(join(dist, 'me-600.webp')).size <= budgets.lcpImage, 'largest portrait candidate exceeds LCP image budget');
+
+for (const [route, path] of routes) {
+  const html = text(path);
+  assert.ok(gzipSize(path) <= budgets.html, `${route} exceeds compressed HTML budget`);
+  const resourceUrls = new Set();
+  const videoMetadata = new Set();
+  const stylesheetUrls = matches(html, /<link\b[^>]*rel="stylesheet"[^>]*href=(?:"([^"]+)"|'([^']+)')[^>]*>/gi)
+    .map((match) => match[1] ?? match[2]);
+  const preloadUrls = matches(html, /<link\b[^>]*rel="preload"[^>]*href=(?:"([^"]+)"|'([^']+)')[^>]*>/gi)
+    .map((match) => match[1] ?? match[2]);
+  for (const url of [...stylesheetUrls, ...preloadUrls]) resourceUrls.add(url.split(/[?#]/)[0]);
+
+  const pictureBlocks = matches(html, /<picture\b[^>]*>([\s\S]*?)<\/picture>/gi).map((match) => match[0]);
+  for (const picture of pictureBlocks) {
+    const candidates = matches(picture, /\b(?:src|srcset)=(?:"([^"]+)"|'([^']+)')/gi)
+      .flatMap((match) => (match[1] ?? match[2]).split(','))
+      .map((candidate) => candidate.trim().split(/\s+/)[0])
+      .map(localAsset)
+      .filter((candidate) => candidate && existsSync(candidate));
+    const largest = candidates.sort((a, b) => statSync(b).size - statSync(a).size)[0];
+    if (largest) resourceUrls.add(`/${relative(dist, largest).replaceAll('\\', '/')}`);
+  }
+  const htmlWithoutPictures = pictureBlocks.reduce((source, picture) => source.replace(picture, ''), html);
+  for (const match of matches(htmlWithoutPictures, /<img\b[^>]*src=(?:"([^"]+)"|'([^']+)')[^>]*>/gi)) {
+    const tag = match[0];
+    if (!/\bloading="lazy"/i.test(tag)) resourceUrls.add((match[1] ?? match[2]).split(/[?#]/)[0]);
+  }
+  for (const match of matches(html, /<video\b[^>]*src=(?:"([^"]+)"|'([^']+)')[^>]*>/gi)) {
+    const url = (match[1] ?? match[2]).split(/[?#]/)[0];
+    if (/\bpreload="metadata"/i.test(match[0])) videoMetadata.add(url);
+    else if (!/\bpreload="none"/i.test(match[0])) resourceUrls.add(url);
+  }
+  const scriptSources = matches(html, /<script\b[^>]*src=(?:"([^"]+)"|'([^']+)')[^>]*>/gi)
+    .map((match) => match[1] ?? match[2]);
+  const thirdPartyScripts = scriptSources.filter((source) => new URL(source, site).origin !== new URL(site).origin);
+  for (const source of scriptSources.filter((source) => !thirdPartyScripts.includes(source))) {
+    const url = new URL(source, site);
+    resourceUrls.add(url.pathname);
+  }
+
+  const stylesheets = stylesheetUrls.map(localAsset).filter((resource) => resource && existsSync(resource));
+  const stylesheetSize = stylesheets.reduce((total, resource) => total + gzipSize(resource), 0);
+  assert.ok(stylesheetSize <= budgets.css, `${route} exceeds compressed CSS budget`);
+  for (const stylesheet of stylesheets) {
+    for (const match of matches(text(stylesheet), /url\((?:"([^"]+)"|'([^']+)'|([^)'"]+))\)/gi)) {
+      const url = match.slice(1).find(Boolean)?.trim();
+      if (url?.startsWith('/')) resourceUrls.add(url.split(/[?#]/)[0]);
+    }
+  }
+
+  const resources = [...resourceUrls].map(localAsset).filter((path) => path && existsSync(path));
+  const scripts = resources.filter((path) => ['.js', '.mjs'].includes(extname(path)));
+  const scriptSize = scripts.reduce((total, path) => total + gzipSize(path), 0);
+  const metadataResources = [...videoMetadata].map(localAsset).filter((resource) => resource && existsSync(resource));
+  const routeSize = gzipSize(path)
+    + resources.reduce((total, resource) => total + gzipSize(resource), 0)
+    + metadataResources.reduce((total, resource) => total + Math.min(statSync(resource).size, 64 * 1024), 0);
+  assert.ok(scriptSize <= budgets.javascript, `${route} exceeds first-party JavaScript budget`);
+  assert.ok(routeSize <= budgets.route, `${route} exceeds complete route budget`);
+  assert.ok(resources.length + metadataResources.length + 1 <= budgets.requests, `${route} exceeds request budget`);
+  assert.equal(thirdPartyScripts.length, 0, `${route} must not load third-party JavaScript`);
+}
+
+assert.deepEqual(pngDimensions(join(dist, 'favicon-16x16.png')), [16, 16], '16px favicon dimensions');
+assert.deepEqual(pngDimensions(join(dist, 'favicon-32x32.png')), [32, 32], '32px favicon dimensions');
+assert.deepEqual(pngDimensions(join(dist, 'apple-touch-icon.png')), [180, 180], 'touch icon dimensions');
+const icoSizes = icoDimensions(join(dist, 'favicon.ico'));
+assert.ok(icoSizes.some(([width, height]) => width === 16 && height === 16), 'ICO must contain 16px image');
+assert.ok(icoSizes.some(([width, height]) => width === 32 && height === 32), 'ICO must contain 32px image');
+assert.match(text(join(dist, 'favicon.svg')), /viewBox=/i, 'adaptive SVG must declare a viewBox');
+
+for (const path of xmlFiles) {
+  const xml = text(path);
+  assert.match(xml, /^<\?xml version="1\.0" encoding="UTF-8"\?>/i, `${relative(dist, path)} XML declaration`);
+  assert.match(xml, /<rss\b[^>]*version="2\.0"/i, `${relative(dist, path)} must be RSS 2.0`);
+  const items = matches(xml, /<item>([\s\S]*?)<\/item>/gi).map((match) => match[1]);
+  assert.ok(items.length > 0, `${relative(dist, path)} must include items`);
+  const dates = items.map((item) => Date.parse(item.match(/<pubDate>(.*?)<\/pubDate>/i)?.[1] ?? ''));
+  assert.ok(dates.every(Number.isFinite), `${relative(dist, path)} items must have valid dates`);
+  assert.deepEqual(dates, [...dates].sort((a, b) => b - a), `${relative(dist, path)} must be newest first`);
+  for (const item of items) {
+    assert.match(item, /<title>.+<\/title>/i, 'feed item title');
+    assert.match(item, /<description>.+<\/description>/i, 'feed item description');
+    const link = item.match(/<link>(.*?)<\/link>/i)?.[1];
+    assert.ok(link?.startsWith('https://'), 'feed item links must be absolute HTTPS URLs');
+  }
+}
+const recommendsFeed = text(join(dist, 'recommends', 'rss.xml'));
+assert.match(recommendsFeed, /<category>read<\/category>/i, 'Recommends feed must retain medium categories');
+assert.match(recommendsFeed, /<category>curation<\/category>/i, 'Recommends feed may retain hidden topic categories');
+
+const productionNames = walk(dist).map((path) => relative(dist, path).replaceAll('\\', '/'));
+assert.equal(
+  productionNames.filter((name) => /(?:prototype|comparison|compare|variant)/i.test(name)).length,
+  0,
+  'production output must not contain prototype or comparison routes',
+);
+
+console.log(`Certified ${routes.size} HTML routes, ${xmlFiles.length} feeds, and ${productionNames.length} emitted files.`);
