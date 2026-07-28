@@ -26,10 +26,8 @@ const recommends = defineCollection({
     source: z.string().optional(),
     image: z.string().url().optional(),
     tags: z.array(z.string()).default([]),
-    // Kaleb's own take — the whole point of the page.
-    take: z.string(),
-    // true => surfaces in the pinned "Required" band.
-    required: z.boolean().default(false),
+    // Kaleb's optional annotation.
+    take: z.string().optional(),
     draft: z.boolean().default(false),
   }),
 });

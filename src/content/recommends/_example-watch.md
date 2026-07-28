@@ -7,6 +7,5 @@ author: "Andrew Kelley"
 source: "YouTube"
 tags: ["engineering", "performance"]
 take: "Placeholder entry showing the watch medium. Replace or delete me. Data-oriented design, clearly explained."
-required: false
 draft: true
 ---

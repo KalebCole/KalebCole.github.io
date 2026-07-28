@@ -5,36 +5,101 @@ import SiteNav from '../../components/SiteNav.astro';
 import { getPublishedRecommends } from '../../lib/recommends';
 
 const items = await getPublishedRecommends();
-
-const required = items.filter((i) => i.data.required);
-const recommended = items.filter((i) => !i.data.required);
 ---
 <Layout
-  title="Recommends — Kaleb Cole"
-  description="Things worth your time — articles, videos, and audio Kaleb Cole recommends."
+  title="Recommends | Kaleb Cole"
+  description="Things worth your time: articles, talks, and audio, with Kaleb Cole's note on why."
+  feedHref="/recommends/rss.xml"
+  feedTitle="Kaleb Cole recommends"
 >
-  <main class="wrap">
+  <main class="wrap recommendations-page">
     <SiteNav />
-    <h1>Recommends</h1>
-    <p class="muted">
-      Things I think are worth your time. Articles, talks, and audio, with a note on why.
-      <a href="/recommends/rss.xml">RSS</a>
-    </p>
+    <header class="recommendations-header">
+      <div>
+        <h1>Recommends</h1>
+        <p>Things I thought were interesting.</p>
+      </div>
+      <a class="recommendations-feed" href="/recommends/rss.xml">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 5.5c7.46 0 13.5 6.04 13.5 13.5M5 11.5A7.5 7.5 0 0 1 12.5 19M6 18.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"></path>
+        </svg>
+        Follow the recommends feed
+      </a>
+    </header>
 
-    {required.length > 0 && (
-      <section>
-        <h2 class="rec-band">Required</h2>
-        {required.map((item) => <RecommendCard item={item} />)}
-      </section>
-    )}
+    <div class="recommendations-content">
+      {items.length > 0 && (
+        <section class="recommendations-all" aria-label="Recommendations">
+          <div class="recommendations-toolbar">
+            <div class="recommendations-filter" role="group" aria-label="Filter recommendations by media type">
+              <button type="button" data-recommend-filter="all" aria-pressed="true">All</button>
+              <button type="button" data-recommend-filter="read" aria-pressed="false">Read</button>
+              <button type="button" data-recommend-filter="watch" aria-pressed="false">Watch</button>
+              <button type="button" data-recommend-filter="listen" aria-pressed="false">Listen</button>
+            </div>
+            <p class="recommendations-count" data-recommendations-count aria-live="polite"></p>
+          </div>
+          <p class="recommendations-filter-empty" data-filter-empty hidden></p>
+          <div class="recommendations-list">
+            {items.map((item) => <RecommendCard item={item} />)}
+          </div>
+        </section>
+      )}
 
-    {recommended.length > 0 && (
-      <section>
-        <h2 class="rec-band">Also recommended</h2>
-        {recommended.map((item) => <RecommendCard item={item} />)}
-      </section>
-    )}
-
-    {items.length === 0 && <p class="muted">Nothing here yet. Check back soon.</p>}
+      {items.length === 0 && (
+        <div class="recommendations-empty">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 4.75h8a3 3 0 0 1 3 3v11.5h-8a3 3 0 0 0-3 3V4.75Zm12 0h.5a2.5 2.5 0 0 1 2.5 2.5v12h-9a3 3 0 0 0-3 3"></path>
+          </svg>
+          <h2>Nothing here yet.</h2>
+        </div>
+      )}
+    </div>
   </main>
+  <script is:inline>
+    (function () {
+      var buttons = Array.from(document.querySelectorAll('[data-recommend-filter]'));
+      var items = Array.from(document.querySelectorAll('[data-recommendation]'));
+      var count = document.querySelector('[data-recommendations-count]');
+      var empty = document.querySelector('[data-filter-empty]');
+      var allowed = ['all', 'read', 'watch', 'listen'];
+
+      function applyFilter(medium, updateUrl) {
+        var selected = allowed.includes(medium) ? medium : 'all';
+        var visible = 0;
+
+        items.forEach(function (item) {
+          var matches = selected === 'all' || item.dataset.medium === selected;
+          item.hidden = !matches;
+          if (matches) visible += 1;
+        });
+        buttons.forEach(function (button) {
+          button.setAttribute('aria-pressed', String(button.dataset.recommendFilter === selected));
+        });
+
+        count.textContent = visible === 1
+          ? '1 recommendation'
+          : visible + ' recommendations';
+        empty.hidden = visible !== 0;
+        empty.textContent = selected === 'all'
+          ? 'Nothing here yet.'
+          : 'No ' + selected + ' recommendations yet.';
+
+        if (updateUrl) {
+          var url = new URL(window.location.href);
+          if (selected === 'all') url.searchParams.delete('medium');
+          else url.searchParams.set('medium', selected);
+          history.replaceState(null, '', url);
+        }
+      }
+
+      buttons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          applyFilter(button.dataset.recommendFilter, true);
+        });
+      });
+
+      applyFilter(new URLSearchParams(window.location.search).get('medium'), false);
+    })();
+  </script>
 </Layout>
