@@ -129,7 +129,8 @@ content, source order, hierarchy, and interaction.
 
 **Key Characteristics:**
 
-- One strong introduction, one quiet portrait, then writing.
+- One strong introduction, one quiet portrait, then writing, followed by a
+  lower-weight recommendations sibling.
 - Ruled lists instead of interchangeable card grids.
 - Large Bricolage type, brief Recursive handwriting, and restrained Azeret
   metadata.
@@ -149,14 +150,16 @@ step.
 - Navigation: 86px minimum height with a 2px ink rule.
 - Homepage hero: asymmetric `1.35fr / 0.65fr` grid, `61vh` minimum height,
   `clamp(2rem, 7vw, 7rem)` gap, and 64px vertical padding.
-- Recent writing: `0.4fr / 1fr` grid with the same gap and a 2px top rule.
+- Recent writing and recent recommendations: `0.4fr / 1fr` grids with the same
+  gap and a 2px top rule.
 - Reading measure: 57–70 characters; target 65–70 characters for articles.
 - Article rows: 18px vertical padding, one-pixel rules, and no card container.
 - Detailed media breakout: centered on the prose column and capped near 56rem.
 
 The introduction owns the opening view; recent writing arrives in the first
-deliberate scroll. The homepage ends after recent writing. Do not add Projects,
-Recommends, metrics, credentials, or calls to action below it.
+deliberate scroll. A compact, capped recent-recommendations sibling may follow
+recent writing. Do not add Projects, metrics, credentials, or conversion calls
+to action below it.
 
 ### Responsive foundation
 
@@ -383,9 +386,13 @@ zero missing icon requests.
 - On phones, complete the introduction first, then begin the portrait 1.25rem
   below it with a further 0.5rem optical offset.
 - Move directly into the three newest published pieces using the approved split
-  composition. End with one `All writing →` link, then the shared footer. No
-  Projects section, Recommends section, credential strip, metrics, or
-  conversion CTA.
+  composition. End with one `All writing →` link.
+- Follow with a compact, capped recent-recommendations sibling using the same
+  split composition, rules, row rhythm, and responsive collapse. Omit imagery
+  consistently, retain medium, title, source or author, UTC date, and optional
+  My thoughts, then end with `All recommendations →`.
+- Omit the recommendations sibling when no published recommendations exist.
+  Do not add a Projects section, credential strip, metrics, or conversion CTA.
 
 Entrance choreography, always from an already-visible default:
 
