@@ -1,4 +1,4 @@
-# kalebcole.dev
+# kalebcole.com
 
 Personal site + blog. Built with [Astro 5](https://astro.build) and deployed to Vercel.
 
@@ -37,6 +37,8 @@ recent-posts list at build time.
 | Name           | Where it's used                    | Required?                  |
 | -------------- | ---------------------------------- | -------------------------- |
 | `GITHUB_TOKEN` | Build-time pinned-repos GraphQL    | Yes in production. Local dev silently shows no projects when missing. |
+| `VERCEL_ENV` | Build-time social-image origin selection | Supplied by Vercel. A `preview` build requires `VERCEL_URL`. |
+| `VERCEL_URL` | Vercel preview deployment hostname | Supplied by Vercel. Never used for canonical URLs. |
 
 Create a **fine-grained PAT** at <https://github.com/settings/personal-access-tokens>:
 - Resource owner: your account
@@ -45,6 +47,10 @@ Create a **fine-grained PAT** at <https://github.com/settings/personal-access-to
 
 Add it to `.env.local` for local dev. In production, set `GITHUB_TOKEN` in
 Vercel project settings → Environment Variables.
+
+Canonical URLs and feeds always use `https://kalebcole.com`. Vercel preview
+builds use their deployment hostname only for social image metadata, which lets
+reviewers inspect the not-yet-merged image asset without changing site identity.
 
 ## Deploy
 
