@@ -51,9 +51,11 @@ const formattedDate = item.data.date.toLocaleDateString('en-US', {
       {item.data.source && <span>{item.data.source}</span>}
       <time datetime={item.data.date.toISOString()}>{formattedDate}</time>
     </p>
-    <h3 class="rec-title">
-      <a href={item.data.url}>{item.data.title}<span aria-hidden="true"> ↗</span></a>
-    </h3>
+    <h2 class="rec-title">
+      <a href={item.data.url}>
+        {item.data.title}<span aria-hidden="true"> ↗</span><span class="sr-only"> (external site)</span>
+      </a>
+    </h2>
     {item.data.author && <p class="rec-author">By {item.data.author}</p>}
     {item.data.take && (
       <div class="rec-take">
