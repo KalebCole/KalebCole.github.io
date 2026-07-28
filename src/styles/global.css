@@ -395,12 +395,6 @@ a:hover {
   font-size: clamp(2rem, 4vw, 3.1rem);
 }
 
-.recent-heading p {
-  max-width: 26ch;
-  margin-top: 1rem;
-  color: var(--muted);
-}
-
 .writing-list,
 .home-recommendation-list {
   border-top: 1px solid var(--rule);
@@ -424,13 +418,12 @@ a:hover {
   color: var(--ink);
 }
 
-.writing-row p {
+.writing-summary {
   max-width: 58ch;
   margin-top: .4rem;
   color: var(--muted);
 }
 
-.writing-row time,
 .meta-line,
 .year-heading,
 .repo-lang {
@@ -441,14 +434,11 @@ a:hover {
   line-height: 1.5;
 }
 
-.writing-row time {
-  align-self: start;
-}
-
-.home-recommendation-meta {
+.home-feed-meta {
   display: flex;
   flex-wrap: wrap;
   gap: .25rem .6rem;
+  margin-top: .65rem;
   color: var(--muted);
   font-family: var(--font-meta);
   font-size: .72rem;
@@ -456,13 +446,12 @@ a:hover {
   line-height: 1.5;
 }
 
-.home-recommendation-meta > :not(:first-child)::before {
+.home-feed-meta > :not(:first-child)::before {
   margin-right: .6rem;
   content: "·";
 }
 
 .home-recommendation-title {
-  margin-top: .45rem;
   font-size: clamp(1.1rem, 2vw, 1.45rem);
   line-height: 1.15;
 }
@@ -473,7 +462,7 @@ a:hover {
 
 .home-recommendation-take {
   max-width: 58ch;
-  margin-top: .65rem;
+  margin-top: .4rem;
   color: var(--muted);
   font-family: var(--font-note);
   font-variation-settings: "CASL" 1, "CRSV" 1;
