@@ -33,7 +33,8 @@ _Avoid_: Case study, portfolio piece
 
 **Pinned page**:
 The homepage composition that opens with Kaleb's candid introduction and
-portrait, moves directly into recent writing, and deliberately stops there.
+portrait, moves directly into recent writing, then continues into a compact
+recent-recommendations sibling.
 _Avoid_: Portfolio landing page, content dashboard
 
 **Pinned writing**:

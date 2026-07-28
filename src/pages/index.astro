@@ -1,12 +1,16 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import HomeRecommendRow from '../components/HomeRecommendRow.astro';
 import Polaroid from '../components/Polaroid.astro';
+import { getPublishedRecommends } from '../lib/recommends';
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const recentPosts = allPosts
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
+const HOME_RECOMMENDATION_LIMIT = 3;
+const recentRecommendations = (await getPublishedRecommends()).slice(0, HOME_RECOMMENDATION_LIMIT);
 ---
 <Layout title="Kaleb Cole" description="Kaleb Cole’s public workshop for ideas, experiences, interests, and things worth sharing.">
   <main id="main-content" class="site-shell home-page">
@@ -42,5 +46,20 @@ const recentPosts = allPosts
         <a class="all-writing-link" href="/blog">All writing <span aria-hidden="true">→</span></a>
       </div>
     </section>
+
+    {recentRecommendations.length > 0 && (
+      <section class="recent-recommendations" aria-labelledby="recent-recommendations-title">
+        <div class="recent-heading">
+          <h2 id="recent-recommendations-title">Recent recommendations</h2>
+          <p>Things I’ve been reading, watching, and listening to lately.</p>
+        </div>
+        <div class="home-recommendation-list">
+          {recentRecommendations.map((item) => <HomeRecommendRow item={item} />)}
+          <a class="all-recommendations-link" href="/recommends">
+            All recommendations <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </section>
+    )}
   </main>
 </Layout>
