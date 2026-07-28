@@ -1,7 +1,7 @@
 ---
 title: "Recommended reading/viewing"
 url: "https://mariozechner.at/recommended-reading/"
-date: 2026-07-14
+date: 2026-07-13
 medium: read
 author: "Mario Zechner"
 source: "mariozechner.at"
