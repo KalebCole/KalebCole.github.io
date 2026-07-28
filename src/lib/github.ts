@@ -5,6 +5,10 @@ export interface PinnedRepo {
   primaryLanguage: { name: string } | null;
 }
 
+export type PinnedReposResult =
+  | { status: 'ready'; repos: PinnedRepo[] }
+  | { status: 'unavailable'; repos: [] };
+
 const QUERY = `{
   user(login: "KalebCole") {
     pinnedItems(first: 6, types: REPOSITORY) {
@@ -20,11 +24,11 @@ const QUERY = `{
   }
 }`;
 
-export async function getPinnedRepos(): Promise<PinnedRepo[]> {
+export async function getPinnedRepos(): Promise<PinnedReposResult> {
   const token = import.meta.env.GITHUB_TOKEN;
   if (!token) {
-    console.warn('[github] GITHUB_TOKEN missing — pinned repos will be empty.');
-    return [];
+    console.warn('[github] GITHUB_TOKEN missing — pinned repos are unavailable.');
+    return { status: 'unavailable', repos: [] };
   }
   try {
     const res = await fetch('https://api.github.com/graphql', {
@@ -37,20 +41,23 @@ export async function getPinnedRepos(): Promise<PinnedRepo[]> {
       body: JSON.stringify({ query: QUERY }),
     });
     if (!res.ok) {
-      console.warn(`[github] HTTP ${res.status} — pinned repos will be empty.`);
-      return [];
+      console.warn(`[github] HTTP ${res.status} — pinned repos are unavailable.`);
+      return { status: 'unavailable', repos: [] };
     }
     const json = (await res.json()) as {
       data?: { user?: { pinnedItems?: { nodes?: PinnedRepo[] } } };
       errors?: unknown;
     };
     if (json.errors) {
-      console.warn('[github] GraphQL errors — pinned repos will be empty.', json.errors);
-      return [];
+      console.warn('[github] GraphQL errors — pinned repos are unavailable.', json.errors);
+      return { status: 'unavailable', repos: [] };
     }
-    return json.data?.user?.pinnedItems?.nodes ?? [];
+    return {
+      status: 'ready',
+      repos: json.data?.user?.pinnedItems?.nodes ?? [],
+    };
   } catch (err) {
-    console.warn('[github] fetch failed — pinned repos will be empty.', err);
-    return [];
+    console.warn('[github] fetch failed — pinned repos are unavailable.', err);
+    return { status: 'unavailable', repos: [] };
   }
 }

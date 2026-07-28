@@ -27,8 +27,8 @@
 
     function sync() {
       var mode = document.documentElement.getAttribute('data-mode') || 'light';
-      light.toggleAttribute('hidden', mode !== 'light');
-      dark.toggleAttribute('hidden', mode !== 'dark');
+      light.hidden = mode !== 'light';
+      dark.hidden = mode !== 'dark';
       var nextLabel = mode === 'dark' ? 'Switch to light mode' : 'Switch to blue-hour mode';
       btn.setAttribute('aria-label', nextLabel);
       btn.setAttribute('title', nextLabel);
