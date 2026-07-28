@@ -3,10 +3,12 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { extname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
+import { PRODUCTION_ORIGIN, resolveSocialImageOrigin } from '../src/lib/site-origin.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const dist = join(root, 'dist');
-const site = 'https://kalebcole.dev';
+const site = PRODUCTION_ORIGIN;
+const socialImageOrigin = resolveSocialImageOrigin(process.env);
 const budgets = {
   html: 50 * 1024,
   css: 50 * 1024,
@@ -153,8 +155,19 @@ for (const [route, path] of routes) {
 
 const homepage = text(routes.get('/'));
 const homepageDescription = 'I share what interests me here, along with things that might help someone else learn.';
-const homepageImageUrl = `${site}/social/homepage-v1.png`;
+const homepageImageUrl = new URL('/social/homepage-v2.png', socialImageOrigin).href;
 const homepageImageAlt = 'Kaleb Cole smiling at a concert beside his name, homepage description, and open-tail KC mark.';
+assert.equal(resolveSocialImageOrigin(), site, 'local builds must use the production social image origin');
+assert.equal(
+  resolveSocialImageOrigin({ VERCEL_ENV: 'preview', VERCEL_URL: 'example-preview.vercel.app' }),
+  'https://example-preview.vercel.app',
+  'preview builds must use the Vercel deployment origin',
+);
+assert.throws(
+  () => resolveSocialImageOrigin({ VERCEL_ENV: 'preview', VERCEL_URL: 'https://example-preview.vercel.app/path' }),
+  /bare deployment hostname/,
+  'preview deployment origins must reject URLs and paths',
+);
 assert.equal(metaContent(homepage, 'name', 'description'), homepageDescription, 'homepage description must stay first-person');
 assert.equal(metaContent(homepage, 'property', 'og:title'), 'Kaleb Cole', 'homepage Open Graph title');
 assert.equal(metaContent(homepage, 'name', 'twitter:title'), 'Kaleb Cole', 'homepage Twitter title');
@@ -172,6 +185,8 @@ assert.equal(metaContent(homepage, 'property', 'og:image:alt'), homepageImageAlt
 assert.equal(metaContent(homepage, 'name', 'twitter:image:alt'), homepageImageAlt, 'homepage Twitter image alt text');
 assert.equal(metaContent(homepage, 'name', 'twitter:card'), 'summary_large_image', 'homepage must request a large Twitter card');
 assert.match(homepageImageUrl, /homepage-v\d+\.png$/, 'homepage social image URL must be versioned');
+assert.equal(new URL(metaContent(homepage, 'property', 'og:url')).origin, site, 'preview Open Graph URLs must remain canonical');
+assert.equal(new URL(metaContent(homepage, 'name', 'twitter:url')).origin, site, 'preview Twitter URLs must remain canonical');
 
 const homepageImage = localAsset(new URL(homepageImageUrl).pathname);
 assert.ok(existsSync(homepageImage), 'homepage social image must exist in the production build');
@@ -307,6 +322,10 @@ for (const path of xmlFiles) {
   }
 }
 const recommendsFeed = text(join(dist, 'recommends', 'rss.xml'));
+const writingFeed = text(join(dist, 'rss.xml'));
+assert.match(writingFeed, /<link>https:\/\/kalebcole\.com\/blog\//i, 'Writing feed links must use the production origin');
+assert.doesNotMatch(writingFeed, /kalebcole\.dev/i, 'Writing feed must not retain the former origin');
+assert.doesNotMatch(recommendsFeed, /kalebcole\.dev/i, 'Recommends feed must not retain the former origin');
 assert.match(recommendsFeed, /<category>read<\/category>/i, 'Recommends feed must retain medium categories');
 assert.match(recommendsFeed, /<category>curation<\/category>/i, 'Recommends feed may retain hidden topic categories');
 
