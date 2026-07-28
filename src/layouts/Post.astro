@@ -1,6 +1,5 @@
 ---
 import Layout from './Layout.astro';
-import SiteNav from '../components/SiteNav.astro';
 
 interface Props {
   title: string;
@@ -19,8 +18,7 @@ const fmt = (d: Date) =>
   });
 ---
 <Layout title={`${title} | Kaleb Cole`} description={description}>
-  <main class="wrap">
-    <SiteNav />
+  <main id="main-content" class="wrap">
     <article>
       <h1>{title}</h1>
       <p class="post-meta">

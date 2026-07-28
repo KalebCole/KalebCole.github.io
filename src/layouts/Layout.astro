@@ -1,51 +1,73 @@
 ---
 import '../styles/global.css';
+import SiteNav from '../components/SiteNav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 
 interface Props {
   title: string;
   description?: string;
   feedHref?: string;
   feedTitle?: string;
+  image?: string;
+  type?: 'website' | 'article';
 }
 const {
   title,
-  description = 'Kaleb Cole — Software Engineer, Builder, Explorer.',
-  feedHref,
-  feedTitle = 'Kaleb Cole RSS feed',
+  description = 'Kaleb Cole’s public workshop for ideas, experiences, interests, and projects.',
+  feedHref = '/rss.xml',
+  feedTitle = 'Kaleb Cole — Writing feed',
+  image,
+  type = 'website',
 } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const socialImage = image ? new URL(image, Astro.site) : undefined;
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111625" media="(prefers-color-scheme: dark)" />
+    <link rel="canonical" href={canonical} />
     <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonical} />
+    {socialImage && <meta property="og:image" content={socialImage} />}
+    <meta name="twitter:card" content={socialImage ? 'summary_large_image' : 'summary'} />
     <meta name="twitter:title" content={title} />
-    {feedHref && <link rel="alternate" type="application/rss+xml" title={feedTitle} href={feedHref} />}
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;600&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Recursive:CASL,CRSV,wght@1,1,400;1,1,600&display=swap"
-      rel="stylesheet"
-    />
+    <meta name="twitter:description" content={description} />
+    {socialImage && <meta name="twitter:image" content={socialImage} />}
+    <link rel="alternate" type="application/rss+xml" title={feedTitle} href={feedHref} />
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="preload" href="/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin />
     <title>{title}</title>
 
     <script is:inline>
       (function () {
+        var systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         try {
           var saved = localStorage.getItem('theme-mode');
-          var systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
           var mode = saved === 'dark' || saved === 'light' ? saved : (systemDark ? 'dark' : 'light');
           document.documentElement.setAttribute('data-mode', mode);
         } catch (e) {
-          document.documentElement.setAttribute('data-mode', 'light');
+          document.documentElement.setAttribute('data-mode', systemDark ? 'dark' : 'light');
         }
       })();
     </script>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <header class="site-header">
+      <SiteNav feedHref={feedHref} feedTitle={feedTitle} />
+    </header>
     <slot />
+    <SiteFooter />
   </body>
 </html>

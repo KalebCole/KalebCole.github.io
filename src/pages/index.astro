@@ -1,53 +1,46 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import SiteNav from '../components/SiteNav.astro';
 import Polaroid from '../components/Polaroid.astro';
-import PinnedRepos from '../components/PinnedRepos.astro';
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const recentPosts = allPosts
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
 ---
-<Layout title="Kaleb Cole">
-  <main class="wrap">
-    <SiteNav />
+<Layout title="Kaleb Cole" description="Kaleb Cole’s public workshop for ideas, experiences, interests, and things worth sharing.">
+  <main id="main-content" class="site-shell home-page">
+    <section class="home-hero" aria-labelledby="home-title">
+      <div class="home-intro">
+        <h1 id="home-title">Hi, I’m Kaleb. I make things, write down what I learn, and follow whatever has me <span>curious</span> right now.</h1>
+        <p>I’m a software engineer at Microsoft, building what interests me and designing how we work with agents. This is where I write through the ideas that get stuck in my head.</p>
+      </div>
+      <Polaroid />
+    </section>
 
-    <h1>Kaleb Cole</h1>
-    <p class="muted">to be determined, writing this manually so it doesn't sound like AI</p>
-
-    <Polaroid />
-    <p>
-      to be determined, writing this manually so it doesn't sound like AI
-    </p>
-
-    <h2>Recent writing</h2>
-    {recentPosts.map((post) => (
-      <article class="post">
-        <h3 class="post-title">
-          <a href={`/blog/${post.id}`}>{post.data.title}</a>
-        </h3>
-        <p class="post-meta">
-          {post.data.date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            timeZone: 'UTC',
-          })}
-        </p>
-        <p class="post-desc">{post.data.description}</p>
-      </article>
-    ))}
-    <p style="margin-top: 1rem;"><a href="/blog">All posts →</a></p>
-
-    <h2>Projects</h2>
-    <PinnedRepos />
-
-    <div class="footer">
-      <a href="https://github.com/KalebCole">GitHub</a>
-      <a href="https://linkedin.com/in/kaleb-cole">LinkedIn</a>
-      <a href="mailto:kalebcole2021@gmail.com">Email</a>
-    </div>
+    <section class="recent-writing" aria-labelledby="recent-title">
+      <div class="recent-heading">
+        <h2 id="recent-title">Recent writing</h2>
+      </div>
+      <div class="writing-list">
+        {recentPosts.map((post) => (
+          <article class="writing-row">
+            <div>
+              <h3><a href={`/blog/${post.id}`}>{post.data.title}</a></h3>
+              <p>{post.data.description}</p>
+            </div>
+            <time datetime={post.data.date.toISOString()}>
+              {post.data.date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                timeZone: 'UTC',
+              })}
+            </time>
+          </article>
+        ))}
+        <a class="all-writing-link" href="/blog">All writing <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
   </main>
 </Layout>
