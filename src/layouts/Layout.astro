@@ -9,6 +9,10 @@ interface Props {
   feedHref?: string;
   feedTitle?: string;
   image?: string;
+  imageWidth?: number;
+  imageHeight?: number;
+  imageAlt?: string;
+  imageType?: `image/${string}`;
   type?: 'website' | 'article';
 }
 const {
@@ -17,6 +21,10 @@ const {
   feedHref = '/rss.xml',
   feedTitle = 'Kaleb Cole — Writing feed',
   image,
+  imageWidth,
+  imageHeight,
+  imageAlt,
+  imageType,
   type = 'website',
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -36,10 +44,19 @@ const socialImage = image ? new URL(image, Astro.site) : undefined;
     <meta property="og:type" content={type} />
     <meta property="og:url" content={canonical} />
     {socialImage && <meta property="og:image" content={socialImage} />}
+    {socialImage && <meta property="og:image:secure_url" content={socialImage} />}
+    {socialImage && imageType && <meta property="og:image:type" content={imageType} />}
+    {socialImage && imageWidth && <meta property="og:image:width" content={imageWidth} />}
+    {socialImage && imageHeight && <meta property="og:image:height" content={imageHeight} />}
+    {socialImage && imageAlt && <meta property="og:image:alt" content={imageAlt} />}
     <meta name="twitter:card" content={socialImage ? 'summary_large_image' : 'summary'} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:url" content={canonical} />
     {socialImage && <meta name="twitter:image" content={socialImage} />}
+    {socialImage && imageWidth && <meta name="twitter:image:width" content={imageWidth} />}
+    {socialImage && imageHeight && <meta name="twitter:image:height" content={imageHeight} />}
+    {socialImage && imageAlt && <meta name="twitter:image:alt" content={imageAlt} />}
     <link rel="alternate" type="application/rss+xml" title={feedTitle} href={feedHref} />
     <link rel="icon" href="/favicon.ico" sizes="16x16 32x32" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />

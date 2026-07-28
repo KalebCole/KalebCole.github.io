@@ -13,6 +13,7 @@ const budgets = {
   javascript: 50 * 1024,
   fonts: 220 * 1024,
   lcpImage: 300 * 1024,
+  socialImage: 500 * 1024,
   route: 800 * 1024,
   requests: 25,
 };
@@ -39,6 +40,13 @@ function matches(source, expression) {
 function attribute(tag, name) {
   const match = tag.match(new RegExp(`\\b${name}=(?:"([^"]*)"|'([^']*)')`, 'i'));
   return match ? (match[1] ?? match[2]) : undefined;
+}
+
+function metaContent(source, attributeName, attributeValue) {
+  const tag = matches(source, /<meta\b[^>]*>/gi)
+    .map((match) => match[0])
+    .find((candidate) => attribute(candidate, attributeName) === attributeValue);
+  return tag ? attribute(tag, 'content') : undefined;
 }
 
 function routeForHtml(path) {
@@ -105,8 +113,10 @@ for (const [route, path] of routes) {
 
   const canonical = attribute(html.match(/<link\b[^>]*rel="canonical"[^>]*>/i)?.[0] ?? '', 'href');
   const ogUrl = attribute(html.match(/<meta\b[^>]*property="og:url"[^>]*>/i)?.[0] ?? '', 'content');
+  const twitterUrl = metaContent(html, 'name', 'twitter:url');
   assert.ok(canonical?.startsWith(`${site}/`), `${route} canonical must be absolute`);
   assert.equal(ogUrl, canonical, `${route} Open Graph URL must match canonical`);
+  assert.equal(twitterUrl, canonical, `${route} Twitter URL must match canonical`);
   for (const property of ['og:title', 'og:description', 'og:type']) {
     assert.match(html, new RegExp(`<meta\\b[^>]*property="${property}"[^>]*content="[^"]+"`, 'i'), `${route} must include ${property}`);
   }
@@ -140,6 +150,37 @@ for (const [route, path] of routes) {
     assert.ok(existsSync(asset) || existsSync(routeOutput), `${route} references missing ${pathname}`);
   }
 }
+
+const homepage = text(routes.get('/'));
+const homepageDescription = 'I share what interests me here, along with things that might help someone else learn.';
+const homepageImageUrl = `${site}/social/homepage-v1.png`;
+const homepageImageAlt = 'Kaleb Cole smiling at a concert beside his name, homepage description, and open-tail KC mark.';
+assert.equal(metaContent(homepage, 'name', 'description'), homepageDescription, 'homepage description must stay first-person');
+assert.equal(metaContent(homepage, 'property', 'og:title'), 'Kaleb Cole', 'homepage Open Graph title');
+assert.equal(metaContent(homepage, 'name', 'twitter:title'), 'Kaleb Cole', 'homepage Twitter title');
+assert.equal(metaContent(homepage, 'property', 'og:description'), homepageDescription, 'homepage Open Graph description');
+assert.equal(metaContent(homepage, 'name', 'twitter:description'), homepageDescription, 'homepage Twitter description');
+assert.equal(metaContent(homepage, 'property', 'og:image'), homepageImageUrl, 'homepage Open Graph image');
+assert.equal(metaContent(homepage, 'property', 'og:image:secure_url'), homepageImageUrl, 'homepage secure Open Graph image');
+assert.equal(metaContent(homepage, 'name', 'twitter:image'), homepageImageUrl, 'homepage Twitter image');
+assert.equal(metaContent(homepage, 'property', 'og:image:type'), 'image/png', 'homepage Open Graph image MIME type');
+assert.equal(metaContent(homepage, 'property', 'og:image:width'), '1200', 'homepage Open Graph image width');
+assert.equal(metaContent(homepage, 'property', 'og:image:height'), '630', 'homepage Open Graph image height');
+assert.equal(metaContent(homepage, 'name', 'twitter:image:width'), '1200', 'homepage Twitter image width');
+assert.equal(metaContent(homepage, 'name', 'twitter:image:height'), '630', 'homepage Twitter image height');
+assert.equal(metaContent(homepage, 'property', 'og:image:alt'), homepageImageAlt, 'homepage Open Graph image alt text');
+assert.equal(metaContent(homepage, 'name', 'twitter:image:alt'), homepageImageAlt, 'homepage Twitter image alt text');
+assert.equal(metaContent(homepage, 'name', 'twitter:card'), 'summary_large_image', 'homepage must request a large Twitter card');
+assert.match(homepageImageUrl, /homepage-v\d+\.png$/, 'homepage social image URL must be versioned');
+
+const homepageImage = localAsset(new URL(homepageImageUrl).pathname);
+assert.ok(existsSync(homepageImage), 'homepage social image must exist in the production build');
+assert.deepEqual(pngDimensions(homepageImage), [1200, 630], 'homepage social image dimensions');
+assert.ok(statSync(homepageImage).size <= budgets.socialImage, 'homepage social image exceeds file-size budget');
+
+const articlePreview = text(routes.get('/blog/hello-world/'));
+assert.notEqual(metaContent(articlePreview, 'property', 'og:image'), homepageImageUrl, 'articles must not inherit the homepage image');
+assert.notEqual(metaContent(articlePreview, 'name', 'twitter:image'), homepageImageUrl, 'article Twitter cards must not inherit the homepage image');
 
 const navRoutes = new Map([
   ['/', ['/', 'Kaleb Cole']],
