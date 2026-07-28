@@ -21,11 +21,6 @@ const source = item.data.source ?? item.data.author;
 ---
 <article class="home-recommendation-row" data-home-recommendation data-medium={item.data.medium}>
   <div class="home-recommendation-copy">
-    <p class="home-recommendation-meta">
-      <span>{mediumLabels[item.data.medium]}</span>
-      {source && <span>{source}</span>}
-      <time datetime={item.data.date.toISOString()}>{formattedDate}</time>
-    </p>
     <h3 class="home-recommendation-title">
       <a href={item.data.url}>
         {item.data.title}<span aria-hidden="true"> ↗</span><span class="sr-only"> (external site)</span>
@@ -37,5 +32,10 @@ const source = item.data.source ?? item.data.author;
         {item.data.take}
       </p>
     )}
+    <p class="home-feed-meta">
+      <span>{mediumLabels[item.data.medium]}</span>
+      {source && <span>{source}</span>}
+      <time datetime={item.data.date.toISOString()}>{formattedDate}</time>
+    </p>
   </div>
 </article>

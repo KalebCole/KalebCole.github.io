@@ -40,16 +40,18 @@ const homepageDescription = 'I share what interests me here, along with things t
           <article class="writing-row">
             <div>
               <h3><a href={`/blog/${post.id}`}>{post.data.title}</a></h3>
-              <p>{post.data.description}</p>
+              <p class="writing-summary">{post.data.description}</p>
+              <p class="home-feed-meta">
+                <time datetime={post.data.date.toISOString()}>
+                  {post.data.date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    timeZone: 'UTC',
+                  })}
+                </time>
+              </p>
             </div>
-            <time datetime={post.data.date.toISOString()}>
-              {post.data.date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                timeZone: 'UTC',
-              })}
-            </time>
           </article>
         ))}
         <a class="all-writing-link" href="/blog">All writing <span aria-hidden="true">→</span></a>
@@ -60,7 +62,6 @@ const homepageDescription = 'I share what interests me here, along with things t
       <section class="recent-recommendations" aria-labelledby="recent-recommendations-title">
         <div class="recent-heading">
           <h2 id="recent-recommendations-title">Recent recommendations</h2>
-          <p>Things I’ve been reading, watching, and listening to lately.</p>
         </div>
         <div class="home-recommendation-list">
           {recentRecommendations.map((item) => <HomeRecommendRow item={item} />)}
