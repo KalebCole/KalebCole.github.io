@@ -92,8 +92,8 @@ marked as a draft remains unpublished.
 4. **Let the subject move.** Organize contributions by editorial intent, not by
    a permanent topical niche.
 5. **Keep writing central.** The homepage introduces Kaleb and moves directly
-   into recent writing; other modes remain available without competing for the
-   opening hierarchy.
+   into recent writing. A compact recent-recommendations sibling may follow
+   without competing for the opening hierarchy.
 6. **Curate without ranking people.** Recommends is one chronology that readers
    may filter by medium. It has no priority subtype or editorial importance
    tier.
@@ -122,8 +122,8 @@ The redesign specification governs:
   feed discovery, footer, metadata, error states, and quality gates across
   every public route.
 - **Homepage:** a candid introduction and portrait followed immediately by
-  recent writing. The page deliberately stops there. Projects and Recommends
-  do not receive homepage sections.
+  recent writing, then a deliberately capped compact view of recent
+  recommendations. Projects do not receive a homepage section.
 - **Writing index:** the newest published writing receives priority, followed
   by one reverse-chronological archive.
 - **Writing article:** a quiet long-form reading experience with clear
