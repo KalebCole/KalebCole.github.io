@@ -218,6 +218,32 @@ assert.match(recommends, /role="status"[^>]*aria-live="polite"[^>]*aria-atomic="
 assert.match(recommends, /class="sr-only"> \(external site\)<\/span>/i, 'external recommendation links must name context');
 assert.doesNotMatch(recommends, /class="rec-tags"/i, 'recommendation topic tags must stay off the page');
 
+const homepageRecommendations = matches(homepage, /<article\b[^>]*data-home-recommendation[^>]*>[\s\S]*?<\/article>/gi)
+  .map((match) => match[0]);
+const publishedRecommendationUrls = matches(recommends, /class="rec-title"[\s\S]*?<a\b[^>]*href="([^"]+)"/gi)
+  .map((match) => match[1]);
+const homepageRecommendationUrls = homepageRecommendations
+  .map((item) => item.match(/class="home-recommendation-title"[\s\S]*?<a\b[^>]*href="([^"]+)"/i)?.[1]);
+assert.equal(
+  homepageRecommendations.length,
+  Math.min(3, publishedRecommendationUrls.length),
+  'homepage recommendations must use the deliberate three-item cap',
+);
+assert.deepEqual(
+  homepageRecommendationUrls,
+  publishedRecommendationUrls.slice(0, 3),
+  'homepage recommendations must match the published newest-first chronology',
+);
+if (homepageRecommendations.length > 0) {
+  assert.match(homepage, /href="\/recommends"[^>]*>\s*All recommendations/i, 'homepage must link to all recommendations');
+  for (const item of homepageRecommendations) {
+    assert.match(item, /data-medium="(?:read|watch|listen)"/i, 'homepage recommendation must expose its medium');
+    assert.match(item, /<time\b[^>]*datetime="[^"]+"[^>]*>/i, 'homepage recommendation must include a machine-readable date');
+    assert.match(item, /class="sr-only"> \(external site\)<\/span>/i, 'homepage external links must name context');
+    assert.doesNotMatch(item, /\b(?:rec-tags|priority)\b/i, 'homepage recommendations must not expose tags or priority');
+  }
+}
+
 const cssFiles = walk(dist).filter((path) => extname(path) === '.css');
 assert.ok(cssFiles.length > 0, 'production build must emit CSS');
 for (const path of cssFiles) {

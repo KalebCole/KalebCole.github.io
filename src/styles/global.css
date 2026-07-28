@@ -375,7 +375,8 @@ a:hover {
   line-height: 1.2;
 }
 
-.recent-writing {
+.recent-writing,
+.recent-recommendations {
   display: grid;
   gap: clamp(2rem, 7vw, 7rem);
   margin-top: 1.25rem;
@@ -389,11 +390,24 @@ a:hover {
   line-height: .92;
 }
 
-.writing-list {
+.recent-recommendations .recent-heading h2 {
+  overflow-wrap: normal;
+  font-size: clamp(2rem, 4vw, 3.1rem);
+}
+
+.recent-heading p {
+  max-width: 26ch;
+  margin-top: 1rem;
+  color: var(--muted);
+}
+
+.writing-list,
+.home-recommendation-list {
   border-top: 1px solid var(--rule);
 }
 
-.writing-row {
+.writing-row,
+.home-recommendation-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: .75rem 1.5rem;
@@ -431,7 +445,52 @@ a:hover {
   align-self: start;
 }
 
-.all-writing-link {
+.home-recommendation-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .25rem .6rem;
+  color: var(--muted);
+  font-family: var(--font-meta);
+  font-size: .72rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+}
+
+.home-recommendation-meta > :not(:first-child)::before {
+  margin-right: .6rem;
+  content: "·";
+}
+
+.home-recommendation-title {
+  margin-top: .45rem;
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  line-height: 1.15;
+}
+
+.home-recommendation-title a {
+  color: var(--ink);
+}
+
+.home-recommendation-take {
+  max-width: 58ch;
+  margin-top: .65rem;
+  color: var(--muted);
+  font-family: var(--font-note);
+  font-variation-settings: "CASL" 1, "CRSV" 1;
+  line-height: 1.5;
+}
+
+.home-recommendation-take span {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.home-recommendation-take span::after {
+  content: " — ";
+}
+
+.all-writing-link,
+.all-recommendations-link {
   display: inline-flex;
   min-height: 44px;
   align-items: center;
@@ -1044,7 +1103,8 @@ html[data-mode="dark"] .prose {
     justify-self: end;
   }
 
-  .recent-writing {
+  .recent-writing,
+  .recent-recommendations {
     grid-template-columns: minmax(15rem, .42fr) minmax(0, 1fr);
   }
 
@@ -1143,15 +1203,18 @@ html[data-mode="dark"] .prose {
     transform: translateY(-6px) rotate(0);
   }
 
-  .writing-row {
+  .writing-row,
+  .home-recommendation-row {
     transition: color 240ms var(--ease-settle), transform 240ms var(--ease-settle);
   }
 
-  .writing-row:has(a:hover) {
+  .writing-row:has(a:hover),
+  .home-recommendation-row:has(a:hover) {
     transform: translateX(.55rem);
   }
 
-  .writing-row:has(a:hover) h3 a {
+  .writing-row:has(a:hover) h3 a,
+  .home-recommendation-row:has(a:hover) h3 a {
     color: var(--blue);
   }
 
@@ -1180,6 +1243,10 @@ html[data-mode="dark"] .prose {
 
   .recent-writing {
     animation: settle-up 1250ms 700ms var(--ease-settle) both;
+  }
+
+  .recent-recommendations {
+    animation: settle-up 1250ms 850ms var(--ease-settle) both;
   }
 
   .writing-page .page-heading,
@@ -1223,6 +1290,7 @@ html[data-mode="dark"] .prose {
 
   .portrait-mount,
   .writing-row,
+  .home-recommendation-row,
   .rec-visual {
     transform: none !important;
   }
