@@ -1,5 +1,6 @@
 import rss from '@astrojs/rss';
 import { getPublishedRecommends } from '../../lib/recommends';
+import { PRODUCTION_ORIGIN } from '../../lib/site-origin.mjs';
 
 export async function GET(context) {
   const items = await getPublishedRecommends();
@@ -7,7 +8,7 @@ export async function GET(context) {
   return rss({
     title: 'Kaleb Cole | Recommends',
     description: 'Things I thought were interesting.',
-    site: context.site ?? 'https://kalebcole.dev',
+    site: context.site ?? PRODUCTION_ORIGIN,
     items: items.map((item) => ({
       title: item.data.title,
       description: [
