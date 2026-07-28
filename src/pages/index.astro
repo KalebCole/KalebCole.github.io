@@ -7,8 +7,17 @@ const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const recentPosts = allPosts
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
+const homepageDescription = 'This is my site for sharing what interests me and what might help someone else learn.';
+const homepageImageAlt = 'Kaleb Cole smiling at a concert beside the open-tail KC mark.';
 ---
-<Layout title="Kaleb Cole" description="Kaleb Cole’s public workshop for ideas, experiences, interests, and things worth sharing.">
+<Layout
+  title="Kaleb Cole"
+  description={homepageDescription}
+  image="/social/homepage-v1.png"
+  imageWidth={1200}
+  imageHeight={630}
+  imageAlt={homepageImageAlt}
+>
   <main id="main-content" class="site-shell home-page">
     <section class="home-hero" aria-labelledby="home-title">
       <div class="home-intro">

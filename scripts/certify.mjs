@@ -41,6 +41,11 @@ function attribute(tag, name) {
   return match ? (match[1] ?? match[2]) : undefined;
 }
 
+function metaContent(html, key, value) {
+  const tag = html.match(new RegExp(`<meta\\b[^>]*${key}="${value}"[^>]*>`, 'i'))?.[0] ?? '';
+  return attribute(tag, 'content');
+}
+
 function routeForHtml(path) {
   const name = relative(dist, path).replaceAll('\\', '/');
   if (name === 'index.html') return '/';
@@ -140,6 +145,27 @@ for (const [route, path] of routes) {
     assert.ok(existsSync(asset) || existsSync(routeOutput), `${route} references missing ${pathname}`);
   }
 }
+
+const homepage = text(routes.get('/'));
+const homepageDescription = 'This is my site for sharing what interests me and what might help someone else learn.';
+const homepageImage = `${site}/social/homepage-v1.png`;
+const homepageImageAlt = 'Kaleb Cole smiling at a concert beside the open-tail KC mark.';
+assert.equal(metaContent(homepage, 'name', 'description'), homepageDescription, 'homepage description');
+assert.equal(metaContent(homepage, 'property', 'og:title'), 'Kaleb Cole', 'homepage Open Graph title');
+assert.equal(metaContent(homepage, 'property', 'og:description'), homepageDescription, 'homepage Open Graph description');
+assert.equal(metaContent(homepage, 'property', 'og:image'), homepageImage, 'homepage Open Graph image');
+assert.equal(metaContent(homepage, 'property', 'og:image:width'), '1200', 'homepage Open Graph image width');
+assert.equal(metaContent(homepage, 'property', 'og:image:height'), '630', 'homepage Open Graph image height');
+assert.equal(metaContent(homepage, 'property', 'og:image:alt'), homepageImageAlt, 'homepage Open Graph image alt');
+assert.equal(metaContent(homepage, 'name', 'twitter:card'), 'summary_large_image', 'homepage Twitter card');
+assert.equal(metaContent(homepage, 'name', 'twitter:title'), 'Kaleb Cole', 'homepage Twitter title');
+assert.equal(metaContent(homepage, 'name', 'twitter:description'), homepageDescription, 'homepage Twitter description');
+assert.equal(metaContent(homepage, 'name', 'twitter:image'), homepageImage, 'homepage Twitter image');
+assert.equal(metaContent(homepage, 'name', 'twitter:image:alt'), homepageImageAlt, 'homepage Twitter image alt');
+
+const homepageImagePath = join(dist, 'social', 'homepage-v1.png');
+assert.deepEqual(pngDimensions(homepageImagePath), [1200, 630], 'homepage social image dimensions');
+assert.ok(statSync(homepageImagePath).size <= 1024 * 1024, 'homepage social image must stay below 1 MB');
 
 const navRoutes = new Map([
   ['/', ['/', 'Kaleb Cole']],
