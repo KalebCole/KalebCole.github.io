@@ -11,6 +11,7 @@ const {
   feedHref = '/rss.xml',
   feedTitle = 'Writing feed',
 } = Astro.props;
+const feedLabel = /\bfeed\b/i.test(feedTitle) ? feedTitle : `${feedTitle} feed`;
 ---
 <nav class="nav" aria-label="Primary navigation">
   <a href="/" class="site-home" aria-current={path === '/' ? 'page' : undefined}>
@@ -21,7 +22,7 @@ const {
   <a href="/blog" aria-current={path.startsWith('/blog') ? 'page' : undefined}>Writing</a>
   <a href="/recommends" aria-current={path.startsWith('/recommends') ? 'page' : undefined}>Recommends</a>
   <a href="/projects" aria-current={path.startsWith('/projects') ? 'page' : undefined}>Projects</a>
-  <a href={feedHref} aria-label={feedTitle}>Feed</a>
+  <a href={feedHref} aria-label={feedLabel}>Feed</a>
   <ThemeToggle />
   </div>
 </nav>
