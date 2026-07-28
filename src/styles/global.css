@@ -635,6 +635,7 @@ html[data-mode="dark"] .prose {
 
 .prose p:has(> img),
 .prose p:has(> video),
+.prose > video,
 .prose > picture,
 .prose > figure {
   width: min(56rem, 100cqw);
@@ -1046,6 +1047,7 @@ html[data-mode="dark"] .prose {
   .prose pre,
   .prose p:has(> img),
   .prose p:has(> video),
+  .prose > video,
   .prose > picture,
   .prose > figure {
     width: 100%;
