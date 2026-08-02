@@ -4,6 +4,7 @@ import Layout from '../layouts/Layout.astro';
 import HomeRecommendRow from '../components/HomeRecommendRow.astro';
 import Polaroid from '../components/Polaroid.astro';
 import { getPublishedRecommends } from '../lib/recommends';
+import { HOMEPAGE_SOCIAL_IMAGE } from '../lib/social-image.mjs';
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const recentPosts = allPosts
@@ -16,11 +17,7 @@ const homepageDescription = 'I share what interests me here, along with things t
 <Layout
   title="Kaleb Cole"
   description={homepageDescription}
-  image="/social/homepage-v2.png"
-  imageWidth={1200}
-  imageHeight={630}
-  imageAlt="Kaleb Cole smiling at a concert beside his name, homepage description, and open-tail KC mark."
-  imageType="image/png"
+  {...HOMEPAGE_SOCIAL_IMAGE}
 >
   <main id="main-content" class="site-shell home-page">
     <section class="home-hero" aria-labelledby="home-title">
