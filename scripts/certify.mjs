@@ -194,8 +194,8 @@ assert.deepEqual(pngDimensions(homepageImage), [1200, 630], 'homepage social ima
 assert.ok(statSync(homepageImage).size <= budgets.socialImage, 'homepage social image exceeds file-size budget');
 
 const articlePreview = text(routes.get('/blog/hello-world/'));
-assert.notEqual(metaContent(articlePreview, 'property', 'og:image'), homepageImageUrl, 'articles must not inherit the homepage image');
-assert.notEqual(metaContent(articlePreview, 'name', 'twitter:image'), homepageImageUrl, 'article Twitter cards must not inherit the homepage image');
+assert.equal(metaContent(articlePreview, 'property', 'og:image'), homepageImageUrl, 'articles must share the homepage Open Graph image');
+assert.equal(metaContent(articlePreview, 'name', 'twitter:image'), homepageImageUrl, 'article Twitter cards must share the homepage image');
 
 const navRoutes = new Map([
   ['/', ['/', 'Kaleb Cole']],
