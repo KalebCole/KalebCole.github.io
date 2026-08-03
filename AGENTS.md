@@ -1,9 +1,5 @@
 # AGENTS.md
 
-This repository contains Kaleb Cole's personal site and blog at [kalebcole.com](https://kalebcole.com). Kaleb makes product and editorial decisions. Coding agents maintain the repository and implement approved work.
-
-## Start here
-
 Read the relevant source-of-truth documents before changing the site:
 
 - `PRODUCT.md`: purpose, audience, voice, content boundaries, and accessibility requirements
