@@ -57,19 +57,4 @@ Measured entrance and hover movement that makes the page feel physically
 placed and handled without turning interaction into play.
 _Avoid_: Playful animation, decorative motion
 
-**Blue-hour counterpart**:
-The deliberately art-directed dark presentation of the same visual system,
-using a deep blue-black ground and restrained cobalt light rather than a
-mechanical color inversion.
-_Avoid_: Generic dark mode, inverted theme
 
-**Print mount**:
-The near-white physical backing used for a portrait or brief personal note,
-retaining dark ink in both light and blue-hour presentations.
-_Avoid_: Card, panel
-
-**Open-tail KC**:
-The site's loose, single-gesture identity mark combining Kaleb's initials with
-an open tail and a distinct endpoint, signaling personal authorship rather than
-a formal crest.
-_Avoid_: Boxed initial, serif K, generic app badge
