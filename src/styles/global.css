@@ -392,7 +392,7 @@ a:hover {
 
 .recent-recommendations .recent-heading h2 {
   overflow-wrap: normal;
-  font-size: clamp(2rem, 4vw, 3.1rem);
+  font-size: clamp(1.75rem, 3vw, 2.35rem);
 }
 
 .writing-list,
