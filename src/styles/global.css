@@ -324,7 +324,7 @@ a:hover {
 
 .home-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(118px, 24vw, 190px);
+  grid-template-columns: minmax(0, 1fr) clamp(150px, 46vw, 215px);
   grid-template-areas:
     "greeting portrait"
     "statement statement"
@@ -347,8 +347,9 @@ a:hover {
 
 .home-greeting {
   grid-area: greeting;
-  font-size: clamp(2.25rem, 11.5vw, 3.25rem);
+  font-size: clamp(2rem, 9.5vw, 3.25rem);
   line-height: .92;
+  text-wrap: balance;
 }
 
 .home-statement {
