@@ -155,8 +155,9 @@ for (const [route, path] of routes) {
 
 const homepage = text(routes.get('/'));
 const homepageDescription = 'I share what interests me here, along with things that might help someone else learn.';
-const homepageImageUrl = new URL('/social/homepage-v2.png', socialImageOrigin).href;
-const homepageImageAlt = 'Kaleb Cole smiling at a concert beside his name, homepage description, and open-tail KC mark.';
+const homepageImageUrl = new URL('/social/homepage-v3.png', socialImageOrigin).href;
+const homepageImageAlt =
+  'Kaleb Cole smiling in a navy suit jacket and maroon shirt beside his name, homepage description, and open-tail KC mark.';
 assert.equal(resolveSocialImageOrigin(), site, 'local builds must use the production social image origin');
 assert.equal(
   resolveSocialImageOrigin({ VERCEL_ENV: 'preview', VERCEL_URL: 'example-preview.vercel.app' }),
