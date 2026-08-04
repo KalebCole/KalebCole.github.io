@@ -1,11 +1,13 @@
 ---
+import { PORTRAIT_ALT } from '../lib/portrait.mjs';
+
 interface Props {
   src?: string;
   alt?: string;
 }
 const {
   src = '/me.jpg',
-  alt = 'Kaleb Cole smiling in a crowded concert arena',
+  alt = PORTRAIT_ALT,
 } = Astro.props;
 ---
 <figure class="portrait-mount">
