@@ -6,6 +6,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "certify": "npm run build && node scripts/certify.mjs",
+    "portrait": "node scripts/build-portrait.mjs",
     "preview": "astro preview"
   },
   "dependencies": {
@@ -14,7 +15,10 @@
     "astro": "^5.7.10"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.0.0",
-    "tailwindcss": "^4.0.0"
+    "sharp": "^0.35.3",
+    "tailwindcss": "^4.0.0",
+    "wawoff2": "^2.0.1"
   }
 }
