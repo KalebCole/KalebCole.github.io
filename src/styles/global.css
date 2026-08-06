@@ -390,16 +390,6 @@ a:hover {
   object-position: center;
 }
 
-.portrait-mount figcaption {
-  display: grid;
-  min-height: 44px;
-  place-items: center start;
-  font-family: var(--font-note);
-  font-size: .82rem;
-  font-variation-settings: "CASL" 1, "CRSV" 1;
-  line-height: 1.2;
-}
-
 .recent-writing,
 .recent-recommendations {
   display: grid;
