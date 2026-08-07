@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { extname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -155,9 +156,8 @@ for (const [route, path] of routes) {
 
 const homepage = text(routes.get('/'));
 const homepageDescription = 'I share what interests me here, along with things that might help someone else learn.';
-const homepageImageUrl = new URL('/social/homepage-v3.png', socialImageOrigin).href;
-const homepageImageAlt =
-  'Kaleb Cole smiling in a navy suit jacket and maroon shirt beside his name, homepage description, and open-tail KC mark.';
+const homepageImageUrl = metaContent(homepage, 'property', 'og:image');
+const homepageImageAlt = 'Portrait of Kaleb Cole beside his name, homepage description, and open-tail KC mark.';
 assert.equal(resolveSocialImageOrigin(), site, 'local builds must use the production social image origin');
 assert.equal(
   resolveSocialImageOrigin({ VERCEL_ENV: 'preview', VERCEL_URL: 'example-preview.vercel.app' }),
@@ -174,7 +174,7 @@ assert.equal(metaContent(homepage, 'property', 'og:title'), 'Kaleb Cole', 'homep
 assert.equal(metaContent(homepage, 'name', 'twitter:title'), 'Kaleb Cole', 'homepage Twitter title');
 assert.equal(metaContent(homepage, 'property', 'og:description'), homepageDescription, 'homepage Open Graph description');
 assert.equal(metaContent(homepage, 'name', 'twitter:description'), homepageDescription, 'homepage Twitter description');
-assert.equal(metaContent(homepage, 'property', 'og:image'), homepageImageUrl, 'homepage Open Graph image');
+assert.equal(new URL(homepageImageUrl).origin, socialImageOrigin, 'homepage Open Graph image origin');
 assert.equal(metaContent(homepage, 'property', 'og:image:secure_url'), homepageImageUrl, 'homepage secure Open Graph image');
 assert.equal(metaContent(homepage, 'name', 'twitter:image'), homepageImageUrl, 'homepage Twitter image');
 assert.equal(metaContent(homepage, 'property', 'og:image:type'), 'image/png', 'homepage Open Graph image MIME type');
@@ -185,7 +185,7 @@ assert.equal(metaContent(homepage, 'name', 'twitter:image:height'), '630', 'home
 assert.equal(metaContent(homepage, 'property', 'og:image:alt'), homepageImageAlt, 'homepage Open Graph image alt text');
 assert.equal(metaContent(homepage, 'name', 'twitter:image:alt'), homepageImageAlt, 'homepage Twitter image alt text');
 assert.equal(metaContent(homepage, 'name', 'twitter:card'), 'summary_large_image', 'homepage must request a large Twitter card');
-assert.match(homepageImageUrl, /homepage-v\d+\.png$/, 'homepage social image URL must be versioned');
+assert.match(homepageImageUrl, /homepage-[0-9a-f]{12}\.png$/, 'homepage social image URL must use a content hash');
 assert.equal(new URL(metaContent(homepage, 'property', 'og:url')).origin, site, 'preview Open Graph URLs must remain canonical');
 assert.equal(new URL(metaContent(homepage, 'name', 'twitter:url')).origin, site, 'preview Twitter URLs must remain canonical');
 
@@ -193,6 +193,15 @@ const homepageImage = localAsset(new URL(homepageImageUrl).pathname);
 assert.ok(existsSync(homepageImage), 'homepage social image must exist in the production build');
 assert.deepEqual(pngDimensions(homepageImage), [1200, 630], 'homepage social image dimensions');
 assert.ok(statSync(homepageImage).size <= budgets.socialImage, 'homepage social image exceeds file-size budget');
+const homepageImageHash = createHash('sha256').update(readFileSync(homepageImage)).digest('hex').slice(0, 12);
+assert.equal(
+  new URL(homepageImageUrl).pathname,
+  `/social/homepage-${homepageImageHash}.png`,
+  'homepage social image URL must use the final rendered PNG content hash',
+);
+
+const packageJson = JSON.parse(text(join(root, 'package.json')));
+assert.equal(packageJson.scripts.prebuild, 'npm run portrait', 'normal builds must regenerate every portrait derivative');
 
 const articlePreview = text(routes.get('/blog/hello-world/'));
 assert.equal(metaContent(articlePreview, 'property', 'og:image'), homepageImageUrl, 'articles must share the homepage Open Graph image');

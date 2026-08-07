@@ -1,3 +1,6 @@
+import { PORTRAIT_SOCIAL_IMAGE } from './portrait-social-image.generated.mjs';
+import { PORTRAIT_MASTER } from './portrait-source.mjs';
+
 /**
  * Single source of truth for the portrait.
  *
@@ -5,10 +8,10 @@
  * the homepage polaroid candidates and the link-preview card — is generated from it
  * by `npm run portrait`, so replacing the master updates every surface at once.
  */
-export const PORTRAIT_MASTER = 'assets/portrait.jpg';
+export { PORTRAIT_MASTER, PORTRAIT_SOCIAL_IMAGE };
 
-/** Describes the subject of the photograph, without naming its surrounding layout. */
-export const PORTRAIT_SUBJECT = 'Kaleb Cole smiling in a navy suit jacket and maroon shirt';
+/** Durable alternative text shared by every generated portrait surface. */
+export const PORTRAIT_SUBJECT = 'Portrait of Kaleb Cole';
 
 /** Alternative text for the homepage polaroid, where the photo stands on its own. */
 export const PORTRAIT_ALT = PORTRAIT_SUBJECT;
