@@ -3,6 +3,12 @@
 The site's shared language for deciding what Kaleb publishes and how each
 kind of contribution is understood.
 
+## Punctuation
+
+Do not use em dashes in site copy, titles, metadata, source comments, generated
+output, or repository documentation. Prefer commas or periods in prose. Use a
+vertical bar between a page title and `Kaleb Cole`.
+
 ## Language
 
 **Personal publication**:

@@ -27,7 +27,7 @@ const QUERY = `{
 export async function getPinnedRepos(): Promise<PinnedReposResult> {
   const token = import.meta.env.GITHUB_TOKEN;
   if (!token) {
-    console.warn('[github] GITHUB_TOKEN missing — pinned repos are unavailable.');
+    console.warn('[github] GITHUB_TOKEN missing: pinned repos are unavailable.');
     return { status: 'unavailable', repos: [] };
   }
   try {
@@ -41,7 +41,7 @@ export async function getPinnedRepos(): Promise<PinnedReposResult> {
       body: JSON.stringify({ query: QUERY }),
     });
     if (!res.ok) {
-      console.warn(`[github] HTTP ${res.status} — pinned repos are unavailable.`);
+      console.warn(`[github] HTTP ${res.status}: pinned repos are unavailable.`);
       return { status: 'unavailable', repos: [] };
     }
     const json = (await res.json()) as {
@@ -49,7 +49,7 @@ export async function getPinnedRepos(): Promise<PinnedReposResult> {
       errors?: unknown;
     };
     if (json.errors) {
-      console.warn('[github] GraphQL errors — pinned repos are unavailable.', json.errors);
+      console.warn('[github] GraphQL errors: pinned repos are unavailable.', json.errors);
       return { status: 'unavailable', repos: [] };
     }
     return {
@@ -57,7 +57,7 @@ export async function getPinnedRepos(): Promise<PinnedReposResult> {
       repos: json.data?.user?.pinnedItems?.nodes ?? [],
     };
   } catch (err) {
-    console.warn('[github] fetch failed — pinned repos are unavailable.', err);
+    console.warn('[github] fetch failed: pinned repos are unavailable.', err);
     return { status: 'unavailable', repos: [] };
   }
 }

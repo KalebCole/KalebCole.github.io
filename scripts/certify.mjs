@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { extname, join, relative, resolve } from 'node:path';
@@ -10,6 +11,8 @@ const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const dist = join(root, 'dist');
 const site = PRODUCTION_ORIGIN;
 const socialImageOrigin = resolveSocialImageOrigin(process.env);
+const emDash = String.fromCodePoint(0x2014);
+const utf8Decoder = new TextDecoder('utf-8', { fatal: true });
 const budgets = {
   html: 50 * 1024,
   css: 50 * 1024,
@@ -30,6 +33,16 @@ function walk(directory) {
 
 function text(path) {
   return readFileSync(path, 'utf8');
+}
+
+function utf8Text(path) {
+  const buffer = readFileSync(path);
+  if (buffer.includes(0)) return null;
+  try {
+    return utf8Decoder.decode(buffer);
+  } catch {
+    return null;
+  }
 }
 
 function gzipSize(path) {
@@ -90,8 +103,20 @@ function icoDimensions(path) {
 
 assert.ok(existsSync(dist), 'dist must exist; run the production build first');
 
+const trackedFiles = execFileSync('git', ['ls-files', '-z'], { cwd: root })
+  .toString()
+  .split('\0')
+  .filter(Boolean)
+  .map((path) => join(root, path));
+for (const path of trackedFiles) {
+  const source = utf8Text(path);
+  if (source === null) continue;
+  assert.equal(source.includes(emDash), false, `${relative(root, path)} must not contain em dashes`);
+}
+
 const htmlFiles = walk(dist).filter((path) => extname(path) === '.html');
 const xmlFiles = walk(dist).filter((path) => extname(path) === '.xml');
+const emittedFiles = walk(dist);
 const routes = new Map(htmlFiles.map((path) => [routeForHtml(path), path]));
 const expectedRoutes = ['/', '/blog/', '/blog/github-copilot-canvases/', '/blog/hello-world/', '/recommends/', '/projects/', '/404'];
 
@@ -357,6 +382,13 @@ for (const path of xmlFiles) {
     assert.ok(link?.startsWith('https://'), 'feed item links must be absolute HTTPS URLs');
   }
 }
+
+for (const path of emittedFiles) {
+  const source = utf8Text(path);
+  if (source === null) continue;
+  assert.equal(source.includes(emDash), false, `${relative(dist, path)} must not emit em dashes`);
+}
+
 const recommendsFeed = text(join(dist, 'recommends', 'rss.xml'));
 const writingFeed = text(join(dist, 'rss.xml'));
 assert.match(writingFeed, /<link>https:\/\/kalebcole\.com\/blog\//i, 'Writing feed links must use the production origin');

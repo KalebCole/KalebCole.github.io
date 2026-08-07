@@ -13,31 +13,31 @@
 ## File Plan
 
 **Create:**
-- `src/content.config.ts` — collection schema (blog)
-- `src/content/blog/hello-world.md` — seed post
-- `src/content/blog/draft-example.md` — draft post (verifies draft filtering)
-- `src/components/ThemeToggle.astro` — light/dark toggle button
-- `src/components/Polaroid.astro` — rotated photo card
-- `src/components/PinnedRepos.astro` — pinned-repo list (renders fetched data)
-- `src/components/SiteNav.astro` — minimal top nav (home, blog, theme toggle)
-- `src/layouts/Post.astro` — single-post wrapper (title block + prose + back link)
-- `src/lib/github.ts` — GitHub GraphQL fetch with graceful fallback
-- `src/pages/blog/index.astro` — blog index, grouped by year
-- `src/pages/blog/[...slug].astro` — single post route
-- `src/pages/rss.xml.js` — RSS feed
-- `src/pages/404.astro` — minimal 404
-- `.env.example` — documents required env vars
+- `src/content.config.ts`: collection schema (blog)
+- `src/content/blog/hello-world.md`: seed post
+- `src/content/blog/draft-example.md`: draft post (verifies draft filtering)
+- `src/components/ThemeToggle.astro`: light/dark toggle button
+- `src/components/Polaroid.astro`: rotated photo card
+- `src/components/PinnedRepos.astro`: pinned-repo list (renders fetched data)
+- `src/components/SiteNav.astro`: minimal top nav (home, blog, theme toggle)
+- `src/layouts/Post.astro`: single-post wrapper (title block + prose + back link)
+- `src/lib/github.ts`: GitHub GraphQL fetch with graceful fallback
+- `src/pages/blog/index.astro`: blog index, grouped by year
+- `src/pages/blog/[...slug].astro`: single post route
+- `src/pages/rss.xml.js`: RSS feed
+- `src/pages/404.astro`: minimal 404
+- `.env.example`: documents required env vars
 
 **Modify:**
-- `package.json` — add `@astrojs/rss`
-- `.gitignore` — also ignore `.env.local`
-- `src/layouts/Layout.astro` — replace Tailwind body classes with semantic CSS + add inline theme-bootstrap script
-- `src/styles/global.css` — replace `@import "tailwindcss"` with the prototype's CSS-vars + semantic classes
-- `src/pages/index.astro` — full rewrite: landing using prototype's design
-- `README.md` — document blog authoring, env vars, deploy
+- `package.json`: add `@astrojs/rss`
+- `.gitignore`: also ignore `.env.local`
+- `src/layouts/Layout.astro`: replace Tailwind body classes with semantic CSS + add inline theme-bootstrap script
+- `src/styles/global.css`: replace `@import "tailwindcss"` with the prototype's CSS-vars + semantic classes
+- `src/pages/index.astro`: full rewrite: landing using prototype's design
+- `README.md`: document blog authoring, env vars, deploy
 
 **Delete:**
-- `src/pages/prototype-typography.astro` — design is locked; prototype is no longer needed
+- `src/pages/prototype-typography.astro`: design is locked; prototype is no longer needed
 
 ---
 
@@ -426,7 +426,7 @@ interface Props {
 }
 const {
   title,
-  description = 'Kaleb Cole — Software Engineer, Builder, Explorer.',
+  description = 'Kaleb Cole: Software Engineer, Builder, Explorer.',
 } = Astro.props;
 ---
 <!doctype html>
@@ -597,7 +597,7 @@ git commit -m "feat(components): Polaroid (placeholder image)"
 **Files:**
 - Create: `src/lib/github.ts`
 
-The function must NEVER throw — failures (no token, rate-limit, network) silently resolve to `[]` so the landing page still builds.
+The function must NEVER throw: failures (no token, rate-limit, network) silently resolve to `[]` so the landing page still builds.
 
 - [ ] **Step 1: Create the library**
 
@@ -627,7 +627,7 @@ const QUERY = `{
 export async function getPinnedRepos(): Promise<PinnedRepo[]> {
   const token = import.meta.env.GITHUB_TOKEN;
   if (!token) {
-    console.warn('[github] GITHUB_TOKEN missing — pinned repos will be empty.');
+    console.warn('[github] GITHUB_TOKEN missing: pinned repos will be empty.');
     return [];
   }
   try {
@@ -641,7 +641,7 @@ export async function getPinnedRepos(): Promise<PinnedRepo[]> {
       body: JSON.stringify({ query: QUERY }),
     });
     if (!res.ok) {
-      console.warn(`[github] HTTP ${res.status} — pinned repos will be empty.`);
+      console.warn(`[github] HTTP ${res.status}: pinned repos will be empty.`);
       return [];
     }
     const json = (await res.json()) as {
@@ -649,12 +649,12 @@ export async function getPinnedRepos(): Promise<PinnedRepo[]> {
       errors?: unknown;
     };
     if (json.errors) {
-      console.warn('[github] GraphQL errors — pinned repos will be empty.', json.errors);
+      console.warn('[github] GraphQL errors: pinned repos will be empty.', json.errors);
       return [];
     }
     return json.data?.user?.pinnedItems?.nodes ?? [];
   } catch (err) {
-    console.warn('[github] fetch failed — pinned repos will be empty.', err);
+    console.warn('[github] fetch failed: pinned repos will be empty.', err);
     return [];
   }
 }
@@ -694,7 +694,7 @@ const repos = await getPinnedRepos();
 )}
 ```
 
-When `repos` is empty (local dev without token, or fetch failed), the component renders nothing — no error UI, no placeholder. This is intentional.
+When `repos` is empty (local dev without token, or fetch failed), the component renders nothing: no error UI, no placeholder. This is intentional.
 
 - [ ] **Step 2: Commit**
 
@@ -708,7 +708,7 @@ git commit -m "feat(components): PinnedRepos (silent empty fallback)"
 ## Task 12: Rewrite landing page (`src/pages/index.astro`)
 
 **Files:**
-- Modify: `src/pages/index.astro` (full rewrite — original is portfolio, deleted entirely)
+- Modify: `src/pages/index.astro` (full rewrite: original is portfolio, deleted entirely)
 
 - [ ] **Step 1: Overwrite `src/pages/index.astro`**
 
@@ -799,7 +799,7 @@ const { title, description, date, updated, tags } = Astro.props;
 const fmt = (d: Date) =>
   d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 ---
-<Layout title={`${title} — Kaleb Cole`} description={description}>
+<Layout title={`${title} | Kaleb Cole`} description={description}>
   <main class="wrap">
     <SiteNav />
     <article>
@@ -856,7 +856,7 @@ for (const post of posts) {
 }
 const years = [...groups.keys()];
 ---
-<Layout title="Writing — Kaleb Cole">
+<Layout title="Writing | Kaleb Cole">
   <main class="wrap">
     <SiteNav />
     <h1>Writing</h1>
@@ -982,7 +982,7 @@ export default defineConfig({
 });
 ```
 
-(If the user's production URL is different, swap the value — but a value is required so RSS link resolution works.)
+(If the user's production URL is different, swap the value. A value is required so RSS link resolution works.)
 
 - [ ] **Step 3: Commit**
 
@@ -1005,7 +1005,7 @@ git commit -m "feat(pages): RSS feed at /rss.xml"
 import Layout from '../layouts/Layout.astro';
 import SiteNav from '../components/SiteNav.astro';
 ---
-<Layout title="Not found — Kaleb Cole">
+<Layout title="Not found | Kaleb Cole">
   <main class="wrap">
     <SiteNav />
     <h1>404</h1>
@@ -1123,7 +1123,7 @@ git commit -m "docs: rewrite README for new blog structure"
 
 ## Task 20: Production build verification
 
-**Files:** (none — verification only)
+**Files:** (none; verification only)
 
 - [ ] **Step 1: Stop any running dev server**
 
@@ -1154,12 +1154,12 @@ Open http://localhost:4321 and verify:
 - Polaroid is rotated, float-right, tucked into intro paragraph
 - Recent posts list shows "Hello, world" (and NOT "This is a draft")
 - Projects section shows pinned repos if `GITHUB_TOKEN` is set, nothing if not
-- Click the theme toggle (sun/moon button in nav) — page flips to dark, persists across reload
-- Reload while in dark mode — there should be no white flash before dark applies
-- `/blog` — shows hello-world grouped under 2026, NOT the draft
-- `/blog/hello-world` — renders the markdown
-- `/rss.xml` — returns valid XML with one `<item>` (hello-world), NOT the draft
-- Resize to <640px width — polaroid centers under the intro instead of floating right
+- Click the theme toggle (sun/moon button in nav): page flips to dark, persists across reload
+- Reload while in dark mode: there should be no white flash before dark applies
+- `/blog`: shows hello-world grouped under 2026, NOT the draft
+- `/blog/hello-world`: renders the markdown
+- `/rss.xml`: returns valid XML with one `<item>` (hello-world), NOT the draft
+- Resize to <640px width: polaroid centers under the intro instead of floating right
 
 - [ ] **Step 4: If everything passes, commit any incidental fixes**
 
@@ -1188,7 +1188,7 @@ Expected: no output.
 ```bash
 grep -rE "class=\".*(bg-|text-|font-|p-|m-|flex|grid)" src/
 ```
-Expected: no matches in any `.astro` file. (Tailwind itself stays in `package.json` and `astro.config.mjs` — it's still installed, just unused in templates, which is fine.)
+Expected: no matches in any `.astro` file. (Tailwind itself stays in `package.json` and `astro.config.mjs`; it's still installed, just unused in templates, which is fine.)
 
 - [ ] **Step 3: Push**
 
