@@ -169,7 +169,7 @@ function verifyCard(pixels, width, height) {
     const actual = runs[index].maxX - runs[index].minX + 1;
     assert.ok(
       Math.abs(actual - expected) <= WIDTH_TOLERANCE,
-      `${label} is ${actual}px wide, expected about ${expected}px — the intended font was probably not applied`,
+      `${label} is ${actual}px wide, expected about ${expected}px: the intended font was probably not applied`,
     );
   });
 }

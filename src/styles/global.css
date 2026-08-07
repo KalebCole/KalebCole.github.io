@@ -490,7 +490,7 @@ a:hover {
 }
 
 .home-recommendation-take span::after {
-  content: " — ";
+  content: ": ";
 }
 
 .all-writing-link,

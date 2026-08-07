@@ -14,6 +14,7 @@ Inspect the current implementation before proposing changes. These documents des
 - Use a focused branch and pull request for changes.
 - Keep writing personal, direct, candid, curious, and enthusiastic.
 - Preserve Kaleb's wording unless an editorial change is explicit and reviewable.
+- Follow the punctuation decision in `CONTEXT.md`: do not use em dashes anywhere in the repository or published output.
 - Do not publish drafts. Content with `draft: true` must stay out of public pages and feeds.
 - Treat WCAG 2.2 AA, responsive behavior, reduced motion, and lean delivery as release requirements.
 - Use the canonical public origin `https://kalebcole.com`.

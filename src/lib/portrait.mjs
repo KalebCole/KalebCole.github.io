@@ -4,8 +4,8 @@ import { PORTRAIT_MASTER } from './portrait-source.mjs';
 /**
  * Single source of truth for the portrait.
  *
- * The master photograph lives at `assets/portrait.jpg`. Every published variant —
- * the homepage polaroid candidates and the link-preview card — is generated from it
+ * The master photograph lives at `assets/portrait.jpg`. Every published variant,
+ * including the homepage polaroid candidates and the link-preview card, is generated from it
  * by `npm run portrait`, so replacing the master updates every surface at once.
  */
 export { PORTRAIT_MASTER, PORTRAIT_SOCIAL_IMAGE };

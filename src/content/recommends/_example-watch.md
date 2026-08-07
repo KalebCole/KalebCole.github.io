@@ -1,5 +1,5 @@
 ---
-title: "Example — a talk worth watching"
+title: "Example: a talk worth watching"
 url: "https://www.youtube.com/watch?v=IroPQ150F6c"
 date: 2026-07-08
 medium: watch
