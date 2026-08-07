@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "npm run portrait",
     "build": "astro build",
     "certify": "npm run build && node scripts/certify.mjs",
     "portrait": "node scripts/build-portrait.mjs",

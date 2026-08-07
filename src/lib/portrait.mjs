@@ -1,3 +1,6 @@
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+
 /**
  * Single source of truth for the portrait.
  *
@@ -6,9 +9,14 @@
  * by `npm run portrait`, so replacing the master updates every surface at once.
  */
 export const PORTRAIT_MASTER = 'assets/portrait.jpg';
+export const PORTRAIT_VERSION = createHash('sha256')
+  .update(readFileSync(new URL(`../../${PORTRAIT_MASTER}`, import.meta.url)))
+  .digest('hex')
+  .slice(0, 12);
+export const PORTRAIT_SOCIAL_IMAGE = `/social/homepage-${PORTRAIT_VERSION}.png`;
 
-/** Describes the subject of the photograph, without naming its surrounding layout. */
-export const PORTRAIT_SUBJECT = 'Kaleb Cole smiling in a navy suit jacket and maroon shirt';
+/** Durable alternative text shared by every generated portrait surface. */
+export const PORTRAIT_SUBJECT = 'Portrait of Kaleb Cole';
 
 /** Alternative text for the homepage polaroid, where the photo stands on its own. */
 export const PORTRAIT_ALT = PORTRAIT_SUBJECT;

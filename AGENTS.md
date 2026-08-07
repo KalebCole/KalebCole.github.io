@@ -34,9 +34,7 @@ A missing local `GITHUB_TOKEN` may leave pinned repositories empty. That warning
 
 ## Portrait
 
-`assets/portrait.jpg` is the single source of truth for Kaleb's photo. To change it, replace that file and run `npm run portrait`, which regenerates the homepage polaroid candidates (`public/me.jpg`, `public/me-600.webp`, `public/me-300.webp`) and the link-preview card served in Open Graph and Twitter metadata. Commit the regenerated assets alongside the new master.
-
-Bump the card's version suffix (`public/social/homepage-vN.png`, referenced from `src/lib/social-image.mjs` and asserted in `scripts/certify.mjs`) whenever its appearance changes, so social platforms drop their cached preview. Update the wording in `src/lib/portrait.mjs` when the new photo no longer matches the existing alternative text.
+`assets/portrait.jpg` is the single source of truth for Kaleb's photo. To change it, replace that file and run a normal build. The `prebuild` hook automatically regenerates the homepage polaroid candidates (`public/me.jpg`, `public/me-600.webp`, `public/me-300.webp`) and the link-preview card used by Open Graph and Twitter metadata. The card filename includes the master photo's content hash, so social platforms receive a new URL automatically. Commit the regenerated assets alongside the new master.
 
 ## Before shipping
 

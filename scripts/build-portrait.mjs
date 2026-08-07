@@ -10,16 +10,17 @@
  * TrueType in a temporary directory because resvg cannot read WOFF2 directly.
  */
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, readdir, rm, unlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Resvg } from '@resvg/resvg-js';
 import sharp from 'sharp';
 import { decompress } from 'wawoff2';
+import { PORTRAIT_MASTER, PORTRAIT_SOCIAL_IMAGE } from '../src/lib/portrait.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const master = join(root, 'assets', 'portrait.jpg');
+const master = join(root, PORTRAIT_MASTER);
 const publicDir = join(root, 'public');
 
 /** Palette tokens mirrored from `src/styles/global.css`. */
@@ -72,7 +73,7 @@ const VARIANTS = [
   { file: 'me-300.webp', size: 300, encode: (pipeline) => pipeline.webp({ quality: 80 }) },
 ];
 
-const SOCIAL_CARD = 'social/homepage-v3.png';
+const SOCIAL_CARD = PORTRAIT_SOCIAL_IMAGE.replace(/^\//, '');
 
 function escapeText(value) {
   return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -203,6 +204,13 @@ async function writeSocialCard(fontFiles) {
 
   await writeFile(join(publicDir, SOCIAL_CARD), buffer);
   console.log(`${SOCIAL_CARD.padEnd(24)} ${rendered.width}x${rendered.height}  ${(buffer.length / 1024).toFixed(1)} KB`);
+
+  const socialDirectory = join(publicDir, 'social');
+  for (const file of await readdir(socialDirectory)) {
+    if (/^homepage-(?:v\d+|[0-9a-f]{12})\.png$/.test(file) && file !== SOCIAL_CARD.split('/').at(-1)) {
+      await unlink(join(socialDirectory, file));
+    }
+  }
 }
 
 const fontDirectory = await mkdtemp(join(tmpdir(), 'kalebcole-fonts-'));
