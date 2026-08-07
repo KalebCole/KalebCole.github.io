@@ -12,7 +12,7 @@
     <circle cx="12" cy="12" r="3.5"></circle>
     <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4"></path>
   </svg>
-  <svg data-icon-dark viewBox="0 0 24 24" aria-hidden="true" hidden>
+  <svg data-icon-dark viewBox="0 0 24 24" aria-hidden="true">
     <path d="M19.5 15.4A8.2 8.2 0 0 1 8.6 4.5a8.2 8.2 0 1 0 10.9 10.9Z"></path>
   </svg>
 </button>
@@ -22,13 +22,9 @@
     var btn = document.querySelector('[data-theme-toggle]');
     if (!btn) return;
     btn.hidden = false;
-    var light = btn.querySelector('[data-icon-light]');
-    var dark = btn.querySelector('[data-icon-dark]');
 
     function sync() {
       var mode = document.documentElement.getAttribute('data-mode') || 'light';
-      light.hidden = mode !== 'light';
-      dark.hidden = mode !== 'dark';
       var nextLabel = mode === 'dark' ? 'Switch to light mode' : 'Switch to blue-hour mode';
       btn.setAttribute('aria-label', nextLabel);
       btn.setAttribute('title', nextLabel);

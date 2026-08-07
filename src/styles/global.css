@@ -297,6 +297,16 @@ a:hover {
   stroke-linejoin: round;
 }
 
+.theme-toggle [data-icon-light],
+.theme-toggle [data-icon-dark] {
+  display: none;
+}
+
+html[data-mode="light"] [data-icon-light],
+html[data-mode="dark"] [data-icon-dark] {
+  display: block;
+}
+
 .site-footer {
   margin-top: clamp(4rem, 10vw, 8rem);
   padding-bottom: max(2.5rem, env(safe-area-inset-bottom));
