@@ -228,6 +228,9 @@ assert.equal(
 const packageJson = JSON.parse(text(join(root, 'package.json')));
 assert.equal(packageJson.scripts.prebuild, 'npm run portrait', 'normal builds must regenerate every portrait derivative');
 
+const writingIndex = text(routes.get('/blog/'));
+assert.match(writingIndex, /<title>Writing \| Kaleb Cole<\/title>/i, 'Writing index document title');
+
 const articlePreview = text(routes.get('/blog/hello-world/'));
 assert.equal(metaContent(articlePreview, 'property', 'og:image'), homepageImageUrl, 'articles must share the homepage Open Graph image');
 assert.equal(metaContent(articlePreview, 'name', 'twitter:image'), homepageImageUrl, 'article Twitter cards must share the homepage image');
