@@ -180,6 +180,7 @@ for (const [route, path] of routes) {
 }
 
 const homepage = text(routes.get('/'));
+const pinnedReposSource = text(join(root, 'src', 'components', 'PinnedRepos.astro'));
 const homepageDescription = 'I share what interests me here, along with things that might help someone else learn.';
 const homepageImageUrl = metaContent(homepage, 'property', 'og:image');
 const homepageImageAlt = 'Portrait of Kaleb Cole beside his name, homepage description, and open-tail KC mark.';
@@ -243,6 +244,8 @@ assert.match(homepage, /href="\/projects"[^>]*>\s*See more projects\s*<\/a>/i, '
 const homepageProjectCards = matches(homepage, /<li\b[^>]*class="[^"]*project-index-row[^"]*"[^>]*>/gi);
 assert.ok(homepageProjectCards.length > 0 && homepageProjectCards.length <= 2, 'homepage must show between one and two projects');
 assert.doesNotMatch(homepage, /partiful-cli|Kattis-Problems/i, 'homepage must not feature excluded projects');
+assert.match(pinnedReposSource, /url: 'https:\/\/kalebcole\.github\.io\/uprint-cli\/'/i, 'homepage uprint card must target its website');
+assert.ok(existsSync(join(dist, 'projects', 'uprint-website.webp')), 'production build must emit the uprint website preview');
 assert.doesNotMatch(homepage, /projects couldn’t load|find them on GitHub instead/i, 'homepage must not expose project-loading errors');
 assert.doesNotMatch(text(routes.get('/projects/')), /projects couldn’t load|find them on GitHub instead/i, 'Projects page must not expose project-loading errors');
 

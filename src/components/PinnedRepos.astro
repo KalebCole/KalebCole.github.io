@@ -13,6 +13,29 @@ const excludedNames = new Set(exclude.map((name) => name.toLowerCase()));
 const eligibleRepos = repos.filter((repo) => !excludedNames.has(repo.name.toLowerCase()));
 const displayedRepos = typeof limit === 'number' ? eligibleRepos.slice(0, Math.max(0, limit - 1)) : eligibleRepos;
 const githubPreviewUrl = (name: string) => `https://opengraph.githubassets.com/1/KalebCole/${name}`;
+const homepageOverrides = {
+  'uprint-cli': {
+    name: 'uprint',
+    description: 'Submit files through the local Windows printing system, with versioned JSON output built for AI agents.',
+    url: 'https://kalebcole.github.io/uprint-cli/',
+    primaryLanguage: { name: 'Website + PowerShell' },
+    image: '/projects/uprint-website.webp',
+    imageWidth: 1200,
+    imageHeight: 630,
+    imageAlt: 'uprint website homepage with its terminal printing workflow',
+  },
+};
+const displayedProjects = displayedRepos.map((repo) => {
+  const override = variant === 'home' ? homepageOverrides[repo.name as keyof typeof homepageOverrides] : undefined;
+  return {
+    ...repo,
+    ...override,
+    image: override?.image ?? githubPreviewUrl(repo.name),
+    imageWidth: override?.imageWidth ?? 1200,
+    imageHeight: override?.imageHeight ?? 600,
+    imageAlt: override?.imageAlt ?? `GitHub preview for ${repo.name}`,
+  };
+});
 const Heading = variant === 'home' ? 'h3' : 'h2';
 ---
 <ul class:list={['project-index', { 'home-project-index': variant === 'home' }]}>
@@ -23,6 +46,7 @@ const Heading = variant === 'home' ? 'h3' : 'h2';
         width="1200"
         height="630"
         loading="lazy"
+        decoding="async"
         alt="Build your personal brand with Copilot series preview"
       />
     </a>
@@ -33,15 +57,16 @@ const Heading = variant === 'home' ? 'h3' : 'h2';
       <p class="project-role">I helped create the series with a team and built its website.</p>
     </div>
   </li>
-  {displayedRepos.map((r) => (
+  {displayedProjects.map((r) => (
     <li class="project-index-row">
       <a class="project-visual" href={r.url}>
         <img
-          src={githubPreviewUrl(r.name)}
-          width="1200"
-          height="600"
+          src={r.image}
+          width={r.imageWidth}
+          height={r.imageHeight}
           loading="lazy"
-          alt={`GitHub preview for ${r.name}`}
+          decoding="async"
+          alt={r.imageAlt}
         />
       </a>
       <div class="project-index-copy">
