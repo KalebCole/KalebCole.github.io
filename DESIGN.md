@@ -150,9 +150,10 @@ step.
 - Navigation: 86px minimum height with a 2px ink rule.
 - Homepage hero: asymmetric `1.35fr / 0.65fr` grid, `61vh` minimum height,
   `clamp(2rem, 7vw, 7rem)` gap, and 64px vertical padding.
-- Recent writing and recent recommendations: `0.4fr / 1fr` grids with the same
-  gap and a 2px top rule. Recent projects uses a full-width grid capped at two
-  items, followed by a link to the full Projects index.
+- Recent projects, recent writing, and recent recommendations use the same
+  stacked section pattern: a full-width heading above the content row, with a
+  2px top rule. Recent projects is capped at two items and ends with a link to
+  the full Projects index.
 - Reading measure: 57–70 characters; target 65–70 characters for articles.
 - Article rows: 18px vertical padding, one-pixel rules, and no card container.
 - Detailed media breakout: centered on the prose column and capped near 56rem.
