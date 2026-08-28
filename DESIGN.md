@@ -151,15 +151,16 @@ step.
 - Homepage hero: asymmetric `1.35fr / 0.65fr` grid, `61vh` minimum height,
   `clamp(2rem, 7vw, 7rem)` gap, and 64px vertical padding.
 - Recent writing and recent recommendations: `0.4fr / 1fr` grids with the same
-  gap and a 2px top rule. Recent projects uses a full-width three-item grid.
+  gap and a 2px top rule. Recent projects uses a full-width grid capped at two
+  items, followed by a link to the full Projects index.
 - Reading measure: 57–70 characters; target 65–70 characters for articles.
 - Article rows: 18px vertical padding, one-pixel rules, and no card container.
 - Detailed media breakout: centered on the prose column and capped near 56rem.
 
 The introduction owns the opening view and offers direct links to Projects and
-Writing. A compact three-project preview arrives before recent writing, and a
-capped recent-recommendations sibling may follow. Do not add metrics,
-credentials, or conversion-focused copy.
+Writing. A compact project preview of no more than two items arrives before
+recent writing, and a capped recent-recommendations sibling may follow. Do not
+add metrics, credentials, or conversion-focused copy.
 
 ### Responsive foundation
 

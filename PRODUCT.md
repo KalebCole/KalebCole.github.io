@@ -123,7 +123,7 @@ The redesign specification governs:
   feed discovery, footer, metadata, error states, and quality gates across
   every public route.
 - **Homepage:** a candid introduction and portrait with direct links to Projects
-  and Writing, followed by up to three projects, recent writing, and a
+  and Writing, followed by up to two projects, recent writing, and a
   deliberately capped compact view of recent recommendations.
 - **Writing index:** the newest published writing receives priority, followed
   by one reverse-chronological archive.
@@ -135,8 +135,9 @@ The redesign specification governs:
   its own RSS feed. Topic tags may remain in metadata and feed categories but
   are not visible in recommendation rows.
 - **Projects:** a publishing mode and navigation destination with a capped
-  three-project homepage preview. The dedicated Projects index holds the full
-  set; richer project storytelling remains a later editorial task.
+  two-project homepage preview and a link to the full index. The dedicated
+  Projects index holds the full set; richer project storytelling remains a
+  later editorial task.
 
 The specification does not implement the production redesign. Final homepage
 copy and portrait-note wording remain an editorial task within the approved

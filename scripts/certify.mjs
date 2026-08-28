@@ -241,7 +241,8 @@ assert.match(homepage, /href="\/blog"[^>]*>\s*Read my writing\s*<\/a>/i, 'homepa
 assert.match(homepage, /<section\b[^>]*class="recent-projects"[\s\S]*?<h2[^>]*>Recent projects<\/h2>/i, 'homepage must include Recent projects');
 assert.match(homepage, /href="\/projects"[^>]*>\s*See more projects\s*<\/a>/i, 'homepage project preview must link to all projects');
 const homepageProjectCards = matches(homepage, /<li\b[^>]*class="[^"]*project-index-row[^"]*"[^>]*>/gi);
-assert.ok(homepageProjectCards.length > 0 && homepageProjectCards.length <= 3, 'homepage must show between one and three projects');
+assert.ok(homepageProjectCards.length > 0 && homepageProjectCards.length <= 2, 'homepage must show between one and two projects');
+assert.doesNotMatch(homepage, /partiful-cli|Kattis-Problems/i, 'homepage must not feature excluded projects');
 assert.doesNotMatch(homepage, /projects couldn’t load|find them on GitHub instead/i, 'homepage must not expose project-loading errors');
 assert.doesNotMatch(text(routes.get('/projects/')), /projects couldn’t load|find them on GitHub instead/i, 'Projects page must not expose project-loading errors');
 
