@@ -243,6 +243,9 @@ assert.match(homepage, /<section\b[^>]*class="recent-projects"[\s\S]*?<h2[^>]*>R
 assert.match(homepage, /class="all-projects-link"[^>]*href="\/projects"[^>]*>\s*All projects\s*<span[^>]*>→<\/span>\s*<\/a>/i, 'homepage project preview must end with a minimal All projects link');
 const homepageProjectCards = matches(homepage, /<li\b[^>]*class="[^"]*project-index-row[^"]*"[^>]*>/gi);
 assert.ok(homepageProjectCards.length > 0 && homepageProjectCards.length <= 2, 'homepage must show between one and two projects');
+assert.match(homepage, /Build Your Personal Brand with Copilot/i, 'homepage must use the published series title');
+assert.match(homepage, /A YouTube series for the Microsoft Developer channel that guides college students and beginners through turning an existing PDF resume into a portfolio website with GitHub Copilot\./i, 'homepage must explain the series audience and outcome');
+assert.doesNotMatch(homepage, /Website \+ video/i, 'homepage must not show redundant project taxonomy');
 assert.match(pinnedReposSource, /url: 'https:\/\/kalebcole\.github\.io\/uprint-cli\/'/i, 'homepage uprint card must target its website');
 assert.match(pinnedReposSource, /name: 'uprint-cli'/, 'homepage uprint card must use the repository name');
 assert.match(pinnedReposSource, /description: 'Agentic CLI for Microsoft Employees to print hassle-free at the Redmond campus'/, 'homepage uprint card must match the GitHub About description');
