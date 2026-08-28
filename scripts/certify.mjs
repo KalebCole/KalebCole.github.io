@@ -247,6 +247,8 @@ assert.ok(homepageProjectCards.length > 0 && homepageProjectCards.length <= 2, '
 assert.match(homepage, /Build Your Personal Brand with Copilot/i, 'homepage must use the published series title');
 assert.match(homepage, /A YouTube series for the Microsoft Developer channel that guides college students and beginners through turning an existing PDF resume into a portfolio website with GitHub Copilot\./i, 'homepage must explain the series audience and outcome');
 assert.doesNotMatch(homepage, /Website \+ video/i, 'homepage must not show redundant project taxonomy');
+assert.doesNotMatch(homepage, /Website \+ PowerShell/i, 'homepage must not show redundant project taxonomy');
+assert.doesNotMatch(pinnedReposSource, /class="repo-lang"/, 'project cards must not render language metadata');
 assert.match(pinnedReposSource, /url: 'https:\/\/kalebcole\.github\.io\/uprint-cli\/'/i, 'uprint override must target its website');
 assert.match(pinnedReposSource, /name: 'uprint-cli'/, 'uprint override must use the repository name');
 assert.match(pinnedReposSource, /description: 'Agentic CLI for Microsoft Employees to print hassle-free at the Redmond campus'/, 'uprint override must match the GitHub About description');

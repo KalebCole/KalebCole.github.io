@@ -15,7 +15,6 @@ const repoOverrides = {
     name: 'uprint-cli',
     description: 'Agentic CLI for Microsoft Employees to print hassle-free at the Redmond campus',
     url: 'https://kalebcole.github.io/uprint-cli/',
-    primaryLanguage: { name: 'Website + PowerShell' },
     image: '/projects/uprint-website.webp',
     imageWidth: 1200,
     imageHeight: 630,
@@ -66,7 +65,6 @@ const Heading = variant === 'home' ? 'h3' : 'h2';
         />
       </a>
       <div class="project-index-copy">
-        {r.primaryLanguage && <span class="repo-lang">{r.primaryLanguage.name}</span>}
         <Heading><a href={r.url} class="repo-name">{r.name}<span aria-hidden="true"> ↗</span></a></Heading>
         {r.description && <p class="repo-desc">{r.description}</p>}
       </div>
