@@ -442,22 +442,14 @@ html[data-mode="dark"] [data-icon-dark] {
 .recent-writing,
 .recent-recommendations {
   display: grid;
-  gap: clamp(2rem, 7vw, 7rem);
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.5rem, 3vw, 2.5rem);
   margin-top: 1.25rem;
-  padding-block: clamp(4rem, 9vw, 7rem) 0;
+  padding-block: clamp(2.75rem, 6vw, 4.5rem) 0;
   border-top: 2px solid var(--ink);
 }
 
-.recent-projects-heading {
-  margin-bottom: 0;
-}
-
-.recent-projects {
-  gap: clamp(1.5rem, 3vw, 2.5rem);
-  padding-block: clamp(2.75rem, 6vw, 4.5rem) 0;
-}
-
-.recent-projects-heading h2 {
+.recent-heading h2 {
   margin: 0;
   font-size: clamp(1.8rem, 4vw, 3.2rem);
   line-height: .92;
@@ -484,17 +476,6 @@ html[data-mode="dark"] [data-icon-dark] {
 
 .all-projects-link {
   justify-self: start;
-}
-
-.recent-heading h2 {
-  margin: 0;
-  font-size: clamp(2.25rem, 5vw, 4rem);
-  line-height: .92;
-}
-
-.recent-recommendations .recent-heading h2 {
-  overflow-wrap: normal;
-  font-size: clamp(1.75rem, 3vw, 2.35rem);
 }
 
 .writing-list,
@@ -1242,11 +1223,6 @@ html[data-mode="dark"] .prose {
     width: min(300px, calc(100% - 12px));
     margin: 0 12px 0 0;
     justify-self: end;
-  }
-
-  .recent-writing,
-  .recent-recommendations {
-    grid-template-columns: minmax(15rem, .42fr) minmax(0, 1fr);
   }
 
   .pinned-writing {
