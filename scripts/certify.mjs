@@ -245,6 +245,8 @@ const homepageProjectCards = matches(homepage, /<li\b[^>]*class="[^"]*project-in
 assert.ok(homepageProjectCards.length > 0 && homepageProjectCards.length <= 2, 'homepage must show between one and two projects');
 assert.doesNotMatch(homepage, /partiful-cli|Kattis-Problems/i, 'homepage must not feature excluded projects');
 assert.match(pinnedReposSource, /url: 'https:\/\/kalebcole\.github\.io\/uprint-cli\/'/i, 'homepage uprint card must target its website');
+assert.match(pinnedReposSource, /name: 'uprint-cli'/, 'homepage uprint card must use the repository name');
+assert.match(pinnedReposSource, /description: 'Agentic CLI for Microsoft Employees to print hassle-free at the Redmond campus'/, 'homepage uprint card must match the GitHub About description');
 assert.ok(existsSync(join(dist, 'projects', 'uprint-website.webp')), 'production build must emit the uprint website preview');
 assert.doesNotMatch(homepage, /projects couldn’t load|find them on GitHub instead/i, 'homepage must not expose project-loading errors');
 assert.doesNotMatch(text(routes.get('/projects/')), /projects couldn’t load|find them on GitHub instead/i, 'Projects page must not expose project-loading errors');
