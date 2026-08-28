@@ -919,10 +919,6 @@ html[data-mode="dark"] .prose {
   font-variation-settings: "CASL" 1, "CRSV" 1;
 }
 
-.project-index-row-series .repo-name {
-  color: var(--blue);
-}
-
 .not-found-page {
   min-height: 55vh;
   padding-block: clamp(4rem, 13vw, 10rem);
