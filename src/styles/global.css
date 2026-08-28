@@ -925,11 +925,6 @@ html[data-mode="dark"] .prose {
   color: var(--blue);
 }
 
-.project-fallback {
-  margin-top: 1.5rem;
-  color: var(--muted);
-}
-
 .not-found-page {
   min-height: 55vh;
   padding-block: clamp(4rem, 13vw, 10rem);
@@ -1273,6 +1268,27 @@ html[data-mode="dark"] .prose {
   .rec {
     grid-template-columns: 9rem minmax(0, 1fr);
     padding-block: 1.125rem;
+  }
+}
+
+@media (min-width: 760px) and (max-height: 850px) {
+  .home-hero {
+    row-gap: .75rem;
+    padding-block: 1rem;
+  }
+
+  .home-heading {
+    max-width: 11em;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .home-subtitle {
+    font-size: 1.05rem;
+    line-height: 1.45;
+  }
+
+  .portrait-mount {
+    width: min(260px, calc(100% - 12px));
   }
 }
 

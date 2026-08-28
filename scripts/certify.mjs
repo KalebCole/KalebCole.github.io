@@ -242,6 +242,8 @@ assert.match(homepage, /<section\b[^>]*class="recent-projects"[\s\S]*?<h2[^>]*>R
 assert.match(homepage, /href="\/projects"[^>]*>\s*See more projects\s*<\/a>/i, 'homepage project preview must link to all projects');
 const homepageProjectCards = matches(homepage, /<li\b[^>]*class="[^"]*project-index-row[^"]*"[^>]*>/gi);
 assert.ok(homepageProjectCards.length > 0 && homepageProjectCards.length <= 3, 'homepage must show between one and three projects');
+assert.doesNotMatch(homepage, /projects couldn’t load|find them on GitHub instead/i, 'homepage must not expose project-loading errors');
+assert.doesNotMatch(text(routes.get('/projects/')), /projects couldn’t load|find them on GitHub instead/i, 'Projects page must not expose project-loading errors');
 
 const navRoutes = new Map([
   ['/', ['/', 'Kaleb Cole']],

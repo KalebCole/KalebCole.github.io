@@ -7,8 +7,7 @@ interface Props {
 }
 
 const { limit, variant = 'index' } = Astro.props;
-const result = await getPinnedRepos();
-const { repos } = result;
+const { repos } = await getPinnedRepos();
 const displayedRepos = typeof limit === 'number' ? repos.slice(0, Math.max(0, limit - 1)) : repos;
 const githubPreviewUrl = (name: string) => `https://opengraph.githubassets.com/1/KalebCole/${name}`;
 const Heading = variant === 'home' ? 'h3' : 'h2';
@@ -50,8 +49,3 @@ const Heading = variant === 'home' ? 'h3' : 'h2';
     </li>
   ))}
 </ul>
-{result.status === 'unavailable' && (
-  <p class="project-fallback">
-    More projects couldn’t load right now. <a href="https://github.com/KalebCole">Find them on GitHub instead.</a>
-  </p>
-)}
