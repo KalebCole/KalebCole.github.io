@@ -151,24 +151,25 @@ step.
 - Homepage hero: asymmetric `1.35fr / 0.65fr` grid, `61vh` minimum height,
   `clamp(2rem, 7vw, 7rem)` gap, and 64px vertical padding.
 - Recent writing and recent recommendations: `0.4fr / 1fr` grids with the same
-  gap and a 2px top rule.
+  gap and a 2px top rule. Recent projects uses a full-width grid capped at two
+  items, followed by a link to the full Projects index.
 - Reading measure: 57–70 characters; target 65–70 characters for articles.
 - Article rows: 18px vertical padding, one-pixel rules, and no card container.
 - Detailed media breakout: centered on the prose column and capped near 56rem.
 
-The introduction owns the opening view; recent writing arrives in the first
-deliberate scroll. A compact, capped recent-recommendations sibling may follow
-recent writing. Do not add Projects, metrics, credentials, or conversion calls
-to action below it.
+The introduction owns the opening view and offers direct links to Projects and
+Writing. A compact project preview of no more than two items arrives before
+recent writing, and a capped recent-recommendations sibling may follow. Do not
+add metrics, credentials, or conversion-focused copy.
 
 ### Responsive foundation
 
 - Above 760px, retain the asymmetric homepage and writing grids.
 - At 760px and below, every multi-column composition becomes one continuous
   source-ordered column.
-- Homepage mobile order is navigation, complete introduction, portrait, then
-  recent writing. Never put the portrait before the words or squeeze it beside
-  a narrowed paragraph.
+- Homepage mobile order is navigation, complete introduction and actions,
+  portrait, recent projects, then recent writing. Never put the portrait before
+  the words or squeeze it beside a narrowed paragraph.
 - At 320px, display type must fit without clipping or page-level horizontal
   scrolling. Lower a fluid minimum when the actual heading copy requires it.
 - At 200% text size and 400% browser zoom, preserve source order, content, and
@@ -392,7 +393,9 @@ zero missing icon requests.
   consistently, retain medium, title, source or author, UTC date, and optional
   My thoughts, then end with `All recommendations →`.
 - Omit the recommendations sibling when no published recommendations exist.
-  Do not add a Projects section, credential strip, metrics, or conversion CTA.
+- Show up to three projects before Recent writing and end that preview with a
+  link to the full Projects page. Do not add a credential strip, metrics, or
+  conversion-focused copy.
 
 Entrance choreography, always from an already-visible default:
 
@@ -633,7 +636,8 @@ through an explicit decision backed by measured user benefit.
 ### Do
 
 - **Do** let visitors meet a person before presenting publishing modes.
-- **Do** keep the homepage to introduction, portrait, and recent Writing.
+- **Do** keep the homepage project preview capped at three and visually
+  subordinate to the introduction.
 - **Do** preserve first-person uncertainty, enthusiasm, humor, and changing
   interests in copy.
 - **Do** use cobalt links, underlines, programmatic state, and a 2px/3px-offset

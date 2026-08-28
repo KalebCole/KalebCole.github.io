@@ -180,6 +180,8 @@ for (const [route, path] of routes) {
 }
 
 const homepage = text(routes.get('/'));
+const projectsPage = text(routes.get('/projects/'));
+const pinnedReposSource = text(join(root, 'src', 'components', 'PinnedRepos.astro'));
 const homepageDescription = 'I share what interests me here, along with things that might help someone else learn.';
 const homepageImageUrl = metaContent(homepage, 'property', 'og:image');
 const homepageImageAlt = 'Portrait of Kaleb Cole beside his name, homepage description, and open-tail KC mark.';
@@ -234,6 +236,36 @@ assert.match(writingIndex, /<title>Writing \| Kaleb Cole<\/title>/i, 'Writing in
 const articlePreview = text(routes.get('/blog/hello-world/'));
 assert.equal(metaContent(articlePreview, 'property', 'og:image'), homepageImageUrl, 'articles must share the homepage Open Graph image');
 assert.equal(metaContent(articlePreview, 'name', 'twitter:image'), homepageImageUrl, 'article Twitter cards must share the homepage image');
+
+assert.doesNotMatch(homepage, /This is where I write through the ideas that get stuck in my head\./i, 'retired hero copy must stay removed');
+assert.match(homepage, /href="\/projects"[^>]*>\s*See my projects\s*<\/a>/i, 'homepage hero must link to Projects');
+assert.match(homepage, /href="\/blog"[^>]*>\s*Read my writing\s*<\/a>/i, 'homepage hero must link to Writing');
+assert.match(homepage, /<section\b[^>]*class="recent-projects"[\s\S]*?<h2[^>]*>Recent projects<\/h2>/i, 'homepage must include Recent projects');
+assert.match(homepage, /class="all-projects-link"[^>]*href="\/projects"[^>]*>\s*All projects\s*<span[^>]*>→<\/span>\s*<\/a>/i, 'homepage project preview must end with a minimal All projects link');
+const homepageProjectCards = matches(homepage, /<li\b[^>]*class="[^"]*project-index-row[^"]*"[^>]*>/gi);
+assert.ok(homepageProjectCards.length > 0 && homepageProjectCards.length <= 2, 'homepage must show between one and two projects');
+assert.match(homepage, /Build Your Personal Brand with Copilot/i, 'homepage must use the published series title');
+assert.match(homepage, /A YouTube series for the Microsoft Developer channel that guides college students and beginners through turning an existing PDF resume into a portfolio website with GitHub Copilot\./i, 'homepage must explain the series audience and outcome');
+assert.doesNotMatch(homepage, /Website \+ video/i, 'homepage must not show redundant project taxonomy');
+assert.doesNotMatch(homepage, /Website \+ PowerShell/i, 'homepage must not show redundant project taxonomy');
+assert.doesNotMatch(pinnedReposSource, /class="repo-lang"/, 'project cards must not render language metadata');
+assert.match(pinnedReposSource, /url: 'https:\/\/kalebcole\.github\.io\/uprint-cli\/'/i, 'uprint override must target its website');
+assert.match(pinnedReposSource, /name: 'uprint-cli'/, 'uprint override must use the repository name');
+assert.match(pinnedReposSource, /description: 'Agentic CLI for Microsoft Employees to print hassle-free at the Redmond campus'/, 'uprint override must match the GitHub About description');
+assert.match(pinnedReposSource, /const override = repoOverrides\[repo\.name as keyof typeof repoOverrides\]/, 'repository overrides must apply on every project surface');
+assert.doesNotMatch(pinnedReposSource, /variant === ['"]home['"]\s*\?\s*repoOverrides/, 'repository overrides must not be homepage-only');
+assert.match(projectsPage, /Build Your Personal Brand with Copilot/i, 'Projects index must include the published series title');
+for (const [surface, html] of [['homepage', homepage], ['Projects index', projectsPage]]) {
+  if (/uprint-cli/i.test(html)) {
+    assert.match(html, /href="https:\/\/kalebcole\.github\.io\/uprint-cli\/"/i, `${surface} uprint card must target its website`);
+    assert.match(html, /src="\/projects\/uprint-website\.webp"/i, `${surface} uprint card must use the website preview`);
+    assert.match(html, /Agentic CLI for Microsoft Employees to print hassle-free at the Redmond campus/i, `${surface} uprint card must match the GitHub About description`);
+  }
+}
+assert.ok(homepage.indexOf('class="home-actions"') < homepage.indexOf('class="portrait-mount"'), 'homepage source order must place the complete introduction and actions before the portrait');
+assert.ok(existsSync(join(dist, 'projects', 'uprint-website.webp')), 'production build must emit the uprint website preview');
+assert.doesNotMatch(homepage, /projects couldn’t load|find them on GitHub instead/i, 'homepage must not expose project-loading errors');
+assert.doesNotMatch(text(routes.get('/projects/')), /projects couldn’t load|find them on GitHub instead/i, 'Projects page must not expose project-loading errors');
 
 const navRoutes = new Map([
   ['/', ['/', 'Kaleb Cole']],

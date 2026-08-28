@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import HomeRecommendRow from '../components/HomeRecommendRow.astro';
+import PinnedRepos from '../components/PinnedRepos.astro';
 import Polaroid from '../components/Polaroid.astro';
 import { getPublishedRecommends } from '../lib/recommends';
 import { HOMEPAGE_SOCIAL_IMAGE } from '../lib/social-image.mjs';
@@ -11,6 +12,7 @@ const recentPosts = allPosts
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
 const HOME_RECOMMENDATION_LIMIT = 3;
+const HOME_PROJECT_LIMIT = 2;
 const recentRecommendations = (await getPublishedRecommends()).slice(0, HOME_RECOMMENDATION_LIMIT);
 const homepageDescription = 'I share what interests me here, along with things that might help someone else learn.';
 ---
@@ -22,8 +24,20 @@ const homepageDescription = 'I share what interests me here, along with things t
   <main id="main-content" class="site-shell home-page">
     <section class="home-hero" aria-labelledby="home-title">
       <h1 id="home-title" class="home-heading"><span class="home-greeting">Hi, I’m Kaleb.</span> <span class="home-statement">I make things, write down what I learn, and follow whatever has me <span class="home-accent">curious</span> right now.</span></h1>
+      <p class="home-subtitle">I’m a software engineer at Microsoft, building what interests me and designing how we work with agents.</p>
+      <div class="home-actions" aria-label="Explore my work">
+        <a class="home-action home-action-primary" href="/projects">See my projects</a>
+        <a class="home-action" href="/blog">Read my writing</a>
+      </div>
       <Polaroid />
-      <p class="home-subtitle">I’m a software engineer at Microsoft, building what interests me and designing how we work with agents. This is where I write through the ideas that get stuck in my head.</p>
+    </section>
+
+    <section class="recent-projects" aria-labelledby="recent-projects-title">
+      <div class="recent-projects-heading">
+        <h2 id="recent-projects-title">Recent projects</h2>
+      </div>
+      <PinnedRepos limit={HOME_PROJECT_LIMIT} variant="home" />
+      <a class="all-projects-link" href="/projects">All projects <span aria-hidden="true">→</span></a>
     </section>
 
     <section class="recent-writing" aria-labelledby="recent-title">
