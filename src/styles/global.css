@@ -1288,9 +1288,6 @@ html[data-mode="dark"] .prose {
     line-height: 1.45;
   }
 
-  .portrait-mount {
-    width: min(290px, calc(100% - 12px));
-  }
 }
 
 @media (min-width: 1100px) {

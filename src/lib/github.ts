@@ -45,16 +45,22 @@ export async function getPinnedRepos(): Promise<PinnedReposResult> {
       return { status: 'unavailable', repos: [] };
     }
     const json = (await res.json()) as {
-      data?: { user?: { pinnedItems?: { nodes?: PinnedRepo[] } } };
+      data?: { user?: { pinnedItems?: { nodes?: Array<PinnedRepo | null> } } };
       errors?: unknown;
     };
-    if (json.errors) {
+    const repos = (json.data?.user?.pinnedItems?.nodes ?? []).filter(
+      (repo): repo is PinnedRepo => repo !== null,
+    );
+    if (json.errors && repos.length === 0) {
       console.warn('[github] GraphQL errors: pinned repos are unavailable.', json.errors);
       return { status: 'unavailable', repos: [] };
     }
+    if (json.errors) {
+      console.warn('[github] GraphQL returned partial pinned repositories.', json.errors);
+    }
     return {
       status: 'ready',
-      repos: json.data?.user?.pinnedItems?.nodes ?? [],
+      repos,
     };
   } catch (err) {
     console.warn('[github] fetch failed: pinned repos are unavailable.', err);
