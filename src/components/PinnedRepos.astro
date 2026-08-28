@@ -2,23 +2,47 @@
 import { getPinnedRepos } from '../lib/github';
 const result = await getPinnedRepos();
 const { repos } = result;
+const githubPreviewUrl = (name: string) => `https://opengraph.githubassets.com/1/KalebCole/${name}`;
 ---
-{result.status === 'unavailable' ? (
-  <p class="empty-state">
-    Projects couldn’t load right now. <a href="https://github.com/KalebCole">Find them on GitHub instead.</a>
-  </p>
-) : repos.length > 0 ? (
-  <ul class="repos">
-    {repos.map((r) => (
-      <li>
-        <div>
-          <h2><a href={r.url} class="repo-name">{r.name}<span aria-hidden="true"> ↗</span></a></h2>
-          {r.description && <p class="repo-desc">{r.description}</p>}
-        </div>
+<ul class="project-index">
+  <li class="project-index-row project-index-row-series">
+    <a class="project-visual" href="https://aka.ms/student-learning-series-website">
+      <img
+        src="https://microsoft.github.io/student-learning-series/assets/share-plate.jpg"
+        width="1200"
+        height="630"
+        loading="lazy"
+        alt="Build your personal brand with Copilot series preview"
+      />
+    </a>
+    <div class="project-index-copy">
+      <span class="repo-lang">Website + video</span>
+      <h2><a href="https://aka.ms/student-learning-series-website" class="repo-name">Student Developer Series<span aria-hidden="true"> ↗</span></a></h2>
+      <p class="repo-desc">A YouTube series that helps students build a personal portfolio website with GitHub Copilot.</p>
+      <p class="project-role">I helped create the series with a team and built its website.</p>
+    </div>
+  </li>
+  {repos.map((r) => (
+    <li class="project-index-row">
+      <a class="project-visual" href={r.url}>
+        <img
+          src={githubPreviewUrl(r.name)}
+          width="1200"
+          height="600"
+          loading="lazy"
+          alt={`GitHub preview for ${r.name}`}
+        />
+      </a>
+      <div class="project-index-copy">
         {r.primaryLanguage && <span class="repo-lang">{r.primaryLanguage.name}</span>}
-      </li>
-    ))}
-  </ul>
-) : (
-  <p class="empty-state">Nothing here yet.</p>
+        <h2><a href={r.url} class="repo-name">{r.name}<span aria-hidden="true"> ↗</span></a></h2>
+        {r.description && <p class="repo-desc">{r.description}</p>}
+      </div>
+    </li>
+  ))}
+</ul>
+{result.status === 'unavailable' && (
+  <p class="project-fallback">
+    More projects couldn’t load right now. <a href="https://github.com/KalebCole">Find them on GitHub instead.</a>
+  </p>
 )}
