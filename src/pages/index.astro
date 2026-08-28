@@ -13,7 +13,6 @@ const recentPosts = allPosts
   .slice(0, 3);
 const HOME_RECOMMENDATION_LIMIT = 3;
 const HOME_PROJECT_LIMIT = 2;
-const HOME_PROJECT_EXCLUSIONS = ['partiful-cli', 'Kattis-Problems'];
 const recentRecommendations = (await getPublishedRecommends()).slice(0, HOME_RECOMMENDATION_LIMIT);
 const homepageDescription = 'I share what interests me here, along with things that might help someone else learn.';
 ---
@@ -37,8 +36,8 @@ const homepageDescription = 'I share what interests me here, along with things t
       <div class="recent-projects-heading">
         <h2 id="recent-projects-title">Recent projects</h2>
       </div>
-      <PinnedRepos limit={HOME_PROJECT_LIMIT} variant="home" exclude={HOME_PROJECT_EXCLUSIONS} />
-      <a class="home-action home-projects-more" href="/projects">See more projects</a>
+      <PinnedRepos limit={HOME_PROJECT_LIMIT} variant="home" />
+      <a class="all-projects-link" href="/projects">All projects <span aria-hidden="true">→</span></a>
     </section>
 
     <section class="recent-writing" aria-labelledby="recent-title">

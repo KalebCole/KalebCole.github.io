@@ -4,14 +4,11 @@ import { getPinnedRepos } from '../lib/github';
 interface Props {
   limit?: number;
   variant?: 'index' | 'home';
-  exclude?: readonly string[];
 }
 
-const { limit, variant = 'index', exclude = [] } = Astro.props;
+const { limit, variant = 'index' } = Astro.props;
 const { repos } = await getPinnedRepos();
-const excludedNames = new Set(exclude.map((name) => name.toLowerCase()));
-const eligibleRepos = repos.filter((repo) => !excludedNames.has(repo.name.toLowerCase()));
-const displayedRepos = typeof limit === 'number' ? eligibleRepos.slice(0, Math.max(0, limit - 1)) : eligibleRepos;
+const displayedRepos = typeof limit === 'number' ? repos.slice(0, Math.max(0, limit - 1)) : repos;
 const githubPreviewUrl = (name: string) => `https://opengraph.githubassets.com/1/KalebCole/${name}`;
 const homepageOverrides = {
   'uprint-cli': {

@@ -181,7 +181,6 @@ for (const [route, path] of routes) {
 
 const homepage = text(routes.get('/'));
 const pinnedReposSource = text(join(root, 'src', 'components', 'PinnedRepos.astro'));
-const projectsPageSource = text(join(root, 'src', 'pages', 'projects.astro'));
 const homepageDescription = 'I share what interests me here, along with things that might help someone else learn.';
 const homepageImageUrl = metaContent(homepage, 'property', 'og:image');
 const homepageImageAlt = 'Portrait of Kaleb Cole beside his name, homepage description, and open-tail KC mark.';
@@ -241,11 +240,9 @@ assert.doesNotMatch(homepage, /This is where I write through the ideas that get 
 assert.match(homepage, /href="\/projects"[^>]*>\s*See my projects\s*<\/a>/i, 'homepage hero must link to Projects');
 assert.match(homepage, /href="\/blog"[^>]*>\s*Read my writing\s*<\/a>/i, 'homepage hero must link to Writing');
 assert.match(homepage, /<section\b[^>]*class="recent-projects"[\s\S]*?<h2[^>]*>Recent projects<\/h2>/i, 'homepage must include Recent projects');
-assert.match(homepage, /href="\/projects"[^>]*>\s*See more projects\s*<\/a>/i, 'homepage project preview must link to all projects');
+assert.match(homepage, /class="all-projects-link"[^>]*href="\/projects"[^>]*>\s*All projects\s*<span[^>]*>→<\/span>\s*<\/a>/i, 'homepage project preview must end with a minimal All projects link');
 const homepageProjectCards = matches(homepage, /<li\b[^>]*class="[^"]*project-index-row[^"]*"[^>]*>/gi);
 assert.ok(homepageProjectCards.length > 0 && homepageProjectCards.length <= 2, 'homepage must show between one and two projects');
-assert.doesNotMatch(homepage, /partiful-cli|Kattis-Problems/i, 'homepage must not feature excluded projects');
-assert.match(projectsPageSource, /PROJECT_EXCLUSIONS = \['partiful-cli', 'Kattis-Problems'\]/, 'Projects index must exclude unwanted repositories');
 assert.match(pinnedReposSource, /url: 'https:\/\/kalebcole\.github\.io\/uprint-cli\/'/i, 'homepage uprint card must target its website');
 assert.match(pinnedReposSource, /name: 'uprint-cli'/, 'homepage uprint card must use the repository name');
 assert.match(pinnedReposSource, /description: 'Agentic CLI for Microsoft Employees to print hassle-free at the Redmond campus'/, 'homepage uprint card must match the GitHub About description');
