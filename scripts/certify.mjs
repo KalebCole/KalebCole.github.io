@@ -235,6 +235,14 @@ const articlePreview = text(routes.get('/blog/hello-world/'));
 assert.equal(metaContent(articlePreview, 'property', 'og:image'), homepageImageUrl, 'articles must share the homepage Open Graph image');
 assert.equal(metaContent(articlePreview, 'name', 'twitter:image'), homepageImageUrl, 'article Twitter cards must share the homepage image');
 
+assert.doesNotMatch(homepage, /This is where I write through the ideas that get stuck in my head\./i, 'retired hero copy must stay removed');
+assert.match(homepage, /href="\/projects"[^>]*>\s*See my projects\s*<\/a>/i, 'homepage hero must link to Projects');
+assert.match(homepage, /href="\/blog"[^>]*>\s*Read my writing\s*<\/a>/i, 'homepage hero must link to Writing');
+assert.match(homepage, /<section\b[^>]*class="recent-projects"[\s\S]*?<h2[^>]*>Recent projects<\/h2>/i, 'homepage must include Recent projects');
+assert.match(homepage, /href="\/projects"[^>]*>\s*See more projects\s*<\/a>/i, 'homepage project preview must link to all projects');
+const homepageProjectCards = matches(homepage, /<li\b[^>]*class="[^"]*project-index-row[^"]*"[^>]*>/gi);
+assert.ok(homepageProjectCards.length > 0 && homepageProjectCards.length <= 3, 'homepage must show between one and three projects');
+
 const navRoutes = new Map([
   ['/', ['/', 'Kaleb Cole']],
   ['/blog/', ['/blog', 'Writing']],

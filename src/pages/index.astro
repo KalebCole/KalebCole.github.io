@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import HomeRecommendRow from '../components/HomeRecommendRow.astro';
+import PinnedRepos from '../components/PinnedRepos.astro';
 import Polaroid from '../components/Polaroid.astro';
 import { getPublishedRecommends } from '../lib/recommends';
 import { HOMEPAGE_SOCIAL_IMAGE } from '../lib/social-image.mjs';
@@ -23,7 +24,19 @@ const homepageDescription = 'I share what interests me here, along with things t
     <section class="home-hero" aria-labelledby="home-title">
       <h1 id="home-title" class="home-heading"><span class="home-greeting">Hi, I’m Kaleb.</span> <span class="home-statement">I make things, write down what I learn, and follow whatever has me <span class="home-accent">curious</span> right now.</span></h1>
       <Polaroid />
-      <p class="home-subtitle">I’m a software engineer at Microsoft, building what interests me and designing how we work with agents. This is where I write through the ideas that get stuck in my head.</p>
+      <p class="home-subtitle">I’m a software engineer at Microsoft, building what interests me and designing how we work with agents.</p>
+      <div class="home-actions" aria-label="Explore my work">
+        <a class="home-action home-action-primary" href="/projects">See my projects</a>
+        <a class="home-action" href="/blog">Read my writing</a>
+      </div>
+    </section>
+
+    <section class="recent-projects" aria-labelledby="recent-projects-title">
+      <div class="recent-projects-heading">
+        <h2 id="recent-projects-title">Recent projects</h2>
+      </div>
+      <PinnedRepos limit={3} variant="home" />
+      <a class="home-action home-projects-more" href="/projects">See more projects</a>
     </section>
 
     <section class="recent-writing" aria-labelledby="recent-title">

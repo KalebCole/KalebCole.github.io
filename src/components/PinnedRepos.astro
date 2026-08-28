@@ -1,10 +1,19 @@
 ---
 import { getPinnedRepos } from '../lib/github';
+
+interface Props {
+  limit?: number;
+  variant?: 'index' | 'home';
+}
+
+const { limit, variant = 'index' } = Astro.props;
 const result = await getPinnedRepos();
 const { repos } = result;
+const displayedRepos = typeof limit === 'number' ? repos.slice(0, Math.max(0, limit - 1)) : repos;
 const githubPreviewUrl = (name: string) => `https://opengraph.githubassets.com/1/KalebCole/${name}`;
+const Heading = variant === 'home' ? 'h3' : 'h2';
 ---
-<ul class="project-index">
+<ul class:list={['project-index', { 'home-project-index': variant === 'home' }]}>
   <li class="project-index-row project-index-row-series">
     <a class="project-visual" href="https://aka.ms/student-learning-series-website">
       <img
@@ -17,12 +26,12 @@ const githubPreviewUrl = (name: string) => `https://opengraph.githubassets.com/1
     </a>
     <div class="project-index-copy">
       <span class="repo-lang">Website + video</span>
-      <h2><a href="https://aka.ms/student-learning-series-website" class="repo-name">Student Developer Series<span aria-hidden="true"> ↗</span></a></h2>
+      <Heading><a href="https://aka.ms/student-learning-series-website" class="repo-name">Student Developer Series<span aria-hidden="true"> ↗</span></a></Heading>
       <p class="repo-desc">A YouTube series that helps students build a personal portfolio website with GitHub Copilot.</p>
       <p class="project-role">I helped create the series with a team and built its website.</p>
     </div>
   </li>
-  {repos.map((r) => (
+  {displayedRepos.map((r) => (
     <li class="project-index-row">
       <a class="project-visual" href={r.url}>
         <img
@@ -35,7 +44,7 @@ const githubPreviewUrl = (name: string) => `https://opengraph.githubassets.com/1
       </a>
       <div class="project-index-copy">
         {r.primaryLanguage && <span class="repo-lang">{r.primaryLanguage.name}</span>}
-        <h2><a href={r.url} class="repo-name">{r.name}<span aria-hidden="true"> ↗</span></a></h2>
+        <Heading><a href={r.url} class="repo-name">{r.name}<span aria-hidden="true"> ↗</span></a></Heading>
         {r.description && <p class="repo-desc">{r.description}</p>}
       </div>
     </li>

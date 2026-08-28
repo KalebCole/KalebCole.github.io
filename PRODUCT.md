@@ -91,9 +91,10 @@ marked as a draft remains unpublished.
    explores now over a timeless but artificial claim of expertise.
 4. **Let the subject move.** Organize contributions by editorial intent, not by
    a permanent topical niche.
-5. **Keep writing central.** The homepage introduces Kaleb and moves directly
-   into recent writing. A compact recent-recommendations sibling may follow
-   without competing for the opening hierarchy.
+5. **Keep writing central.** The homepage introduces Kaleb, offers direct paths
+   to Projects and Writing, and gives a compact project preview before recent
+   writing. Recent recommendations may follow without competing for the opening
+   hierarchy.
 6. **Curate without ranking people.** Recommends is one chronology that readers
    may filter by medium. It has no priority subtype or editorial importance
    tier.
@@ -121,9 +122,9 @@ The redesign specification governs:
 - **Shared publication shell:** identity, primary navigation, theme choice,
   feed discovery, footer, metadata, error states, and quality gates across
   every public route.
-- **Homepage:** a candid introduction and portrait followed immediately by
-  recent writing, then a deliberately capped compact view of recent
-  recommendations. Projects do not receive a homepage section.
+- **Homepage:** a candid introduction and portrait with direct links to Projects
+  and Writing, followed by up to three projects, recent writing, and a
+  deliberately capped compact view of recent recommendations.
 - **Writing index:** the newest published writing receives priority, followed
   by one reverse-chronological archive.
 - **Writing article:** a quiet long-form reading experience with clear
@@ -133,10 +134,9 @@ The redesign specification governs:
   medium filters, real source artwork when available, plain empty states, and
   its own RSS feed. Topic tags may remain in metadata and feed categories but
   are not visible in recommendation rows.
-- **Projects:** a valid publishing mode and navigation destination, but not a
-  homepage section. The redesign moves the existing pinned-repository material
-  to a simple dedicated Projects index; richer project storytelling remains a
-  later editorial task.
+- **Projects:** a publishing mode and navigation destination with a capped
+  three-project homepage preview. The dedicated Projects index holds the full
+  set; richer project storytelling remains a later editorial task.
 
 The specification does not implement the production redesign. Final homepage
 copy and portrait-note wording remain an editorial task within the approved
