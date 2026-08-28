@@ -180,6 +180,7 @@ for (const [route, path] of routes) {
 }
 
 const homepage = text(routes.get('/'));
+const projectsPage = text(routes.get('/projects/'));
 const pinnedReposSource = text(join(root, 'src', 'components', 'PinnedRepos.astro'));
 const homepageDescription = 'I share what interests me here, along with things that might help someone else learn.';
 const homepageImageUrl = metaContent(homepage, 'property', 'og:image');
@@ -246,9 +247,20 @@ assert.ok(homepageProjectCards.length > 0 && homepageProjectCards.length <= 2, '
 assert.match(homepage, /Build Your Personal Brand with Copilot/i, 'homepage must use the published series title');
 assert.match(homepage, /A YouTube series for the Microsoft Developer channel that guides college students and beginners through turning an existing PDF resume into a portfolio website with GitHub Copilot\./i, 'homepage must explain the series audience and outcome');
 assert.doesNotMatch(homepage, /Website \+ video/i, 'homepage must not show redundant project taxonomy');
-assert.match(pinnedReposSource, /url: 'https:\/\/kalebcole\.github\.io\/uprint-cli\/'/i, 'homepage uprint card must target its website');
-assert.match(pinnedReposSource, /name: 'uprint-cli'/, 'homepage uprint card must use the repository name');
-assert.match(pinnedReposSource, /description: 'Agentic CLI for Microsoft Employees to print hassle-free at the Redmond campus'/, 'homepage uprint card must match the GitHub About description');
+assert.match(pinnedReposSource, /url: 'https:\/\/kalebcole\.github\.io\/uprint-cli\/'/i, 'uprint override must target its website');
+assert.match(pinnedReposSource, /name: 'uprint-cli'/, 'uprint override must use the repository name');
+assert.match(pinnedReposSource, /description: 'Agentic CLI for Microsoft Employees to print hassle-free at the Redmond campus'/, 'uprint override must match the GitHub About description');
+assert.match(pinnedReposSource, /const override = repoOverrides\[repo\.name as keyof typeof repoOverrides\]/, 'repository overrides must apply on every project surface');
+assert.doesNotMatch(pinnedReposSource, /variant === ['"]home['"]\s*\?\s*repoOverrides/, 'repository overrides must not be homepage-only');
+assert.match(projectsPage, /Build Your Personal Brand with Copilot/i, 'Projects index must include the published series title');
+for (const [surface, html] of [['homepage', homepage], ['Projects index', projectsPage]]) {
+  if (/uprint-cli/i.test(html)) {
+    assert.match(html, /href="https:\/\/kalebcole\.github\.io\/uprint-cli\/"/i, `${surface} uprint card must target its website`);
+    assert.match(html, /src="\/projects\/uprint-website\.webp"/i, `${surface} uprint card must use the website preview`);
+    assert.match(html, /Agentic CLI for Microsoft Employees to print hassle-free at the Redmond campus/i, `${surface} uprint card must match the GitHub About description`);
+  }
+}
+assert.ok(homepage.indexOf('class="home-actions"') < homepage.indexOf('class="portrait-mount"'), 'homepage source order must place the complete introduction and actions before the portrait');
 assert.ok(existsSync(join(dist, 'projects', 'uprint-website.webp')), 'production build must emit the uprint website preview');
 assert.doesNotMatch(homepage, /projects couldn’t load|find them on GitHub instead/i, 'homepage must not expose project-loading errors');
 assert.doesNotMatch(text(routes.get('/projects/')), /projects couldn’t load|find them on GitHub instead/i, 'Projects page must not expose project-loading errors');

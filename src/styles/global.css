@@ -334,12 +334,13 @@ html[data-mode="dark"] [data-icon-dark] {
 
 .home-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(150px, 46vw, 215px);
+  grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
-    "greeting portrait"
-    "statement statement"
-    "subtitle subtitle"
-    "actions actions";
+    "greeting"
+    "statement"
+    "subtitle"
+    "actions"
+    "portrait";
   align-items: center;
   column-gap: 1rem;
   row-gap: 1.35rem;
@@ -417,8 +418,8 @@ html[data-mode="dark"] [data-icon-dark] {
 .portrait-mount {
   grid-area: portrait;
   align-self: center;
-  width: 100%;
-  margin: 0 12px 0 0;
+  width: min(190px, calc(100% - 12px));
+  margin: .5rem 12px 0 0;
   padding: 10px 10px 0;
   background: var(--mount);
   border: 2px solid var(--mount-ink);
@@ -458,7 +459,7 @@ html[data-mode="dark"] [data-icon-dark] {
 
 .recent-projects-heading h2 {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
   line-height: .92;
 }
 
@@ -477,7 +478,7 @@ html[data-mode="dark"] [data-icon-dark] {
 
 .project-index.home-project-index h3 {
   margin-top: .4rem;
-  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
   line-height: 1.15;
 }
 
@@ -1248,6 +1249,7 @@ html[data-mode="dark"] .prose {
     grid-row: 1 / 4;
     align-self: center;
     width: min(300px, calc(100% - 12px));
+    margin: 0 12px 0 0;
     justify-self: end;
   }
 

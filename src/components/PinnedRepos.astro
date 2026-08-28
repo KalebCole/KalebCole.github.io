@@ -10,7 +10,7 @@ const { limit, variant = 'index' } = Astro.props;
 const { repos } = await getPinnedRepos();
 const displayedRepos = typeof limit === 'number' ? repos.slice(0, Math.max(0, limit - 1)) : repos;
 const githubPreviewUrl = (name: string) => `https://opengraph.githubassets.com/1/KalebCole/${name}`;
-const homepageOverrides = {
+const repoOverrides = {
   'uprint-cli': {
     name: 'uprint-cli',
     description: 'Agentic CLI for Microsoft Employees to print hassle-free at the Redmond campus',
@@ -23,7 +23,7 @@ const homepageOverrides = {
   },
 };
 const displayedProjects = displayedRepos.map((repo) => {
-  const override = variant === 'home' ? homepageOverrides[repo.name as keyof typeof homepageOverrides] : undefined;
+  const override = repoOverrides[repo.name as keyof typeof repoOverrides];
   return {
     ...repo,
     ...override,
