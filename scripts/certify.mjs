@@ -314,12 +314,17 @@ assert.ok(
 );
 assert.match(
   globalCss,
-  /@media \(max-width: 759px\) \{[\s\S]*?\.home-hero \{[\s\S]*?justify-items: center;[\s\S]*?row-gap: 30px;[\s\S]*?padding-block: 44px 68px;[\s\S]*?text-align: center;[\s\S]*?\.portrait-mount \{[\s\S]*?width: min\(292px, calc\(100% - 12px\)\);/,
+  /@media \(max-width: 849px\) \{[\s\S]*?\.home-hero \{[\s\S]*?justify-items: center;[\s\S]*?row-gap: 30px;[\s\S]*?padding-block: 44px 68px;[\s\S]*?text-align: center;[\s\S]*?\.portrait-mount \{[\s\S]*?width: min\(292px, calc\(100% - 12px\)\);/,
   'homepage mobile hero must use the approved centered 292px portrait and 30px rhythm',
 );
 assert.match(
+  globalCss,
+  /@media \(min-width: 850px\) \{[\s\S]*?\.home-hero \{[\s\S]*?grid-template-columns: minmax\(0, 1fr\) auto;/,
+  'homepage desktop composition must wait for a stable text column',
+);
+assert.match(
   polaroidSource,
-  /sizes="\(max-width: 343px\) calc\(100vw - 52px\), \(max-width: 759px\) 292px, 300px"/,
+  /sizes="\(max-width: 343px\) calc\(100vw - 52px\), \(max-width: 849px\) 292px, 300px"/,
   'homepage portrait sizes hint must match the approved mobile width',
 );
 assert.ok(existsSync(join(dist, 'projects', 'uprint-website.webp')), 'production build must emit the uprint website preview');

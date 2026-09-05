@@ -165,14 +165,17 @@ add metrics, credentials, or conversion-focused copy.
 
 ### Responsive foundation
 
-- Above 760px, retain the asymmetric homepage and writing grids.
+- At 850px and above, retain the asymmetric homepage grid. Keep the approved
+  centered homepage composition below that point so each desktop text column
+  has a stable reading measure.
+- Above 760px, retain the asymmetric writing and content grids.
 - At 760px and below, every multi-column composition becomes one continuous
   column.
 - Homepage mobile order is navigation, greeting, portrait, the rest of the
   introduction and actions, recent projects, then recent writing. Never put the
   portrait before the greeting or squeeze it beside a narrowed paragraph.
 - Center the homepage introduction, portrait, supporting copy, and actions only
-  below 760px. Preserve the text-left, portrait-right desktop composition.
+  below 850px. Preserve the text-left, portrait-right desktop composition.
 - At 320px, display type must fit without clipping or page-level horizontal
   scrolling. Lower a fluid minimum when the actual heading copy requires it.
 - At 200% text size and 400% browser zoom, preserve source order, content, and

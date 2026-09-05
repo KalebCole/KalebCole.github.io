@@ -4,7 +4,7 @@
 
 **Goal:** Place Kaleb’s portrait between “Hi, I’m Kaleb.” and the “I make things” statement on phone screens while preserving the current desktop hero.
 
-**Architecture:** Split the greeting and main statement into separate semantic elements so the portrait can sit between them in DOM and visual order. Use the mobile CSS grid sequence directly, then preserve the two-column composition at 760px and above. Update the design contract and certification assertions to encode both orders.
+**Architecture:** Split the greeting and main statement into separate semantic elements so the portrait can sit between them in DOM and visual order. Use the centered one-column composition through 849px, then preserve the two-column desktop composition at 850px and above. Keep unrelated content grids on their existing breakpoints.
 
 **Tech Stack:** Astro 5, CSS Grid, Node.js certification scripts, local headless Chrome visual checks
 
@@ -77,7 +77,7 @@ grid-template-areas:
   "actions";
 ```
 
-Update the desktop media query so both text elements remain on the left and the portrait spans their rows on the right at 760px and above.
+Update the homepage desktop media query so both text elements remain on the left and the portrait spans their rows on the right at 850px and above.
 
 **Step 3: Run certification to verify pass**
 
@@ -141,8 +141,14 @@ Read the pull request back with `gh pr view` and verify its URL, head branch, ba
 
 ### Final approved mobile refinement
 
-- Center the greeting, portrait, main statement, supporting copy, and actions below 760px.
+- Center the greeting, portrait, main statement, supporting copy, and actions below 850px.
 - Render the portrait at 292px wide with a narrow-screen safety cap.
 - Use a consistent 30px vertical rhythm and 44px / 68px hero padding.
 - Keep the existing desktop composition unchanged.
 - Keep the portrait `sizes` hint synchronized with its rendered mobile width.
+
+### Breakpoint regression correction
+
+- Keep the homepage hero centered through 849px instead of switching it at 760px.
+- Start the two-column homepage composition at 850px, where the text column reaches a stable measure.
+- Leave writing, recommendation, and other content-grid breakpoints unchanged.
