@@ -152,3 +152,13 @@ Read the pull request back with `gh pr view` and verify its URL, head branch, ba
 - Keep the homepage hero centered through 849px instead of switching it at 760px.
 - Start the two-column homepage composition at 850px, where the text column reaches a stable measure.
 - Leave writing, recommendation, and other content-grid breakpoints unchanged.
+
+### Approved breakpoint motion
+
+- Use a FLIP-style settle only when the live viewport crosses 850px.
+- Move every hero child from its previous screen position to its new position
+  over 520ms with the standard easing and a 72% to 100% opacity settle.
+- Preserve the portrait rotation by animating individual translation instead
+  of replacing its existing transform.
+- Do not animate initial page load or run breakpoint motion when reduced motion
+  is requested.

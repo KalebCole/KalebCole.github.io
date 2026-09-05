@@ -240,7 +240,24 @@ assert.equal(
 const packageJson = JSON.parse(text(join(root, 'package.json')));
 const globalCss = text(join(root, 'src', 'styles', 'global.css'));
 const polaroidSource = text(join(root, 'src', 'components', 'Polaroid.astro'));
+const homepageSource = text(join(root, 'src', 'pages', 'index.astro'));
+const breakpointMotionSource = text(join(root, 'src', 'scripts', 'home-breakpoint-motion.mjs'));
 assert.equal(packageJson.scripts.prebuild, 'npm run portrait', 'normal builds must regenerate every portrait derivative');
+assert.match(
+  homepageSource,
+  /import \{ initHomeBreakpointMotion \} from '\.\.\/scripts\/home-breakpoint-motion\.mjs';[\s\S]*?initHomeBreakpointMotion\(\);/,
+  'homepage must initialize the breakpoint layout motion',
+);
+assert.match(
+  breakpointMotionSource,
+  /translate:[\s\S]*?opacity: 0\.72[\s\S]*?duration: HOME_LAYOUT_MOTION_DURATION/,
+  'homepage breakpoint motion must use the approved layout settle',
+);
+assert.match(
+  breakpointMotionSource,
+  /prefers-reduced-motion: reduce[\s\S]*?reducedMotion: reducedMotion\.matches/,
+  'homepage breakpoint motion must honor reduced motion',
+);
 
 const writingIndex = text(routes.get('/blog/'));
 assert.match(writingIndex, /<title>Writing \| Kaleb Cole<\/title>/i, 'Writing index document title');
