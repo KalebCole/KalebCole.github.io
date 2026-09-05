@@ -3,7 +3,6 @@ import test from 'node:test';
 import {
   animateHomeLayoutShift,
   initHomeBreakpointMotion,
-  selectHomeMotionElements,
 } from '../src/scripts/home-breakpoint-motion.mjs';
 
 function elementAt(rect) {
@@ -19,25 +18,6 @@ function elementAt(rect) {
     },
   };
 }
-
-test('selects the requested movement scope', () => {
-  const elements = [
-    'home-greeting',
-    'portrait-mount',
-    'home-statement',
-    'home-subtitle',
-    'home-actions',
-  ].map((className) => ({
-    className,
-    classList: { contains: (candidate) => candidate === className },
-  }));
-
-  assert.deepEqual(selectHomeMotionElements(elements, 'all'), elements);
-  assert.deepEqual(selectHomeMotionElements(elements, 'portrait'), [elements[1]]);
-  assert.deepEqual(selectHomeMotionElements(elements, 'copy'), [elements[0], elements[2], elements[3], elements[4]]);
-  assert.deepEqual(selectHomeMotionElements(elements, 'intro'), [elements[0], elements[1], elements[2]]);
-  assert.deepEqual(selectHomeMotionElements(elements, 'core'), [elements[1], elements[2]]);
-});
 
 test('settles each hero item from its previous position', () => {
   const greeting = elementAt({ left: 80, top: 120 });

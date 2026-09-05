@@ -243,7 +243,6 @@ const globalCss = text(join(root, 'src', 'styles', 'global.css'));
 const polaroidSource = text(join(root, 'src', 'components', 'Polaroid.astro'));
 const homepageSource = text(join(root, 'src', 'pages', 'index.astro'));
 const breakpointMotionSource = text(join(root, 'src', 'scripts', 'home-breakpoint-motion.mjs'));
-const scopeLabSource = text(join(root, 'src', 'scripts', 'home-scope-lab.mjs'));
 assert.equal(packageJson.scripts.prebuild, 'npm run portrait', 'normal builds must regenerate every portrait derivative');
 assert.match(
   homepageSource,
@@ -259,16 +258,6 @@ assert.match(
   breakpointMotionSource,
   /prefers-reduced-motion: reduce[\s\S]*?reducedMotion: reducedMotion\.matches/,
   'homepage breakpoint motion must honor reduced motion',
-);
-assert.match(
-  homepageSource,
-  /import \{ initHomeScopeLab \} from '\.\.\/scripts\/home-scope-lab\.mjs';[\s\S]*?initHomeScopeLab\(\);/,
-  'homepage must initialize the query-gated movement scope lab',
-);
-assert.match(
-  scopeLabSource,
-  /motionLab[\s\S]*?scope[\s\S]*?HOME_SCOPE_OPTIONS/,
-  'movement scope lab must remain query-gated and expose the five options',
 );
 const writingIndex = text(routes.get('/blog/'));
 assert.match(writingIndex, /<title>Writing \| Kaleb Cole<\/title>/i, 'Writing index document title');

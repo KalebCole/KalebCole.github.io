@@ -6,18 +6,6 @@ function captureRects(elements) {
   return new Map(elements.map((element) => [element, element.getBoundingClientRect()]));
 }
 
-export function selectHomeMotionElements(elements, scope = 'all') {
-  const includes = (...classNames) => elements.filter((element) => (
-    classNames.some((className) => element.classList.contains(className))
-  ));
-
-  if (scope === 'portrait') return includes('portrait-mount');
-  if (scope === 'copy') return elements.filter((element) => !element.classList.contains('portrait-mount'));
-  if (scope === 'intro') return includes('home-greeting', 'portrait-mount', 'home-statement');
-  if (scope === 'core') return includes('portrait-mount', 'home-statement');
-  return elements;
-}
-
 export function animateHomeLayoutShift(
   elements,
   previousRects,
@@ -73,8 +61,7 @@ export function initHomeBreakpointMotion(root = document, browserWindow = window
     if (isDesktop !== wasDesktop) {
       const version = ++motionVersion;
       for (const animation of activeAnimations) animation.cancel();
-      const movingElements = selectHomeMotionElements(elements, hero.dataset?.motionScope);
-      activeAnimations = animateHomeLayoutShift(movingElements, previousRects, {
+      activeAnimations = animateHomeLayoutShift(elements, previousRects, {
         reducedMotion: reducedMotion.matches,
       });
       previousRects = currentRects;
