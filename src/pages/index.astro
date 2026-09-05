@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import HomeRecommendRow from '../components/HomeRecommendRow.astro';
-import PinnedRepos from '../components/PinnedRepos.astro';
+import HomeProjectPreview from '../components/HomeProjectPreview.astro';
 import Polaroid from '../components/Polaroid.astro';
 import { getPublishedRecommends } from '../lib/recommends';
 import { HOMEPAGE_SOCIAL_IMAGE } from '../lib/social-image.mjs';
@@ -12,7 +12,6 @@ const recentPosts = allPosts
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
 const HOME_RECOMMENDATION_LIMIT = 3;
-const HOME_PROJECT_LIMIT = 2;
 const recentRecommendations = (await getPublishedRecommends()).slice(0, HOME_RECOMMENDATION_LIMIT);
 const homepageDescription = 'I share what interests me here, along with things that might help someone else learn.';
 ---
@@ -36,7 +35,7 @@ const homepageDescription = 'I share what interests me here, along with things t
       <div class="recent-heading">
         <h2 id="recent-projects-title">Recent projects</h2>
       </div>
-      <PinnedRepos limit={HOME_PROJECT_LIMIT} variant="home" />
+      <HomeProjectPreview />
       <a class="all-projects-link" href="/projects">All projects <span aria-hidden="true">→</span></a>
     </section>
 

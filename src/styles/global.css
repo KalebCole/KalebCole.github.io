@@ -468,6 +468,140 @@ html[data-mode="dark"] [data-icon-dark] {
   margin-bottom: 1rem;
 }
 
+.home-project-preview {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-playground {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.project-playground-copy,
+.project-supporting {
+  min-width: 0;
+}
+
+.project-playground h3,
+.project-supporting h3 {
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  line-height: 1.08;
+}
+
+.project-playground h3 a,
+.project-supporting h3 a {
+  color: var(--ink);
+}
+
+.project-playground-copy > p,
+.project-supporting p {
+  max-width: 58ch;
+  margin-top: .75rem;
+  color: var(--muted);
+}
+
+.project-source-link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  margin-top: 1rem;
+  color: var(--blue);
+  font-weight: 600;
+}
+
+.workflow-artifact {
+  align-self: start;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  background: var(--soft-blue);
+  border: 2px solid var(--ink);
+}
+
+.workflow-label {
+  color: var(--muted);
+  font-family: var(--font-meta);
+  font-size: .72rem;
+  line-height: 1.5;
+}
+
+.workflow-stages {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .5rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.workflow-stages li {
+  display: grid;
+  min-width: 0;
+  gap: .35rem;
+  padding: .6rem .25rem;
+  border-top: 2px solid var(--rule);
+  color: var(--muted);
+  font: 600 clamp(.68rem, 1.5vw, .8rem)/1.2 var(--font-meta);
+}
+
+.workflow-stages li[aria-current="step"] {
+  border-color: var(--blue);
+  color: var(--ink);
+}
+
+.workflow-stage-number {
+  color: var(--blue);
+}
+
+.workflow-output {
+  min-height: 6.25rem;
+  margin-top: 1.25rem;
+  padding: 1rem;
+  background: var(--ground);
+  border: 1px solid var(--rule);
+}
+
+.workflow-output-label {
+  color: var(--blue);
+  font: 600 .72rem/1.5 var(--font-meta);
+}
+
+.workflow-output p {
+  margin-top: .35rem;
+  font-size: clamp(.95rem, 1.5vw, 1.08rem);
+  line-height: 1.35;
+}
+
+.workflow-control {
+  min-height: 44px;
+  margin-top: 1rem;
+  padding: .65rem 1rem;
+  background: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 2px;
+  color: var(--ground);
+  cursor: pointer;
+  font: 600 1rem/1 var(--font-primary);
+}
+
+.workflow-control:hover {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+.project-supporting {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: .25rem;
+}
+
 .project-index.home-project-index h3 {
   margin-top: .4rem;
   font-size: clamp(1.1rem, 2vw, 1.45rem);
@@ -1187,6 +1321,15 @@ html[data-mode="dark"] .prose {
 }
 
 @media (min-width: 760px) {
+  .project-playground {
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, .9fr);
+    align-items: center;
+  }
+
+  .project-supporting {
+    width: min(34rem, 72%);
+  }
+
   .home-hero {
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
