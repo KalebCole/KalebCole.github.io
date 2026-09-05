@@ -9,7 +9,7 @@ function captureRects(elements) {
 export function animateHomeLayoutShift(
   elements,
   previousRects,
-  { reducedMotion = false } = {},
+  { reducedMotion = false, startOpacity = 0.72 } = {},
 ) {
   if (reducedMotion) return [];
 
@@ -24,7 +24,7 @@ export function animateHomeLayoutShift(
 
     return element.animate(
       [
-        { translate: `${x}px ${y}px`, opacity: 0.72 },
+        { translate: `${x}px ${y}px`, opacity: startOpacity },
         { translate: '0 0', opacity: 1 },
       ],
       {
@@ -46,13 +46,15 @@ export function initHomeBreakpointMotion(root = document, browserWindow = window
   let wasDesktop;
   let activeAnimations = [];
   let motionVersion = 0;
+  let resizeFrame;
 
   const updateRects = () => {
     previousRects = captureRects(elements);
     wasDesktop = desktopMedia.matches;
   };
 
-  const onResize = () => {
+  const measureResize = () => {
+    resizeFrame = undefined;
     const isDesktop = desktopMedia.matches;
     const currentRects = captureRects(elements);
 
@@ -61,6 +63,7 @@ export function initHomeBreakpointMotion(root = document, browserWindow = window
       for (const animation of activeAnimations) animation.cancel();
       activeAnimations = animateHomeLayoutShift(elements, previousRects, {
         reducedMotion: reducedMotion.matches,
+        startOpacity: Number(hero.dataset?.motionOpacity || 0.72),
       });
       previousRects = currentRects;
       wasDesktop = isDesktop;
@@ -72,16 +75,37 @@ export function initHomeBreakpointMotion(root = document, browserWindow = window
       Promise.all(finished).then(() => {
         if (version !== motionVersion) return;
         activeAnimations = [];
-        updateRects();
+        if (desktopMedia.matches === wasDesktop) {
+          previousRects = captureRects(elements);
+        }
       });
     } else if (activeAnimations.length === 0) {
       previousRects = currentRects;
     }
   };
 
+  const onResize = () => {
+    if (resizeFrame && typeof browserWindow.cancelAnimationFrame === 'function') {
+      browserWindow.cancelAnimationFrame(resizeFrame);
+    }
+    resizeFrame = browserWindow.requestAnimationFrame(measureResize);
+  };
+
   const start = () => {
     updateRects();
-    browserWindow.addEventListener('resize', onResize, { passive: true });
+    if (typeof desktopMedia.addEventListener === 'function') {
+      desktopMedia.addEventListener('change', onResize);
+      browserWindow.addEventListener('resize', () => {
+        if (desktopMedia.matches === wasDesktop && activeAnimations.length === 0) onResize();
+      }, { passive: true });
+    } else if (typeof desktopMedia.addListener === 'function') {
+      desktopMedia.addListener(onResize);
+      browserWindow.addEventListener('resize', () => {
+        if (desktopMedia.matches === wasDesktop && activeAnimations.length === 0) onResize();
+      }, { passive: true });
+    } else {
+      browserWindow.addEventListener('resize', onResize, { passive: true });
+    }
   };
 
   browserWindow.requestAnimationFrame(() => {

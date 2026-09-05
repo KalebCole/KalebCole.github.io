@@ -242,6 +242,7 @@ const globalCss = text(join(root, 'src', 'styles', 'global.css'));
 const polaroidSource = text(join(root, 'src', 'components', 'Polaroid.astro'));
 const homepageSource = text(join(root, 'src', 'pages', 'index.astro'));
 const breakpointMotionSource = text(join(root, 'src', 'scripts', 'home-breakpoint-motion.mjs'));
+const opacityLabSource = text(join(root, 'src', 'scripts', 'home-opacity-lab.mjs'));
 assert.equal(packageJson.scripts.prebuild, 'npm run portrait', 'normal builds must regenerate every portrait derivative');
 assert.match(
   homepageSource,
@@ -250,13 +251,23 @@ assert.match(
 );
 assert.match(
   breakpointMotionSource,
-  /translate:[\s\S]*?opacity: 0\.72[\s\S]*?duration: HOME_LAYOUT_MOTION_DURATION/,
+  /startOpacity = 0\.72[\s\S]*?translate:[\s\S]*?opacity: startOpacity[\s\S]*?duration: HOME_LAYOUT_MOTION_DURATION/,
   'homepage breakpoint motion must use the approved layout settle',
 );
 assert.match(
   breakpointMotionSource,
   /prefers-reduced-motion: reduce[\s\S]*?reducedMotion: reducedMotion\.matches/,
   'homepage breakpoint motion must honor reduced motion',
+);
+assert.match(
+  homepageSource,
+  /import \{ initHomeOpacityLab \} from '\.\.\/scripts\/home-opacity-lab\.mjs';[\s\S]*?initHomeOpacityLab\(\);/,
+  'homepage must initialize the query-gated opacity lab',
+);
+assert.match(
+  opacityLabSource,
+  /motionLab[\s\S]*?opacity[\s\S]*?HOME_OPACITY_OPTIONS/,
+  'opacity lab must remain query-gated and expose the five options',
 );
 
 const writingIndex = text(routes.get('/blog/'));

@@ -56,6 +56,17 @@ test('does not animate when reduced motion is requested', () => {
   assert.deepEqual(greeting.calls, []);
 });
 
+test('uses the selected opacity strength', () => {
+  const greeting = elementAt({ left: 80, top: 120 });
+  animateHomeLayoutShift(
+    [greeting],
+    new Map([[greeting, { left: 195, top: 220 }]]),
+    { startOpacity: 0.9 },
+  );
+
+  assert.equal(greeting.calls[0].keyframes[0].opacity, 0.9);
+});
+
 test('skips items whose screen position did not change', () => {
   const greeting = elementAt({ left: 80, top: 120 });
   const animations = animateHomeLayoutShift(
@@ -127,4 +138,63 @@ test('keeps the newest animation active during rapid breakpoint crossings', asyn
 
   assert.equal(animations.length, 3);
   assert.equal(animations[1].cancelled, true);
+});
+
+test('does not swallow a crossing that happens as an animation finishes', async () => {
+  let left = 40;
+  const animations = [];
+  const element = {
+    getBoundingClientRect() {
+      return { left, top: 100 };
+    },
+    animate() {
+      let finish;
+      const animation = {
+        finished: new Promise((resolve) => { finish = resolve; }),
+        cancel() {
+          finish();
+        },
+        finish() {
+          finish();
+        },
+      };
+      animations.push(animation);
+      return animation;
+    },
+  };
+  const hero = {
+    children: [element],
+    getAnimations() {
+      return [];
+    },
+  };
+  const desktopMedia = { matches: false };
+  const reducedMotion = { matches: false };
+  let onResize;
+  const browserWindow = {
+    matchMedia(query) {
+      return query.includes('850px') ? desktopMedia : reducedMotion;
+    },
+    requestAnimationFrame(callback) {
+      callback();
+    },
+    addEventListener(event, callback) {
+      if (event === 'resize') onResize = callback;
+    },
+  };
+
+  initHomeBreakpointMotion({ querySelector: () => hero }, browserWindow);
+  await Promise.resolve();
+  await Promise.resolve();
+
+  left = 500;
+  desktopMedia.matches = true;
+  onResize();
+  left = 40;
+  desktopMedia.matches = false;
+  animations[0].finish();
+  await new Promise((resolve) => setImmediate(resolve));
+  onResize();
+
+  assert.equal(animations.length, 2);
 });
