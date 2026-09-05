@@ -45,7 +45,7 @@ const Heading = variant === 'home' ? 'h3' : 'h2';
 ---
 <ul class:list={['project-index', { 'home-project-index': variant === 'home' }]}>
   <li class="project-index-row project-index-row-series">
-    <a class="project-visual" href="https://aka.ms/student-learning-series-website">
+    <a class="project-visual" href="https://aka.ms/student-learning-series-website" aria-label="Visit Build Your Personal Brand with Copilot">
       <img
         src="https://microsoft.github.io/student-learning-series/assets/share-plate.jpg"
         width="1200"
@@ -54,6 +54,10 @@ const Heading = variant === 'home' ? 'h3' : 'h2';
         decoding="async"
         alt="Build your personal brand with Copilot series preview"
       />
+      <span class="project-visual-detail" aria-hidden="true">
+        <span>Build Your Personal Brand with Copilot</span>
+        <span class="project-visual-link">Visit project <b>↗</b></span>
+      </span>
     </a>
     <div class="project-index-copy">
       <Heading><a href="https://aka.ms/student-learning-series-website" class="repo-name">Build Your Personal Brand with Copilot<span aria-hidden="true"> ↗</span></a></Heading>
@@ -63,7 +67,7 @@ const Heading = variant === 'home' ? 'h3' : 'h2';
   </li>
   {displayedProjects.map((r) => (
     <li class="project-index-row">
-      <a class="project-visual" href={r.url}>
+      <a class="project-visual" href={r.url} aria-label={`Visit ${r.name}`}>
         <img
           src={r.image}
           width={r.imageWidth}
@@ -72,6 +76,10 @@ const Heading = variant === 'home' ? 'h3' : 'h2';
           decoding="async"
           alt={r.imageAlt}
         />
+        <span class="project-visual-detail" aria-hidden="true">
+          <span>{r.name}</span>
+          <span class="project-visual-link">Visit project <b>↗</b></span>
+        </span>
       </a>
       <div class="project-index-copy">
         <Heading><a href={r.url} class="repo-name">{r.name}<span aria-hidden="true"> ↗</span></a></Heading>
