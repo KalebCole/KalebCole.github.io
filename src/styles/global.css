@@ -1300,6 +1300,10 @@ html[data-mode="dark"] .prose {
 }
 
 @media (max-width: 760px) {
+  .nav-controls .theme-toggle {
+    order: -1;
+  }
+
   .site-header {
     position: relative;
     z-index: 2;
