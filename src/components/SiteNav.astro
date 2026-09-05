@@ -18,12 +18,61 @@ const feedLabel = /\bfeed\b/i.test(feedTitle) ? feedTitle : `${feedTitle} feed`;
     <KCMark class="site-mark" />
     <span>Kaleb Cole</span>
   </a>
-  <div class="nav-links">
-  <a href="/blog" aria-current={path.startsWith('/blog') ? 'page' : undefined}>Writing</a>
-  <a href="/recommends" aria-current={path.startsWith('/recommends') ? 'page' : undefined}>Recommends</a>
-  <a href="/projects" aria-current={path.startsWith('/projects') ? 'page' : undefined}>Projects</a>
-  <a href="/resume.pdf">Résumé</a>
-  <a href={feedHref} aria-label={feedLabel}>Feed</a>
-  <ThemeToggle />
+  <div class="nav-controls">
+    <div class="nav-menu">
+      <button type="button" data-nav-toggle aria-controls="primary-nav-menu" aria-expanded="false">
+        <span class="nav-menu-line"></span>
+        <span class="nav-menu-line"></span>
+        <span class="nav-menu-line"></span>
+        <span class="sr-only">Open primary navigation</span>
+      </button>
+      <div class="nav-links" id="primary-nav-menu">
+        <a href="/blog" aria-current={path.startsWith('/blog') ? 'page' : undefined}>Writing</a>
+        <a href="/recommends" aria-current={path.startsWith('/recommends') ? 'page' : undefined}>Recommends</a>
+        <a href="/projects" aria-current={path.startsWith('/projects') ? 'page' : undefined}>Projects</a>
+        <a href="/resume.pdf">Résumé</a>
+        <a href={feedHref} aria-label={feedLabel}>Feed</a>
+      </div>
+    </div>
+    <ThemeToggle />
   </div>
 </nav>
+
+<script is:inline>
+  (function () {
+    var nav = document.querySelector('.nav');
+    var menu = nav && nav.querySelector('.nav-menu');
+    var toggle = nav && nav.querySelector('[data-nav-toggle]');
+    if (!nav || !menu || !toggle) return;
+    var compact = window.matchMedia('(max-width: 760px)');
+
+    function sync(open) {
+      menu.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.querySelector('.sr-only').textContent = open ? 'Close primary navigation' : 'Open primary navigation';
+    }
+
+    var open = false;
+    toggle.addEventListener('click', function () { open = !open; sync(open); });
+    nav.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && open) {
+        open = false;
+        sync(open);
+        toggle.focus();
+      }
+    });
+    document.addEventListener('click', function (event) {
+      if (open && !nav.contains(event.target)) { open = false; sync(open); }
+    });
+    menu.querySelectorAll('.nav-links > a').forEach(function (link) {
+      link.addEventListener('click', function () { open = false; sync(open); });
+    });
+    function adapt() {
+      open = !compact.matches;
+      sync(open);
+    }
+    compact.addEventListener('change', adapt);
+    adapt();
+    sync(open);
+  })();
+</script>

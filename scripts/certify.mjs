@@ -321,6 +321,9 @@ for (const [route, [href, label]] of navRoutes) {
   assert.match(currentLinks[0][0].replace(/<[^>]+>/g, ' '), new RegExp(`\\b${label}\\b`, 'i'), `${route} current-page label`);
 }
 
+assert.match(homepage, /class="nav-menu"[\s\S]*data-nav-toggle[^>]*aria-expanded="false"/i, 'navigation must render a button-controlled compact menu panel');
+assert.match(homepage, /data-nav-toggle[^>]*aria-controls="primary-nav-menu"/i, 'navigation must expose a compact menu trigger');
+
 const recommends = text(routes.get('/recommends/'));
 assert.match(recommends, /class="recommendations-filter-links"[\s\S]*\?medium=read/i, 'no-JS query filters must exist');
 assert.match(recommends, /data-recommend-filter="all"[^>]*aria-pressed="true"/i, 'enhanced filters must use aria-pressed');
