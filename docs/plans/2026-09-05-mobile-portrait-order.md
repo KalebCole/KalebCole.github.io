@@ -138,3 +138,11 @@ Use a concise summary and include the exact certification command and visual vie
 **Step 4: Verify external state**
 
 Read the pull request back with `gh pr view` and verify its URL, head branch, base branch, and current checks before reporting completion.
+
+### Final approved mobile refinement
+
+- Center the greeting, portrait, main statement, supporting copy, and actions below 760px.
+- Render the portrait at 292px wide with a narrow-screen safety cap.
+- Use a consistent 30px vertical rhythm and 44px / 68px hero padding.
+- Keep the existing desktop composition unchanged.
+- Keep the portrait `sizes` hint synchronized with its rendered mobile width.

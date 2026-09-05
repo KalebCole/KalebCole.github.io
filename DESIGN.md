@@ -171,6 +171,8 @@ add metrics, credentials, or conversion-focused copy.
 - Homepage mobile order is navigation, greeting, portrait, the rest of the
   introduction and actions, recent projects, then recent writing. Never put the
   portrait before the greeting or squeeze it beside a narrowed paragraph.
+- Center the homepage introduction, portrait, supporting copy, and actions only
+  below 760px. Preserve the text-left, portrait-right desktop composition.
 - At 320px, display type must fit without clipping or page-level horizontal
   scrolling. Lower a fluid minimum when the actual heading copy requires it.
 - At 200% text size and 400% browser zoom, preserve source order, content, and
@@ -379,14 +381,15 @@ zero missing icon requests.
 - Preserve the large cobalt-emphasis headline, asymmetry, and visible
   first-person authorship.
 - Portrait: 4:5 crop, centered `object-fit: cover`, maximum 300px wide on large
-  screens and 190px on narrow screens, 10px side/top mount, 44px caption area,
+  screens and 292px on phones, 10px side/top mount, 44px caption area,
   2px ink outline, 10px by 12px coral offset, and 2-degree rotation.
 - A short Recursive caption may sit in the mount. It must sound like Kaleb and
   must not describe the layout.
 - Print mounts retain dark `light-ink` text on the near-white mount in both
   modes. Do not place blue-hour light ink on `dark-mount`.
 - On phones, place the portrait after the greeting and before the rest of the
-  introduction, with the existing 0.5rem optical offset.
+  introduction. Center the complete hero and use a 30px vertical rhythm, with
+  the portrait shrinking only when required to prevent narrow-screen overflow.
 - Move directly into the three newest published pieces using the approved split
   composition. End with one `All writing →` link.
 - Follow with a compact, capped recent-recommendations sibling using the same

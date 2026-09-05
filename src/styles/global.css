@@ -1279,6 +1279,28 @@ html[data-mode="dark"] .prose {
   }
 }
 
+@media (max-width: 759px) {
+  .home-hero {
+    justify-items: center;
+    row-gap: 30px;
+    padding-block: 44px 68px;
+    text-align: center;
+  }
+
+  .home-statement {
+    max-width: 11ch;
+  }
+
+  .home-actions {
+    justify-content: center;
+  }
+
+  .portrait-mount {
+    width: min(292px, calc(100% - 12px));
+    margin: 0;
+  }
+}
+
 @media (max-width: 760px) {
   .prose pre,
   .prose p:has(> img),
