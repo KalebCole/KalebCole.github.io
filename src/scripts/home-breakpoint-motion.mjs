@@ -6,10 +6,22 @@ function captureRects(elements) {
   return new Map(elements.map((element) => [element, element.getBoundingClientRect()]));
 }
 
+export function selectHomeMotionElements(elements, scope = 'all') {
+  const includes = (...classNames) => elements.filter((element) => (
+    classNames.some((className) => element.classList.contains(className))
+  ));
+
+  if (scope === 'portrait') return includes('portrait-mount');
+  if (scope === 'copy') return elements.filter((element) => !element.classList.contains('portrait-mount'));
+  if (scope === 'intro') return includes('home-greeting', 'portrait-mount', 'home-statement');
+  if (scope === 'core') return includes('portrait-mount', 'home-statement');
+  return elements;
+}
+
 export function animateHomeLayoutShift(
   elements,
   previousRects,
-  { reducedMotion = false, startOpacity = 0.72 } = {},
+  { reducedMotion = false } = {},
 ) {
   if (reducedMotion) return [];
 
@@ -24,7 +36,7 @@ export function animateHomeLayoutShift(
 
     return element.animate(
       [
-        { translate: `${x}px ${y}px`, opacity: startOpacity },
+        { translate: `${x}px ${y}px`, opacity: 1 },
         { translate: '0 0', opacity: 1 },
       ],
       {
@@ -61,9 +73,9 @@ export function initHomeBreakpointMotion(root = document, browserWindow = window
     if (isDesktop !== wasDesktop) {
       const version = ++motionVersion;
       for (const animation of activeAnimations) animation.cancel();
-      activeAnimations = animateHomeLayoutShift(elements, previousRects, {
+      const movingElements = selectHomeMotionElements(elements, hero.dataset?.motionScope);
+      activeAnimations = animateHomeLayoutShift(movingElements, previousRects, {
         reducedMotion: reducedMotion.matches,
-        startOpacity: Number(hero.dataset?.motionOpacity || 0.72),
       });
       previousRects = currentRects;
       wasDesktop = isDesktop;

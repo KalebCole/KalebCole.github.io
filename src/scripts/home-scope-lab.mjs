@@ -1,9 +1,9 @@
-export const HOME_OPACITY_OPTIONS = [
-  { id: 'none', name: 'No fade', value: 1, description: 'Movement only. Elements stay fully opaque.' },
-  { id: 'whisper', name: 'Whisper fade', value: 0.9, description: 'A nearly invisible opacity assist.' },
-  { id: 'soft', name: 'Soft fade', value: 0.82, description: 'Noticeable smoothing without hiding the content.' },
-  { id: 'current', name: 'Current fade', value: 0.72, description: 'The strength currently deployed on the normal preview.' },
-  { id: 'strong', name: 'Strong fade', value: 0.6, description: 'The reflow is softened aggressively.' },
+export const HOME_SCOPE_OPTIONS = [
+  { id: 'all', name: 'Full layout', count: 5, description: 'Greeting, portrait, statement, supporting copy, and actions all settle.' },
+  { id: 'portrait', name: 'Portrait only', count: 1, description: 'Your photo provides continuity while every text block snaps.' },
+  { id: 'copy', name: 'Copy only', count: 4, description: 'All text and actions settle while the portrait snaps into place.' },
+  { id: 'intro', name: 'Intro trio', count: 3, description: 'Greeting, portrait, and main statement settle as one introduction.' },
+  { id: 'core', name: 'Core pair', count: 2, description: 'Only the portrait and main statement settle across the breakpoint.' },
 ];
 
 const LAB_STYLES = `
@@ -27,7 +27,7 @@ const LAB_STYLES = `
   .home-motion-lab button { min-height: 44px; border: 1px solid var(--rule); border-radius: 999px; background: var(--ground); color: var(--ink); cursor: pointer; }
   .home-motion-lab button:hover { border-color: var(--blue); color: var(--blue); }
   .home-motion-lab-title { margin: 0; font-size: 1.05rem; text-align: center; }
-  .home-motion-lab-kicker, .home-motion-lab-state { color: var(--muted); font-family: var(--font-meta); font-size: .7rem; text-align: center; }
+  .home-motion-lab-state { color: var(--muted); font-family: var(--font-meta); font-size: .7rem; text-align: center; }
   .home-motion-lab-description { min-height: 2.7em; margin: .75rem 0; color: var(--muted); font-size: .86rem; text-align: center; }
   .home-motion-lab-dots { display: flex; justify-content: center; gap: .4rem; }
   .home-motion-lab-dots button { width: 24px; min-height: 24px; padding: 0; border: 0; background: radial-gradient(circle, var(--rule) 0 5px, transparent 6px); }
@@ -35,9 +35,9 @@ const LAB_STYLES = `
   @media (max-width: 430px) { .home-motion-lab { right: .5rem; bottom: .5rem; width: calc(100vw - 1rem); } }
 `;
 
-export function initHomeOpacityLab(root = document, browserWindow = window) {
+export function initHomeScopeLab(root = document, browserWindow = window) {
   const params = new URLSearchParams(browserWindow.location.search);
-  if (params.get('motionLab') !== 'opacity') return;
+  if (params.get('motionLab') !== 'scope') return;
 
   const hero = root.querySelector('.home-hero');
   if (!hero) return;
@@ -48,13 +48,13 @@ export function initHomeOpacityLab(root = document, browserWindow = window) {
 
   const lab = root.createElement('aside');
   lab.className = 'home-motion-lab';
-  lab.setAttribute('aria-label', 'Homepage opacity strength lab');
+  lab.setAttribute('aria-label', 'Homepage movement scope lab');
   lab.innerHTML = `
-    <div class="home-motion-lab-state">Opacity strength · full movement scope</div>
+    <div class="home-motion-lab-state">Movement scope · opacity fixed at 100%</div>
     <div class="home-motion-lab-header">
-      <button type="button" data-previous aria-label="Previous opacity strength">←</button>
+      <button type="button" data-previous aria-label="Previous movement scope">←</button>
       <h2 class="home-motion-lab-title" aria-live="polite"></h2>
-      <button type="button" data-next aria-label="Next opacity strength">→</button>
+      <button type="button" data-next aria-label="Next movement scope">→</button>
     </div>
     <p class="home-motion-lab-description"></p>
     <div class="home-motion-lab-state" data-viewport-state></div>
@@ -62,14 +62,14 @@ export function initHomeOpacityLab(root = document, browserWindow = window) {
   `;
   root.body.append(lab);
 
-  const requested = params.get('opacity');
-  let index = Math.max(0, HOME_OPACITY_OPTIONS.findIndex((option) => option.id === requested));
+  const requested = params.get('scope');
+  let index = Math.max(0, HOME_SCOPE_OPTIONS.findIndex((option) => option.id === requested));
   const title = lab.querySelector('.home-motion-lab-title');
   const description = lab.querySelector('.home-motion-lab-description');
   const viewportState = lab.querySelector('[data-viewport-state]');
   const dots = lab.querySelector('.home-motion-lab-dots');
 
-  HOME_OPACITY_OPTIONS.forEach((option, optionIndex) => {
+  HOME_SCOPE_OPTIONS.forEach((option, optionIndex) => {
     const dot = root.createElement('button');
     dot.type = 'button';
     dot.setAttribute('aria-label', option.name);
@@ -78,15 +78,15 @@ export function initHomeOpacityLab(root = document, browserWindow = window) {
   });
 
   function show(nextIndex) {
-    index = (nextIndex + HOME_OPACITY_OPTIONS.length) % HOME_OPACITY_OPTIONS.length;
-    const option = HOME_OPACITY_OPTIONS[index];
-    hero.dataset.motionOpacity = String(option.value);
-    title.textContent = `${index + 1}/5 · ${option.name} · ${Math.round(option.value * 100)}%`;
+    index = (nextIndex + HOME_SCOPE_OPTIONS.length) % HOME_SCOPE_OPTIONS.length;
+    const option = HOME_SCOPE_OPTIONS[index];
+    hero.dataset.motionScope = option.id;
+    title.textContent = `${index + 1}/5 · ${option.name} · ${option.count} moving`;
     description.textContent = option.description;
     Array.from(dots.children).forEach((dot, dotIndex) => {
       dot.setAttribute('aria-current', String(dotIndex === index));
     });
-    params.set('opacity', option.id);
+    params.set('scope', option.id);
     browserWindow.history.replaceState(null, '', `${browserWindow.location.pathname}?${params}`);
   }
 

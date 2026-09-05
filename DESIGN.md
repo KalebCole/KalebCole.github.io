@@ -417,11 +417,11 @@ Use `cubic-bezier(.16, 1, .3, 1)`. Writing rows move 0.55rem toward the reading
 direction over 240ms on hover while changing to cobalt. The portrait
 straightens, lifts 6px, and extends its shadow over 300ms.
 
-When a live viewport crosses the 850px homepage breakpoint, settle each hero
-item from its previous screen position into the new composition over 520ms with
-the standard easing. Fade the moving items from 72% to full opacity while their
-positions settle. Do not run this motion on initial page load. Keep the instant
-layout change when reduced motion is requested or JavaScript is unavailable.
+When a live viewport crosses the 850px homepage breakpoint, settle each selected
+hero item from its previous screen position into the new composition over 520ms
+with the standard easing. Keep moving items fully opaque. Do not run this motion
+on initial page load. Keep the instant layout change when reduced motion is
+requested or JavaScript is unavailable.
 
 ### Portrait and editorial imagery
 

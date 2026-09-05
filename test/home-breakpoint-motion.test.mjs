@@ -3,6 +3,7 @@ import test from 'node:test';
 import {
   animateHomeLayoutShift,
   initHomeBreakpointMotion,
+  selectHomeMotionElements,
 } from '../src/scripts/home-breakpoint-motion.mjs';
 
 function elementAt(rect) {
@@ -19,6 +20,25 @@ function elementAt(rect) {
   };
 }
 
+test('selects the requested movement scope', () => {
+  const elements = [
+    'home-greeting',
+    'portrait-mount',
+    'home-statement',
+    'home-subtitle',
+    'home-actions',
+  ].map((className) => ({
+    className,
+    classList: { contains: (candidate) => candidate === className },
+  }));
+
+  assert.deepEqual(selectHomeMotionElements(elements, 'all'), elements);
+  assert.deepEqual(selectHomeMotionElements(elements, 'portrait'), [elements[1]]);
+  assert.deepEqual(selectHomeMotionElements(elements, 'copy'), [elements[0], elements[2], elements[3], elements[4]]);
+  assert.deepEqual(selectHomeMotionElements(elements, 'intro'), [elements[0], elements[1], elements[2]]);
+  assert.deepEqual(selectHomeMotionElements(elements, 'core'), [elements[1], elements[2]]);
+});
+
 test('settles each hero item from its previous position', () => {
   const greeting = elementAt({ left: 80, top: 120 });
   const portrait = elementAt({ left: 1010, top: 280 });
@@ -31,11 +51,11 @@ test('settles each hero item from its previous position', () => {
 
   assert.equal(animations.length, 2);
   assert.deepEqual(greeting.calls[0].keyframes, [
-    { translate: '115px 100px', opacity: 0.72 },
+    { translate: '115px 100px', opacity: 1 },
     { translate: '0 0', opacity: 1 },
   ]);
   assert.deepEqual(portrait.calls[0].keyframes, [
-    { translate: '-968px 0px', opacity: 0.72 },
+    { translate: '-968px 0px', opacity: 1 },
     { translate: '0 0', opacity: 1 },
   ]);
   assert.deepEqual(greeting.calls[0].options, {
@@ -54,17 +74,6 @@ test('does not animate when reduced motion is requested', () => {
 
   assert.deepEqual(animations, []);
   assert.deepEqual(greeting.calls, []);
-});
-
-test('uses the selected opacity strength', () => {
-  const greeting = elementAt({ left: 80, top: 120 });
-  animateHomeLayoutShift(
-    [greeting],
-    new Map([[greeting, { left: 195, top: 220 }]]),
-    { startOpacity: 0.9 },
-  );
-
-  assert.equal(greeting.calls[0].keyframes[0].opacity, 0.9);
 });
 
 test('skips items whose screen position did not change', () => {
