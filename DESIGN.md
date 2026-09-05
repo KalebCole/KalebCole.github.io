@@ -165,12 +165,17 @@ add metrics, credentials, or conversion-focused copy.
 
 ### Responsive foundation
 
-- Above 760px, retain the asymmetric homepage and writing grids.
+- At 850px and above, retain the asymmetric homepage grid. Keep the approved
+  centered homepage composition below that point so each desktop text column
+  has a stable reading measure.
+- Above 760px, retain the asymmetric writing and content grids.
 - At 760px and below, every multi-column composition becomes one continuous
-  source-ordered column.
-- Homepage mobile order is navigation, complete introduction and actions,
-  portrait, recent projects, then recent writing. Never put the portrait before
-  the words or squeeze it beside a narrowed paragraph.
+  column.
+- Homepage mobile order is navigation, greeting, portrait, the rest of the
+  introduction and actions, recent projects, then recent writing. Never put the
+  portrait before the greeting or squeeze it beside a narrowed paragraph.
+- Center the homepage introduction, portrait, supporting copy, and actions only
+  below 850px. Preserve the text-left, portrait-right desktop composition.
 - At 320px, display type must fit without clipping or page-level horizontal
   scrolling. Lower a fluid minimum when the actual heading copy requires it.
 - At 200% text size and 400% browser zoom, preserve source order, content, and
@@ -379,14 +384,15 @@ zero missing icon requests.
 - Preserve the large cobalt-emphasis headline, asymmetry, and visible
   first-person authorship.
 - Portrait: 4:5 crop, centered `object-fit: cover`, maximum 300px wide on large
-  screens and 190px on narrow screens, 10px side/top mount, 44px caption area,
+  screens and 292px on phones, 10px side/top mount, 44px caption area,
   2px ink outline, 10px by 12px coral offset, and 2-degree rotation.
 - A short Recursive caption may sit in the mount. It must sound like Kaleb and
   must not describe the layout.
 - Print mounts retain dark `light-ink` text on the near-white mount in both
   modes. Do not place blue-hour light ink on `dark-mount`.
-- On phones, complete the introduction first, then begin the portrait 1.25rem
-  below it with a further 0.5rem optical offset.
+- On phones, place the portrait after the greeting and before the rest of the
+  introduction. Center the complete hero and use a 30px vertical rhythm, with
+  the portrait shrinking only when required to prevent narrow-screen overflow.
 - Move directly into the three newest published pieces using the approved split
   composition. End with one `All writing →` link.
 - Follow with a compact, capped recent-recommendations sibling using the same
@@ -410,6 +416,12 @@ Entrance choreography, always from an already-visible default:
 Use `cubic-bezier(.16, 1, .3, 1)`. Writing rows move 0.55rem toward the reading
 direction over 240ms on hover while changing to cobalt. The portrait
 straightens, lifts 6px, and extends its shadow over 300ms.
+
+When a live viewport crosses the 850px homepage breakpoint, settle each hero
+item from its previous screen position into the new composition over 520ms
+with the standard easing. Keep moving items fully opaque. Do not run this motion
+on initial page load. Keep the instant layout change when reduced motion is
+requested or JavaScript is unavailable.
 
 ### Portrait and editorial imagery
 

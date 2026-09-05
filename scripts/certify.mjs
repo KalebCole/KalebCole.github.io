@@ -108,7 +108,8 @@ const trackedFiles = execFileSync('git', ['ls-files', '-z'], { cwd: root })
   .toString()
   .split('\0')
   .filter(Boolean)
-  .map((path) => join(root, path));
+  .map((path) => join(root, path))
+  .filter(existsSync);
 for (const path of trackedFiles) {
   const source = utf8Text(path);
   if (source === null) continue;
@@ -238,8 +239,26 @@ assert.equal(
 );
 
 const packageJson = JSON.parse(text(join(root, 'package.json')));
+const globalCss = text(join(root, 'src', 'styles', 'global.css'));
+const polaroidSource = text(join(root, 'src', 'components', 'Polaroid.astro'));
+const homepageSource = text(join(root, 'src', 'pages', 'index.astro'));
+const breakpointMotionSource = text(join(root, 'src', 'scripts', 'home-breakpoint-motion.mjs'));
 assert.equal(packageJson.scripts.prebuild, 'npm run portrait', 'normal builds must regenerate every portrait derivative');
-
+assert.match(
+  homepageSource,
+  /import \{ initHomeBreakpointMotion \} from '\.\.\/scripts\/home-breakpoint-motion\.mjs';[\s\S]*?initHomeBreakpointMotion\(\);/,
+  'homepage must initialize the breakpoint layout motion',
+);
+assert.match(
+  breakpointMotionSource,
+  /translate:[\s\S]*?opacity: 1[\s\S]*?duration: HOME_LAYOUT_MOTION_DURATION/,
+  'homepage breakpoint motion must use the approved layout settle',
+);
+assert.match(
+  breakpointMotionSource,
+  /prefers-reduced-motion: reduce[\s\S]*?reducedMotion: reducedMotion\.matches/,
+  'homepage breakpoint motion must honor reduced motion',
+);
 const writingIndex = text(routes.get('/blog/'));
 assert.match(writingIndex, /<title>Writing \| Kaleb Cole<\/title>/i, 'Writing index document title');
 
@@ -298,7 +317,33 @@ for (const [surface, html] of [['homepage', homepage], ['Projects index', projec
     assert.match(html, /Agentic CLI for Microsoft Employees to print hassle-free at the Redmond campus/i, `${surface} uprint card must match the GitHub About description`);
   }
 }
-assert.ok(homepage.indexOf('class="home-actions"') < homepage.indexOf('class="portrait-mount"'), 'homepage source order must place the complete introduction and actions before the portrait');
+assert.match(
+  globalCss,
+  /grid-template-areas:\s*"greeting"\s*"portrait"\s*"statement"\s*"subtitle"\s*"actions";/,
+  'homepage mobile layout must place the portrait between the greeting and statement',
+);
+const homepageGreetingIndex = homepage.indexOf('class="home-greeting"');
+const homepagePortraitIndex = homepage.indexOf('class="portrait-mount"');
+const homepageStatementIndex = homepage.indexOf('class="home-statement"');
+assert.ok(
+  homepageGreetingIndex < homepagePortraitIndex && homepagePortraitIndex < homepageStatementIndex,
+  'homepage source order must place the portrait between the greeting and statement',
+);
+assert.match(
+  globalCss,
+  /@media \(max-width: 849px\) \{[\s\S]*?\.home-hero \{[\s\S]*?justify-items: center;[\s\S]*?row-gap: 30px;[\s\S]*?padding-block: 44px 68px;[\s\S]*?text-align: center;[\s\S]*?\.portrait-mount \{[\s\S]*?width: min\(292px, calc\(100% - 12px\)\);/,
+  'homepage mobile hero must use the approved centered 292px portrait and 30px rhythm',
+);
+assert.match(
+  globalCss,
+  /@media \(min-width: 850px\) \{[\s\S]*?\.home-hero \{[\s\S]*?grid-template-columns: minmax\(0, 1fr\) auto;/,
+  'homepage desktop composition must wait for a stable text column',
+);
+assert.match(
+  polaroidSource,
+  /sizes="\(max-width: 343px\) calc\(100vw - 52px\), \(max-width: 849px\) 292px, 300px"/,
+  'homepage portrait sizes hint must match the approved mobile width',
+);
 assert.ok(existsSync(join(dist, 'projects', 'uprint-website.webp')), 'production build must emit the uprint website preview');
 assert.ok(
   existsSync(localAsset('/projects/partiful-cli-website.webp')),
