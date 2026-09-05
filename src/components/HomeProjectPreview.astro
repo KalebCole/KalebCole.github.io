@@ -1,0 +1,88 @@
+---
+const workflowStages = [
+  {
+    label: 'Input',
+    detail: 'Find a Seattle event that fits my calendar.',
+    action: 'Prepare review',
+  },
+  {
+    label: 'Review',
+    detail: 'Check invitation details before making a change.',
+    action: 'Show illustrative result',
+  },
+  {
+    label: 'Result',
+    detail: 'A possible next step is ready for you to confirm.',
+    action: 'Run the illustration again',
+  },
+];
+---
+<ul class="home-project-preview" aria-label="Recent projects">
+  <li class="project-index-row project-playground" data-project-playground>
+    <div class="project-playground-copy">
+      <h3><a href="https://kalebcole.github.io/partiful-cli/">partiful-cli <span aria-hidden="true">↗</span></a></h3>
+      <p>Reverse-engineered Partiful’s API into an agentic CLI for managing events. My favorite workflows match invitations against my calendar and help me find events around Seattle.</p>
+      <a class="project-source-link" href="https://kalebcole.github.io/partiful-cli/">Explore partiful-cli <span aria-hidden="true">→</span></a>
+    </div>
+
+    <div class="workflow-artifact" data-workflow-artifact data-state="0">
+      <p class="workflow-label">Illustrative workflow, not a real product result.</p>
+      <ol class="workflow-stages" aria-label="Illustrative agent workflow stages">
+        {workflowStages.map((stage, index) => (
+          <li data-workflow-stage={index} aria-current={index === 0 ? 'step' : undefined}>
+            <span class="workflow-stage-number" aria-hidden="true">{index + 1}</span>
+            <span>{stage.label}</span>
+          </li>
+        ))}
+      </ol>
+      <div class="workflow-output" aria-live="polite" aria-atomic="true">
+        <span class="workflow-output-label">{workflowStages[0].label}</span>
+        <p>{workflowStages[0].detail}</p>
+      </div>
+      <button class="workflow-control" type="button" data-workflow-control aria-describedby="workflow-note">
+        {workflowStages[0].action}
+      </button>
+      <p id="workflow-note" class="sr-only">Activates the next stage in an illustrative workflow.</p>
+    </div>
+  </li>
+
+  <li class="project-index-row project-supporting">
+    <div>
+      <h3><a href="https://aka.ms/student-learning-series-website">Build Your Personal Brand with Copilot <span aria-hidden="true">↗</span></a></h3>
+      <p>A YouTube series for the Microsoft Developer channel that guides college students and beginners through turning an existing PDF resume into a portfolio website with GitHub Copilot.</p>
+      <p class="project-role">I helped create the series with a team and built its website.</p>
+    </div>
+    <a class="project-source-link" href="https://aka.ms/student-learning-series-website">Explore the series <span aria-hidden="true">→</span></a>
+  </li>
+</ul>
+
+<script define:vars={{ workflowStages }}>
+  document.querySelectorAll('[data-project-playground]').forEach((playground) => {
+    const artifact = playground.querySelector('[data-workflow-artifact]');
+    const control = playground.querySelector('[data-workflow-control]');
+    const outputLabel = playground.querySelector('.workflow-output-label');
+    const outputDetail = playground.querySelector('.workflow-output p');
+    const stages = [...playground.querySelectorAll('[data-workflow-stage]')];
+
+    if (!(artifact instanceof HTMLElement) || !(control instanceof HTMLButtonElement) || !(outputLabel instanceof HTMLElement) || !(outputDetail instanceof HTMLElement)) return;
+
+    let state = 0;
+    const render = () => {
+      const stage = workflowStages[state];
+      artifact.dataset.state = String(state);
+      outputLabel.textContent = stage.label;
+      outputDetail.textContent = stage.detail;
+      control.textContent = stage.action;
+      stages.forEach((item, index) => {
+        if (!(item instanceof HTMLElement)) return;
+        if (index === state) item.setAttribute('aria-current', 'step');
+        else item.removeAttribute('aria-current');
+      });
+    };
+
+    control.addEventListener('click', () => {
+      state = state === workflowStages.length - 1 ? 0 : state + 1;
+      render();
+    });
+  });
+</script>
