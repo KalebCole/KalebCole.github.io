@@ -352,22 +352,21 @@ html[data-mode="dark"] [data-icon-dark] {
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
     "greeting"
+    "portrait"
     "statement"
     "subtitle"
-    "actions"
-    "portrait";
+    "actions";
   align-items: center;
   column-gap: 1rem;
   row-gap: 1.35rem;
   padding-block: clamp(2.75rem, 9vw, 7rem);
 }
 
-.home-heading { display: contents; }
-
 .home-greeting,
 .home-statement {
   display: block;
   min-width: 0;
+  font-weight: 800;
   letter-spacing: -.0375em;
   text-wrap: balance;
 }
@@ -1205,7 +1204,8 @@ html[data-mode="dark"] .prose {
   .home-hero {
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
-      "heading portrait"
+      "greeting portrait"
+      "statement portrait"
       "subtitle portrait"
       "actions portrait";
     align-items: center;
@@ -1215,25 +1215,17 @@ html[data-mode="dark"] .prose {
     padding-block: clamp(2rem, 2.5vw, 3rem);
   }
 
-  .home-heading {
+  .home-greeting,
+  .home-statement {
     display: block;
-    grid-area: heading;
     max-width: 9.25em;
     font-size: clamp(2.55rem, 7.2vw, 6rem);
     letter-spacing: -.0375em;
     line-height: .88;
   }
 
-  .home-greeting,
-  .home-statement {
-    display: inline;
-    max-width: none;
-    font-size: inherit;
-    line-height: inherit;
-  }
-
   .portrait-mount {
-    grid-row: 1 / 4;
+    grid-row: 1 / 5;
     align-self: center;
     width: min(300px, calc(100% - 12px));
     margin: 0 12px 0 0;
@@ -1263,7 +1255,8 @@ html[data-mode="dark"] .prose {
     padding-block: 1rem;
   }
 
-  .home-heading {
+  .home-greeting,
+  .home-statement {
     max-width: 11em;
     font-size: clamp(2.75rem, 5.75vw, 5.25rem);
   }
@@ -1472,7 +1465,6 @@ html[data-mode="dark"] .prose {
     animation: settle-down 1100ms var(--ease-settle) both;
   }
 
-  .home-heading,
   .home-greeting,
   .home-statement,
   .home-subtitle,

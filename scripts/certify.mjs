@@ -238,6 +238,7 @@ assert.equal(
 );
 
 const packageJson = JSON.parse(text(join(root, 'package.json')));
+const globalCss = text(join(root, 'src', 'styles', 'global.css'));
 assert.equal(packageJson.scripts.prebuild, 'npm run portrait', 'normal builds must regenerate every portrait derivative');
 
 const writingIndex = text(routes.get('/blog/'));
@@ -298,7 +299,18 @@ for (const [surface, html] of [['homepage', homepage], ['Projects index', projec
     assert.match(html, /Agentic CLI for Microsoft Employees to print hassle-free at the Redmond campus/i, `${surface} uprint card must match the GitHub About description`);
   }
 }
-assert.ok(homepage.indexOf('class="home-actions"') < homepage.indexOf('class="portrait-mount"'), 'homepage source order must place the complete introduction and actions before the portrait');
+assert.match(
+  globalCss,
+  /grid-template-areas:\s*"greeting"\s*"portrait"\s*"statement"\s*"subtitle"\s*"actions";/,
+  'homepage mobile layout must place the portrait between the greeting and statement',
+);
+const homepageGreetingIndex = homepage.indexOf('class="home-greeting"');
+const homepagePortraitIndex = homepage.indexOf('class="portrait-mount"');
+const homepageStatementIndex = homepage.indexOf('class="home-statement"');
+assert.ok(
+  homepageGreetingIndex < homepagePortraitIndex && homepagePortraitIndex < homepageStatementIndex,
+  'homepage source order must place the portrait between the greeting and statement',
+);
 assert.ok(existsSync(join(dist, 'projects', 'uprint-website.webp')), 'production build must emit the uprint website preview');
 assert.ok(
   existsSync(localAsset('/projects/partiful-cli-website.webp')),

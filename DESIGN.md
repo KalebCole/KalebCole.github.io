@@ -167,10 +167,10 @@ add metrics, credentials, or conversion-focused copy.
 
 - Above 760px, retain the asymmetric homepage and writing grids.
 - At 760px and below, every multi-column composition becomes one continuous
-  source-ordered column.
-- Homepage mobile order is navigation, complete introduction and actions,
-  portrait, recent projects, then recent writing. Never put the portrait before
-  the words or squeeze it beside a narrowed paragraph.
+  column.
+- Homepage mobile order is navigation, greeting, portrait, the rest of the
+  introduction and actions, recent projects, then recent writing. Never put the
+  portrait before the greeting or squeeze it beside a narrowed paragraph.
 - At 320px, display type must fit without clipping or page-level horizontal
   scrolling. Lower a fluid minimum when the actual heading copy requires it.
 - At 200% text size and 400% browser zoom, preserve source order, content, and
@@ -385,8 +385,8 @@ zero missing icon requests.
   must not describe the layout.
 - Print mounts retain dark `light-ink` text on the near-white mount in both
   modes. Do not place blue-hour light ink on `dark-mount`.
-- On phones, complete the introduction first, then begin the portrait 1.25rem
-  below it with a further 0.5rem optical offset.
+- On phones, place the portrait after the greeting and before the rest of the
+  introduction, with the existing 0.5rem optical offset.
 - Move directly into the three newest published pieces using the approved split
   composition. End with one `All writing →` link.
 - Follow with a compact, capped recent-recommendations sibling using the same
