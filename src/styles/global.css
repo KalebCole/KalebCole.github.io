@@ -460,18 +460,85 @@ html[data-mode="dark"] [data-icon-dark] {
   gap: clamp(1.5rem, 3vw, 2.5rem) clamp(1rem, 3vw, 2rem);
 }
 
-.home-project-index .project-role {
-  display: none;
+.home-project-row {
+  min-width: 0;
+  border-bottom: 1px solid var(--rule);
 }
 
-.home-project-index .project-visual {
-  margin-bottom: 1rem;
+.home-project-link {
+  display: grid;
+  min-width: 0;
+  gap: 1rem;
+  padding-block: 1rem 1.25rem;
+  color: var(--ink);
+  text-decoration: none;
 }
 
-.project-index.home-project-index h3 {
-  margin-top: .4rem;
+.project-system-diagram {
+  display: block;
+  width: 100%;
+  max-width: 30rem;
+  overflow: visible;
+  color: var(--blue);
+}
+
+.project-system-line,
+.project-system-branch,
+.project-system-node,
+.project-system-paper,
+.project-system-window,
+.project-system-signal,
+.project-system-core,
+.project-system-port {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+.project-system-line,
+.project-system-branch {
+  stroke-width: 2;
+  opacity: .68;
+}
+
+.project-system-node,
+.project-system-core {
+  stroke-width: 2.5;
+}
+
+.project-system-paper,
+.project-system-window,
+.project-system-signal {
+  stroke-width: 2;
+}
+
+.project-system-port {
+  fill: var(--ground);
+  stroke-width: 2;
+}
+
+.project-system-pulse {
+  fill: var(--coral);
+}
+
+.home-project-link .project-index-copy {
+  display: block;
+}
+
+.home-project-link .repo-name {
+  display: block;
   font-size: clamp(1.1rem, 2vw, 1.45rem);
   line-height: 1.15;
+}
+
+.home-project-link .repo-desc,
+.home-project-link .project-role {
+  display: block;
+}
+
+.home-project-link .project-role {
+  margin-top: .75rem;
 }
 
 .all-projects-link {
@@ -1363,6 +1430,19 @@ html[data-mode="dark"] .prose {
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .project-system-pulse {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .project-system-pulse-one {
+    animation: project-signal-in 2.6s var(--ease-settle) 2 both;
+  }
+
+  .project-system-pulse-two {
+    animation: project-signal-out 2.6s var(--ease-settle) 2 both;
+  }
+
   .site-header {
     animation: settle-down 1100ms var(--ease-settle) both;
   }
@@ -1414,6 +1494,20 @@ html[data-mode="dark"] .prose {
   @keyframes portrait-settle {
     from { transform: translate(30px, 25px) rotate(8deg); }
     to { transform: translate(0) rotate(2deg); }
+  }
+
+  @keyframes project-signal-in {
+    0%, 12% { opacity: 0; transform: translateX(0); }
+    20% { opacity: 1; }
+    45% { opacity: 1; transform: translateX(82px); }
+    54%, 100% { opacity: 0; transform: translateX(82px); }
+  }
+
+  @keyframes project-signal-out {
+    0%, 45% { opacity: 0; transform: translateX(0); }
+    54% { opacity: 1; }
+    79% { opacity: 1; transform: translateX(128px); }
+    88%, 100% { opacity: 0; transform: translateX(128px); }
   }
 }
 

@@ -43,7 +43,62 @@ const displayedProjects = displayedRepos.map((repo) => {
 });
 const Heading = variant === 'home' ? 'h3' : 'h2';
 ---
-<ul class:list={['project-index', { 'home-project-index': variant === 'home' }]}>
+{variant === 'home' ? (
+  <ul class="project-index home-project-index">
+    <li class="project-index-row home-project-row">
+      <a class="home-project-link" href="https://aka.ms/student-learning-series-website">
+        <svg class="project-system-diagram" viewBox="0 0 480 132" aria-hidden="true" focusable="false">
+          <path class="project-system-line" d="M76 66H168M312 66H404" />
+          <path class="project-system-branch" d="M240 30V102M204 48L276 84M276 48L204 84" />
+          <rect class="project-system-node project-system-input" x="24" y="34" width="52" height="64" rx="2" />
+          <path class="project-system-paper" d="M38 48H62M38 60H62M38 72H54" />
+          <circle class="project-system-core" cx="240" cy="66" r="36" />
+          <circle class="project-system-port" cx="204" cy="48" r="4" />
+          <circle class="project-system-port" cx="276" cy="48" r="4" />
+          <circle class="project-system-port" cx="204" cy="84" r="4" />
+          <circle class="project-system-port" cx="276" cy="84" r="4" />
+          <rect class="project-system-node project-system-output" x="404" y="34" width="52" height="64" rx="2" />
+          <path class="project-system-window" d="M416 48H444M416 60H444M416 60V84M430 60V84" />
+          <circle class="project-system-pulse project-system-pulse-one" cx="122" cy="66" r="5" />
+          <circle class="project-system-pulse project-system-pulse-two" cx="276" cy="66" r="5" />
+        </svg>
+        <span class="project-index-copy">
+          <Heading class="repo-name">Build Your Personal Brand with Copilot <span aria-hidden="true">↗</span></Heading>
+          <span class="repo-desc">A YouTube series for the Microsoft Developer channel that guides college students and beginners through turning an existing PDF resume into a portfolio website with GitHub Copilot.</span>
+          <span class="project-role">I helped create the series with a team and built its website.</span>
+          <span class="sr-only"> Opens the project website.</span>
+        </span>
+      </a>
+    </li>
+    {displayedProjects.slice(0, 1).map((r) => (
+      <li class="project-index-row home-project-row">
+        <a class="home-project-link" href={r.url}>
+          <svg class="project-system-diagram" viewBox="0 0 480 132" aria-hidden="true" focusable="false">
+            <path class="project-system-line" d="M76 66H168M312 66H404" />
+            <path class="project-system-branch" d="M240 30V102M204 48L276 84M276 48L204 84" />
+            <circle class="project-system-node project-system-input" cx="50" cy="66" r="26" />
+            <path class="project-system-signal" d="M36 66H64M50 52V80" />
+            <circle class="project-system-core" cx="240" cy="66" r="36" />
+            <circle class="project-system-port" cx="204" cy="48" r="4" />
+            <circle class="project-system-port" cx="276" cy="48" r="4" />
+            <circle class="project-system-port" cx="204" cy="84" r="4" />
+            <circle class="project-system-port" cx="276" cy="84" r="4" />
+            <path class="project-system-node project-system-output" d="M430 36L454 50V82L430 96L406 82V50Z" />
+            <path class="project-system-window" d="M420 58H440M420 70H440" />
+            <circle class="project-system-pulse project-system-pulse-one" cx="122" cy="66" r="5" />
+            <circle class="project-system-pulse project-system-pulse-two" cx="276" cy="66" r="5" />
+          </svg>
+          <span class="project-index-copy">
+            <Heading class="repo-name">{r.name} <span aria-hidden="true">↗</span></Heading>
+            {r.description && <span class="repo-desc">{r.description}</span>}
+            <span class="sr-only"> Opens the project source or website.</span>
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
+) : (
+<ul class="project-index">
   <li class="project-index-row project-index-row-series">
     <a class="project-visual" href="https://aka.ms/student-learning-series-website">
       <img
@@ -80,3 +135,4 @@ const Heading = variant === 'home' ? 'h3' : 'h2';
     </li>
   ))}
 </ul>
+)}
