@@ -400,11 +400,11 @@ zero missing icon requests.
   consistently, retain medium, title, source or author, UTC date, and optional
   My thoughts, then end with `All recommendations →`.
 - Omit the recommendations sibling when no published recommendations exist.
-- Show up to three projects before Recent writing and end that preview with a
+- Show up to two projects before Recent writing and end that preview with a
   link to the full Projects page. Do not add a credential strip, metrics, or
   conversion-focused copy.
 
-Entrance choreography, always from an already-visible default:
+Homepage entrance choreography, always from an already-visible default:
 
 | Element | Motion |
 | --- | --- |
@@ -413,15 +413,55 @@ Entrance choreography, always from an already-visible default:
 | Portrait | Enter from 30px by 25px and 8-degree rotation over 1550ms after 350ms; rest at 2 degrees |
 | Recent writing | Settle up over 1250ms after 700ms |
 
-Use `cubic-bezier(.16, 1, .3, 1)`. Writing rows move 0.55rem toward the reading
-direction over 240ms on hover while changing to cobalt. The portrait
-straightens, lifts 6px, and extends its shadow over 300ms.
+Use `cubic-bezier(.16, 1, .3, 1)`. The portrait straightens, lifts 6px, and
+extends its shadow over 300ms.
 
 When a live viewport crosses the 850px homepage breakpoint, settle each hero
 item from its previous screen position into the new composition over 520ms
 with the standard easing. Keep moving items fully opaque. Do not run this motion
 on initial page load. Keep the instant layout change when reduced motion is
 requested or JavaScript is unavailable.
+
+#### Publication Story Beats
+
+The Homepage uses one-shot Publication Story Beats after the hero, in source
+order: Recent projects heading, each project visual and copy block, All
+projects link, Recent writing heading, each writing row, All writing link,
+Recent recommendations heading, each recommendation row, then All
+recommendations link. The hero does not receive Publication Story Beats.
+
+Projects uses Project Story Beats in source order: page heading, each project
+visual and copy block, then the final `Still curious?` onward section and its
+GitHub link.
+
+**Quick Snap.** A beat that begins below the initial viewport enters once when
+it intersects: 34px from alternating left and right directions on screens wider
+than 760px, or 34px from below at 760px and below. It starts at opacity 0 with
+a 2px blur and ends at opacity 1 with no blur. Use 430ms
+`cubic-bezier(.2, .8, .2, 1)` timing and a source-order stagger capped at 55ms.
+Base content remains visible before JavaScript and when observer or animation
+support is absent. Do not replay a beat after it has entered.
+
+**Edge Tilt.** On fine-pointer hover, project visuals use the pointer position
+to tilt up to 4 degrees on X and 5 degrees on Y, lift 6px, and cast an opposing
+coral hard shadow. Images scale to about 1.055 and move inversely by up to 5px.
+Keyboard focus provides the centered non-pointer equivalent: a 6px lift and
+centered coral shadow without tilt. Coarse-pointer press provides a small
+`scale(.985)` state without blocking normal navigation.
+
+**Reading Nudge.** On fine-pointer hover, Writing and Homepage recommendation
+rows move 0.55rem toward the reading direction over 240ms and change the title
+link to cobalt.
+
+Scroll entrances use the independent CSS `translate` property. Edge Tilt,
+image depth, Reading Nudge, and other hover states use `transform`; neither
+system may overwrite the other.
+
+Under `prefers-reduced-motion: reduce`, remove Publication and Project Story
+Beats, tilt, image depth, Reading Nudge movement, and touch press transforms.
+Project visuals instead use the Static Mount: no transition or transform and a
+fixed `6px 7px 0 var(--coral)` shadow. Article pages have no publication-motion
+hooks or interactive prose motion.
 
 ### Portrait and editorial imagery
 
@@ -649,7 +689,7 @@ through an explicit decision backed by measured user benefit.
 ### Do
 
 - **Do** let visitors meet a person before presenting publishing modes.
-- **Do** keep the homepage project preview capped at three and visually
+- **Do** keep the homepage project preview capped at two and visually
   subordinate to the introduction.
 - **Do** preserve first-person uncertainty, enthusiasm, humor, and changing
   interests in copy.
