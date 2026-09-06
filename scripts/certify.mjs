@@ -247,9 +247,15 @@ const projectsSource = text(join(root, 'src', 'pages', 'projects.astro'));
 const breakpointMotionSource = text(join(root, 'src', 'scripts', 'home-breakpoint-motion.mjs'));
 assert.equal(packageJson.scripts.prebuild, 'npm run portrait', 'normal builds must regenerate every portrait derivative');
 assert.match(publicationMotionSource, /initProjectPointerMotion/, 'publication motion must provide project pointer tracking');
-assert.match(globalCss, /\.project-visual\s*\{[\s\S]*?transform:/, 'project visual depth must use transform');
+const finePointerEdgeTilt = globalCss.match(/@media \(hover: hover\) and \(pointer: fine\) \{[\s\S]*?\.project-index-row:hover \.project-visual \{[\s\S]*?\n  \}/)?.[0] ?? '';
+assert.doesNotMatch(
+  globalCss.match(/\.project-visual\s*\{([\s\S]*?)\n\}/)?.[1] ?? '',
+  /(?:--motion-[xy]|perspective|rotate[XY])/,
+  'resting project visuals must not apply pointer-position Edge Tilt outside fine-pointer hover',
+);
 assert.match(publicationMotionSource, /translate:/, 'project entrances must continue using translate');
-assert.match(globalCss, /@media \(hover: hover\) and \(pointer: fine\) \{[\s\S]*?\.project-index-row:hover \.project-visual \{[\s\S]*?perspective[\s\S]*?rotateX[\s\S]*?-4deg[\s\S]*?rotateY[\s\S]*?5deg[\s\S]*?translateY\(-6px\)[\s\S]*?box-shadow:/, 'fine-pointer hover must provide bounded tilt, lift, and coral shadow');
+assert.match(finePointerEdgeTilt, /perspective[\s\S]*?rotateX[\s\S]*?-4deg[\s\S]*?rotateY[\s\S]*?5deg[\s\S]*?translateY\(-6px\)[\s\S]*?box-shadow:/, 'fine-pointer hover must provide bounded tilt, lift, and coral shadow');
+assert.match(globalCss, /@media \(hover: hover\) \{[\s\S]*?\.portrait-mount:hover \{[\s\S]*?box-shadow: 14px 18px 0 var\(--coral\);[\s\S]*?transform: translateY\(-6px\) rotate\(0\);/, 'portrait hover must remain available on hover-capable devices');
 const projectImageBase = globalCss.match(/\.project-visual img\s*\{([\s\S]*?)\n\}/)?.[1] ?? '';
 assert.doesNotMatch(projectImageBase, /\btransform\s*:/, 'resting project images must remain untransformed');
 assert.match(globalCss, /@media \(hover: hover\) and \(pointer: fine\) \{[\s\S]*?\.project-index-row:hover \.project-visual img\s*\{[\s\S]*?scale\(1\.055\)[\s\S]*?translate3d\(/, 'only fine-pointer hover may apply project image scale and inverse pointer depth');
@@ -266,6 +272,8 @@ assert.ok(
   'coarse pressed state must cascade after keyboard and hover project states',
 );
 assert.match(globalCss, /\.writing-row:has\(a:hover\),[\s\S]*?\.home-recommendation-row:has\(a:hover\)\s*\{[\s\S]*?translateX\(\.55rem\)[\s\S]*?\.writing-row:has\(a:hover\) h3 a,[\s\S]*?color: var\(--blue\);/, 'writing and recommendations must retain their Reading Nudge');
+assert.match(globalCss, /\.home-page \.writing-row:focus-within,[\s\S]*?\.home-page \.home-recommendation-row:focus-within\s*\{[\s\S]*?translateX\(\.55rem\)[\s\S]*?\.home-page \.writing-row:focus-within h3 a,[\s\S]*?color: var\(--blue\);/, 'homepage Reading Nudge must provide the same keyboard focus movement and cobalt title color');
+assert.doesNotMatch(globalCss, /(?:^|\n)\s*\.writing-row:focus-within\s*\{/m, 'keyboard Reading Nudge must not affect writing indexes or article pages');
 assert.match(globalCss, /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\.project-visual,[\s\S]*?\.project-visual img\s*\{[\s\S]*?transition: none;[\s\S]*?transform: none !important;[\s\S]*?\.project-visual\s*\{[\s\S]*?box-shadow: 6px 7px 0 var\(--coral\);/, 'reduced motion must provide the fixed project Static Mount');
 assert.doesNotMatch(globalCss, /\.prose[^,{]*(?::hover|:active|:focus-within)/, 'article prose must not gain interaction motion');
 assert.match(
@@ -277,6 +285,11 @@ assert.equal(
   matches(homepageSource, /\binitPublicationMotion\(\)/g).length,
   1,
   'homepage must initialize publication motion exactly once',
+);
+assert.doesNotMatch(
+  globalCss,
+  /\.recent-(?:projects|writing|recommendations)\s*\{\s*animation:/,
+  'homepage sections must not retain superseded settle-up entrances outside Publication Story Beats',
 );
 assert.match(
   breakpointMotionSource,
