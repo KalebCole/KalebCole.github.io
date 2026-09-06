@@ -898,6 +898,10 @@ html[data-mode="dark"] .prose {
   box-shadow: 0 6px 0 var(--coral);
 }
 
+.project-index-row:focus-within .project-visual img {
+  transform: scale(1.055) translate3d(0, 0, 0);
+}
+
 .project-index-copy {
   padding: 0;
 }
@@ -1556,7 +1560,7 @@ html[data-mode="dark"] .prose {
 }
 
 @media (pointer: coarse) {
-  .project-visual:active {
+  .project-index-row .project-visual:active {
     transform: scale(.985);
   }
 }

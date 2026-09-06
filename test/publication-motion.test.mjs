@@ -145,6 +145,19 @@ test('reduced motion does not initialize project pointer tracking', () => {
   assert.deepEqual([...row.listeners.keys()], []);
 });
 
+test('publication motion cleanup removes project pointer listeners', () => {
+  const target = motionElement(700);
+  const row = pointerRow();
+  const { browserWindow, root } = motionEnvironment([target]);
+  root.querySelectorAll = (selector) => selector === '.project-index-row' ? [row] : [target];
+
+  const cleanup = initPublicationMotion(root, browserWindow);
+  assert.deepEqual([...row.listeners.keys()], ['pointermove', 'pointerleave']);
+  cleanup();
+
+  assert.deepEqual([...row.listeners.keys()], []);
+});
+
 test('observes only motion beats below the initial viewport', () => {
   const visible = motionElement(120);
   const belowFold = motionElement(700);

@@ -252,7 +252,13 @@ assert.match(publicationMotionSource, /translate:/, 'project entrances must cont
 assert.match(globalCss, /@media \(hover: hover\) \{[\s\S]*?\.project-index-row:hover \.project-visual \{[\s\S]*?perspective[\s\S]*?rotateX[\s\S]*?-4deg[\s\S]*?rotateY[\s\S]*?5deg[\s\S]*?translateY\(-6px\)[\s\S]*?box-shadow:/, 'project hover must provide bounded tilt, lift, and coral shadow');
 assert.match(globalCss, /\.project-visual img\s*\{[\s\S]*?scale\(1\.055\)[\s\S]*?translate3d\(/, 'project images must provide bounded inverse pointer depth');
 assert.match(globalCss, /\.project-index-row:focus-within \.project-visual\s*\{[\s\S]*?translateY\(-6px\)[\s\S]*?box-shadow: 0 6px 0 var\(--coral\)/, 'keyboard project depth must use a centered fallback');
-assert.match(globalCss, /@media \(pointer: coarse\) \{[\s\S]*?\.project-visual:active\s*\{[\s\S]*?scale\(\.985\)/, 'coarse pointers must have a pressed project state');
+assert.match(globalCss, /\.project-index-row:focus-within \.project-visual img\s*\{[\s\S]*?scale\(1\.055\) translate3d\(0, 0, 0\)/, 'keyboard project depth must reset image parallax while preserving scale');
+assert.match(globalCss, /@media \(pointer: coarse\) \{[\s\S]*?\.project-index-row \.project-visual:active\s*\{[\s\S]*?scale\(\.985\)/, 'coarse pointers must have a pressed project state that can override project hover and focus transforms');
+assert.ok(
+  globalCss.indexOf('@media (pointer: coarse)') > globalCss.indexOf('.project-index-row:focus-within .project-visual')
+    && globalCss.indexOf('@media (pointer: coarse)') > globalCss.indexOf('.project-index-row:hover .project-visual'),
+  'coarse pressed state must cascade after keyboard and hover project states',
+);
 assert.match(globalCss, /\.writing-row:has\(a:hover\),[\s\S]*?\.home-recommendation-row:has\(a:hover\)\s*\{[\s\S]*?translateX\(\.55rem\)[\s\S]*?\.writing-row:has\(a:hover\) h3 a,[\s\S]*?color: var\(--blue\);/, 'writing and recommendations must retain their Reading Nudge');
 assert.match(globalCss, /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\.project-visual,[\s\S]*?\.project-visual img\s*\{[\s\S]*?transition: none;[\s\S]*?transform: none !important;[\s\S]*?\.project-visual\s*\{[\s\S]*?box-shadow: 6px 7px 0 var\(--coral\);/, 'reduced motion must provide the fixed project Static Mount');
 assert.doesNotMatch(globalCss, /\.prose[^,{]*(?::hover|:active|:focus-within)/, 'article prose must not gain interaction motion');
