@@ -240,14 +240,56 @@ assert.equal(
 
 const packageJson = JSON.parse(text(join(root, 'package.json')));
 const globalCss = text(join(root, 'src', 'styles', 'global.css'));
+const publicationMotionSource = text(join(root, 'src', 'scripts', 'publication-motion.mjs'));
 const polaroidSource = text(join(root, 'src', 'components', 'Polaroid.astro'));
 const homepageSource = text(join(root, 'src', 'pages', 'index.astro'));
+const projectsSource = text(join(root, 'src', 'pages', 'projects.astro'));
 const breakpointMotionSource = text(join(root, 'src', 'scripts', 'home-breakpoint-motion.mjs'));
 assert.equal(packageJson.scripts.prebuild, 'npm run portrait', 'normal builds must regenerate every portrait derivative');
+assert.match(publicationMotionSource, /initProjectPointerMotion/, 'publication motion must provide project pointer tracking');
+const finePointerEdgeTilt = globalCss.match(/@media \(hover: hover\) and \(pointer: fine\) \{[\s\S]*?\.project-index-row:hover \.project-visual \{[\s\S]*?\n  \}/)?.[0] ?? '';
+assert.doesNotMatch(
+  globalCss.match(/\.project-visual\s*\{([\s\S]*?)\n\}/)?.[1] ?? '',
+  /(?:--motion-[xy]|perspective|rotate[XY])/,
+  'resting project visuals must not apply pointer-position Edge Tilt outside fine-pointer hover',
+);
+assert.match(publicationMotionSource, /translate:/, 'project entrances must continue using translate');
+assert.match(finePointerEdgeTilt, /perspective[\s\S]*?rotateX[\s\S]*?-4deg[\s\S]*?rotateY[\s\S]*?5deg[\s\S]*?translateY\(-6px\)[\s\S]*?box-shadow:/, 'fine-pointer hover must provide bounded tilt, lift, and coral shadow');
+assert.match(globalCss, /@media \(hover: hover\) \{[\s\S]*?\.portrait-mount:hover \{[\s\S]*?box-shadow: 14px 18px 0 var\(--coral\);[\s\S]*?transform: translateY\(-6px\) rotate\(0\);/, 'portrait hover must remain available on hover-capable devices');
+const projectImageBase = globalCss.match(/\.project-visual img\s*\{([\s\S]*?)\n\}/)?.[1] ?? '';
+assert.doesNotMatch(projectImageBase, /\btransform\s*:/, 'resting project images must remain untransformed');
+assert.match(globalCss, /@media \(hover: hover\) and \(pointer: fine\) \{[\s\S]*?\.project-index-row:hover \.project-visual img\s*\{[\s\S]*?scale\(1\.055\)[\s\S]*?translate3d\(/, 'only fine-pointer hover may apply project image scale and inverse pointer depth');
+assert.match(globalCss, /\.project-index-row:focus-within \.project-visual\s*\{[\s\S]*?translateY\(-6px\)[\s\S]*?box-shadow: 0 6px 0 var\(--coral\)/, 'keyboard project depth must use a centered fallback');
+assert.match(globalCss, /\.project-index-row:focus-within \.project-visual img\s*\{[\s\S]*?scale\(1\.055\) translate3d\(0, 0, 0\)/, 'keyboard project depth must reset image parallax while preserving scale');
+assert.ok(
+  globalCss.indexOf('.project-index-row:focus-within .project-visual') > globalCss.indexOf('.project-index-row:hover .project-visual'),
+  'keyboard project depth must cascade after equal-specificity hover depth so focus wins during simultaneous hover',
+);
+assert.match(globalCss, /@media \(pointer: coarse\) \{[\s\S]*?\.project-index-row \.project-visual:active\s*\{[\s\S]*?scale\(\.985\)/, 'coarse pointers must have a pressed project state that can override project hover and focus transforms');
+assert.ok(
+  globalCss.indexOf('@media (pointer: coarse)') > globalCss.indexOf('.project-index-row:focus-within .project-visual')
+    && globalCss.indexOf('@media (pointer: coarse)') > globalCss.indexOf('.project-index-row:hover .project-visual'),
+  'coarse pressed state must cascade after keyboard and hover project states',
+);
+assert.match(globalCss, /\.writing-row:has\(a:hover\),[\s\S]*?\.home-recommendation-row:has\(a:hover\)\s*\{[\s\S]*?translateX\(\.55rem\)[\s\S]*?\.writing-row:has\(a:hover\) h3 a,[\s\S]*?color: var\(--blue\);/, 'writing and recommendations must retain their Reading Nudge');
+assert.match(globalCss, /\.home-page \.writing-row:focus-within,[\s\S]*?\.home-page \.home-recommendation-row:focus-within\s*\{[\s\S]*?translateX\(\.55rem\)[\s\S]*?\.home-page \.writing-row:focus-within h3 a,[\s\S]*?color: var\(--blue\);/, 'homepage Reading Nudge must provide the same keyboard focus movement and cobalt title color');
+assert.doesNotMatch(globalCss, /(?:^|\n)\s*\.writing-row:focus-within\s*\{/m, 'keyboard Reading Nudge must not affect writing indexes or article pages');
+assert.match(globalCss, /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\.project-visual,[\s\S]*?\.project-visual img\s*\{[\s\S]*?transition: none;[\s\S]*?transform: none !important;[\s\S]*?\.project-visual\s*\{[\s\S]*?box-shadow: 6px 7px 0 var\(--coral\);/, 'reduced motion must provide the fixed project Static Mount');
+assert.doesNotMatch(globalCss, /\.prose[^,{]*(?::hover|:active|:focus-within)/, 'article prose must not gain interaction motion');
 assert.match(
   homepageSource,
   /import \{ initHomeBreakpointMotion \} from '\.\.\/scripts\/home-breakpoint-motion\.mjs';[\s\S]*?initHomeBreakpointMotion\(\);/,
   'homepage must initialize the breakpoint layout motion',
+);
+assert.equal(
+  matches(homepageSource, /\binitPublicationMotion\(\)/g).length,
+  1,
+  'homepage must initialize publication motion exactly once',
+);
+assert.doesNotMatch(
+  globalCss,
+  /\.recent-(?:projects|writing|recommendations)\s*\{\s*animation:/,
+  'homepage sections must not retain superseded settle-up entrances outside Publication Story Beats',
 );
 assert.match(
   breakpointMotionSource,
@@ -263,16 +305,32 @@ const writingIndex = text(routes.get('/blog/'));
 assert.match(writingIndex, /<title>Writing \| Kaleb Cole<\/title>/i, 'Writing index document title');
 
 const articlePreview = text(routes.get('/blog/hello-world/'));
+for (const [route, path] of routes) {
+  if (route.startsWith('/blog/') && route !== '/blog/') {
+    assert.doesNotMatch(text(path), /\bdata-motion-beat\b/i, `${route} article output must not contain publication motion hooks`);
+  }
+}
 assert.equal(metaContent(articlePreview, 'property', 'og:image'), homepageImageUrl, 'articles must share the homepage Open Graph image');
 assert.equal(metaContent(articlePreview, 'name', 'twitter:image'), homepageImageUrl, 'article Twitter cards must share the homepage image');
 
 assert.doesNotMatch(homepage, /This is where I write through the ideas that get stuck in my head\./i, 'retired hero copy must stay removed');
 assert.match(homepage, /href="\/projects"[^>]*>\s*See my projects\s*<\/a>/i, 'homepage hero must link to Projects');
 assert.match(homepage, /href="\/blog"[^>]*>\s*Read my writing\s*<\/a>/i, 'homepage hero must link to Writing');
-assert.match(homepage, /<section\b[^>]*class="recent-projects"[\s\S]*?<h2[^>]*>Recent projects<\/h2>/i, 'homepage must include Recent projects');
-assert.match(homepage, /class="all-projects-link"[^>]*href="\/projects"[^>]*>\s*All projects\s*<span[^>]*>→<\/span>\s*<\/a>/i, 'homepage project preview must end with a minimal All projects link');
+const homepageHero = homepage.match(/<section\b[^>]*class="home-hero"[^>]*>[\s\S]*?<\/section>/i)?.[0] ?? '';
+assert.doesNotMatch(homepageHero, /\bdata-motion-beat\b/i, 'homepage hero and its children must not receive publication motion hooks');
+assert.match(homepage, /<section\b[^>]*class="recent-writing"[\s\S]*?<div\b[^>]*class="recent-heading"[^>]*\bdata-motion-beat\b[^>]*>[\s\S]*?<h2[^>]*>Recent writing<\/h2>/i, 'Recent writing heading must be a publication motion beat');
+const homepageWritingRows = matches(homepage, /<article\b[^>]*class="writing-row"[^>]*>/gi);
+const homepageWritingMotionRows = matches(homepage, /<article\b[^>]*class="writing-row"[^>]*\bdata-motion-beat\b[^>]*>/gi);
+assert.equal(homepageWritingMotionRows.length, homepageWritingRows.length, 'every homepage writing row must be a publication motion beat');
+assert.match(homepage, /class="all-writing-link"[^>]*\bdata-motion-beat\b[^>]*href="\/blog"[^>]*>\s*All writing/i, 'homepage writing preview must end with a motion-enabled All writing link');
+assert.match(homepage, /<section\b[^>]*class="recent-projects"[\s\S]*?<div\b[^>]*class="recent-heading"[^>]*\bdata-motion-beat\b[^>]*>[\s\S]*?<h2[^>]*>Recent projects<\/h2>/i, 'Recent projects heading must be a publication motion beat');
+assert.match(homepage, /class="all-projects-link"[^>]*\bdata-motion-beat\b[^>]*href="\/projects"[^>]*>\s*All projects\s*<span[^>]*>→<\/span>\s*<\/a>/i, 'homepage project preview must end with a motion-enabled All projects link');
 const homepageProjectCards = matches(homepage, /<li\b[^>]*class="[^"]*project-index-row[^"]*"[^>]*>/gi);
+const homepageProjectVisuals = matches(homepage, /<a\b[^>]*class="project-visual"[^>]*\bdata-motion-beat\b[^>]*>/gi);
+const homepageProjectCopies = matches(homepage, /<div\b[^>]*class="project-index-copy"[^>]*\bdata-motion-beat\b[^>]*>/gi);
 assert.ok(homepageProjectCards.length > 0 && homepageProjectCards.length <= 2, 'homepage must show between one and two projects');
+assert.equal(homepageProjectVisuals.length, homepageProjectCards.length, 'every homepage project visual must be a publication motion beat');
+assert.equal(homepageProjectCopies.length, homepageProjectCards.length, 'every homepage project copy block must be a publication motion beat');
 assert.match(homepage, /Build Your Personal Brand with Copilot/i, 'homepage must use the published series title');
 assert.match(homepage, /A YouTube series for the Microsoft Developer channel that guides college students and beginners through turning an existing PDF resume into a portfolio website with GitHub Copilot\./i, 'homepage must explain the series audience and outcome');
 assert.doesNotMatch(homepage, /Website \+ video/i, 'homepage must not show redundant project taxonomy');
@@ -310,6 +368,21 @@ assert.match(
 assert.match(pinnedReposSource, /const override = repoOverrides\[repo\.name as keyof typeof repoOverrides\]/, 'repository overrides must apply on every project surface');
 assert.doesNotMatch(pinnedReposSource, /variant === ['"]home['"]\s*\?\s*repoOverrides/, 'repository overrides must not be homepage-only');
 assert.match(projectsPage, /Build Your Personal Brand with Copilot/i, 'Projects index must include the published series title');
+assert.match(projectsPage, /<header\b[^>]*class="page-heading"[^>]*\bdata-motion-beat\b[^>]*>/i, 'Projects heading must be a publication motion beat');
+const projectsCards = matches(projectsPage, /<li\b[^>]*class="[^\"]*project-index-row[^\"]*"[^>]*>/gi);
+const projectsVisuals = matches(projectsPage, /<a\b[^>]*class="project-visual"[^>]*\bdata-motion-beat\b[^>]*>/gi);
+const projectsCopies = matches(projectsPage, /<div\b[^>]*class="project-index-copy"[^>]*\bdata-motion-beat\b[^>]*>/gi);
+assert.ok(projectsCards.length > 0, 'Projects index must render projects');
+assert.equal(projectsVisuals.length, projectsCards.length, 'every Projects visual must be a publication motion beat');
+assert.equal(projectsCopies.length, projectsCards.length, 'every Projects copy block must be a publication motion beat');
+assert.equal(matches(projectsSource, /\binitPublicationMotion\(\)/g).length, 1, 'Projects must initialize publication motion exactly once');
+const projectsOnward = projectsPage.match(/<section\b[^>]*class="projects-onward"[^>]*\bdata-motion-beat\b[^>]*>[\s\S]*?<\/section>/i)?.[0] ?? '';
+assert.match(projectsOnward, /<h2[^>]*>Still curious\?<\/h2>/i, 'Projects onward section must use the approved heading');
+assert.match(projectsOnward, /I keep more experiments, tools, and unfinished threads on GitHub\./i, 'Projects onward section must use the approved copy');
+assert.match(projectsOnward, /<a\b[^>]*href="https:\/\/github\.com\/KalebCole"[^>]*>\s*Find me on GitHub\s*→\s*<\/a>/i, 'Projects onward section must link to GitHub with the approved label');
+assert.doesNotMatch(projectsOnward, /\btarget=/i, 'Projects onward GitHub link must open in the same tab');
+assert.ok(projectsPage.lastIndexOf('class="projects-onward"') > projectsPage.lastIndexOf('class="project-index-row'), 'Projects onward section must be the final project motion beat');
+assert.doesNotMatch(projectsPage, /\b(?:case study|case-study|metrics?|stars|forks|language)\b/i, 'Projects index must not add metrics, project-language metadata, or case-study framing');
 for (const [surface, html] of [['homepage', homepage], ['Projects index', projectsPage]]) {
   if (/uprint-cli/i.test(html)) {
     assert.match(html, /href="https:\/\/kalebcole\.github\.io\/uprint-cli\/"/i, `${surface} uprint card must target its website`);
@@ -370,6 +443,7 @@ assert.match(homepage, /class="nav-menu"[\s\S]*data-nav-toggle[^>]*aria-expanded
 assert.match(homepage, /data-nav-toggle[^>]*aria-controls="primary-nav-menu"/i, 'navigation must expose a compact menu trigger');
 
 const recommends = text(routes.get('/recommends/'));
+assert.match(homepage, /<section\b[^>]*class="recent-recommendations"[\s\S]*?<div\b[^>]*class="recent-heading"[^>]*\bdata-motion-beat\b[^>]*>[\s\S]*?<h2[^>]*>Recent recommendations<\/h2>/i, 'Recent recommendations heading must be a publication motion beat');
 assert.match(recommends, /class="recommendations-filter-links"[\s\S]*\?medium=read/i, 'no-JS query filters must exist');
 assert.match(recommends, /data-recommend-filter="all"[^>]*aria-pressed="true"/i, 'enhanced filters must use aria-pressed');
 assert.match(recommends, /role="status"[^>]*aria-live="polite"[^>]*aria-atomic="true"/i, 'filter count must be announced');
@@ -393,6 +467,9 @@ assert.deepEqual(
   'homepage recommendations must match the published newest-first chronology',
 );
 if (homepageRecommendations.length > 0) {
+  const homepageRecommendationMotionRows = matches(homepage, /<article\b[^>]*class="home-recommendation-row"[^>]*\bdata-motion-beat\b[^>]*>/gi);
+  assert.equal(homepageRecommendationMotionRows.length, homepageRecommendations.length, 'every homepage recommendation row must be a publication motion beat');
+  assert.match(homepage, /class="all-recommendations-link"[^>]*\bdata-motion-beat\b[^>]*href="\/recommends"[^>]*>\s*All recommendations/i, 'homepage must end recommendations with a motion-enabled All recommendations link');
   assert.match(homepage, /href="\/recommends"[^>]*>\s*All recommendations/i, 'homepage must link to all recommendations');
   for (const item of homepageRecommendations) {
     assert.match(item, /data-medium="(?:read|watch|listen)"/i, 'homepage recommendation must expose its medium');

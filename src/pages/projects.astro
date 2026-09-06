@@ -4,10 +4,21 @@ import PinnedRepos from '../components/PinnedRepos.astro';
 ---
 <Layout title="Projects | Kaleb Cole" description="Things Kaleb Cole has made or is exploring.">
   <main id="main-content" class="site-shell projects-page">
-    <header class="page-heading">
+    <header class="page-heading" data-motion-beat>
       <h1>Projects</h1>
       <p>Things I’ve built, contributed to, or am currently working on.</p>
     </header>
     <PinnedRepos />
+    <section class="projects-onward" data-motion-beat aria-labelledby="projects-onward-title">
+      <h2 id="projects-onward-title">Still curious?</h2>
+      <p>I keep more experiments, tools, and unfinished threads on GitHub.</p>
+      <a href="https://github.com/KalebCole">Find me on GitHub →</a>
+    </section>
   </main>
+
+  <script>
+    import { initPublicationMotion } from '../scripts/publication-motion.mjs';
+
+    initPublicationMotion();
+  </script>
 </Layout>

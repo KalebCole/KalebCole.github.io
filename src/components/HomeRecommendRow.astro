@@ -19,7 +19,7 @@ const formattedDate = item.data.date.toLocaleDateString('en-US', {
 });
 const source = item.data.source ?? item.data.author;
 ---
-<article class="home-recommendation-row" data-home-recommendation data-medium={item.data.medium}>
+<article class="home-recommendation-row" data-home-recommendation data-motion-beat data-medium={item.data.medium}>
   <div class="home-recommendation-copy">
     <h3 class="home-recommendation-title">
       <a href={item.data.url}>

@@ -45,7 +45,7 @@ const Heading = variant === 'home' ? 'h3' : 'h2';
 ---
 <ul class:list={['project-index', { 'home-project-index': variant === 'home' }]}>
   <li class="project-index-row project-index-row-series">
-    <a class="project-visual" href="https://aka.ms/student-learning-series-website">
+    <a class="project-visual" data-motion-beat href="https://aka.ms/student-learning-series-website">
       <img
         src="https://microsoft.github.io/student-learning-series/assets/share-plate.jpg"
         width="1200"
@@ -55,7 +55,7 @@ const Heading = variant === 'home' ? 'h3' : 'h2';
         alt="Build your personal brand with Copilot series preview"
       />
     </a>
-    <div class="project-index-copy">
+    <div class="project-index-copy" data-motion-beat>
       <Heading><a href="https://aka.ms/student-learning-series-website" class="repo-name">Build Your Personal Brand with Copilot<span aria-hidden="true"> ↗</span></a></Heading>
       <p class="repo-desc">A YouTube series for the Microsoft Developer channel that guides college students and beginners through turning an existing PDF resume into a portfolio website with GitHub Copilot.</p>
       <p class="project-role">I helped create the series with a team and built its website.</p>
@@ -63,7 +63,7 @@ const Heading = variant === 'home' ? 'h3' : 'h2';
   </li>
   {displayedProjects.map((r) => (
     <li class="project-index-row">
-      <a class="project-visual" href={r.url}>
+      <a class="project-visual" data-motion-beat href={r.url}>
         <img
           src={r.image}
           width={r.imageWidth}
@@ -73,7 +73,7 @@ const Heading = variant === 'home' ? 'h3' : 'h2';
           alt={r.imageAlt}
         />
       </a>
-      <div class="project-index-copy">
+      <div class="project-index-copy" data-motion-beat>
         <Heading><a href={r.url} class="repo-name">{r.name}<span aria-hidden="true"> ↗</span></a></Heading>
         {r.description && <p class="repo-desc">{r.description}</p>}
       </div>
