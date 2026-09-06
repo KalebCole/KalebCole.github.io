@@ -430,9 +430,8 @@ projects link, Recent writing heading, each writing row, All writing link,
 Recent recommendations heading, each recommendation row, then All
 recommendations link. The hero does not receive Publication Story Beats.
 
-Projects uses Project Story Beats in source order: page heading, each project
-visual and copy block, then the final `Still curious?` onward section and its
-GitHub link.
+Projects uses Project Story Beats in source order: page heading, then each
+project visual and copy block.
 
 **Quick Snap.** A beat that begins below the initial viewport enters once when
 it intersects: 34px from alternating left and right directions on screens wider
