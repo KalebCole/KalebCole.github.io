@@ -288,12 +288,15 @@ test('leaves content untouched when required browser APIs are unavailable', () =
   const noAnimateTarget = motionElement(700);
   delete noAnimateTarget.animate;
   const noAnimate = motionEnvironment([noAnimateTarget]);
+  const noAnimateRow = pointerRow();
+  noAnimate.root.querySelectorAll = (selector) => selector === '.project-index-row' ? [noAnimateRow] : [noAnimateTarget];
   initPublicationMotion(noAnimate.root, noAnimate.browserWindow);
 
   assert.deepEqual(noObserver.observers, []);
   assert.deepEqual(noObserverTarget.style, {});
-  assert.deepEqual(noAnimate.observers[0].observed, []);
+  assert.deepEqual(noAnimate.observers, []);
   assert.deepEqual(noAnimateTarget.style, {});
+  assert.deepEqual([...noAnimateRow.listeners.keys()], []);
 });
 
 test('never assigns hidden state before or during an entrance callback', () => {

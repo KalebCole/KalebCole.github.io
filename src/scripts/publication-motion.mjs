@@ -71,13 +71,14 @@ export function initPublicationMotion(root = document, browserWindow = window) {
   const reducedMotion = browserWindow.matchMedia('(prefers-reduced-motion: reduce)');
   if (reducedMotion.matches) return () => {};
 
+  const beats = Array.from(root.querySelectorAll('[data-motion-beat]'));
+  if (beats.some((element) => typeof element?.animate !== 'function')) return () => {};
+
   const cleanupPointerMotion = initProjectPointerMotion(root, browserWindow, reducedMotion);
   const narrowScreen = browserWindow.matchMedia(PUBLICATION_MOTION_MEDIA);
   const viewportHeight = browserWindow.innerHeight;
-  const beats = Array.from(root.querySelectorAll('[data-motion-beat]'));
   const targets = beats.filter((element) => (
-    typeof element.animate === 'function'
-    && element.getBoundingClientRect().top >= viewportHeight
+    element.getBoundingClientRect().top >= viewportHeight
   ));
   const targetIndexes = new Map(beats.map((target, index) => [target, index]));
   const animatedTargets = new Set();

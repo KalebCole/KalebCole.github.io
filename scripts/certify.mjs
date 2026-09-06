@@ -249,10 +249,16 @@ assert.equal(packageJson.scripts.prebuild, 'npm run portrait', 'normal builds mu
 assert.match(publicationMotionSource, /initProjectPointerMotion/, 'publication motion must provide project pointer tracking');
 assert.match(globalCss, /\.project-visual\s*\{[\s\S]*?transform:/, 'project visual depth must use transform');
 assert.match(publicationMotionSource, /translate:/, 'project entrances must continue using translate');
-assert.match(globalCss, /@media \(hover: hover\) \{[\s\S]*?\.project-index-row:hover \.project-visual \{[\s\S]*?perspective[\s\S]*?rotateX[\s\S]*?-4deg[\s\S]*?rotateY[\s\S]*?5deg[\s\S]*?translateY\(-6px\)[\s\S]*?box-shadow:/, 'project hover must provide bounded tilt, lift, and coral shadow');
-assert.match(globalCss, /\.project-visual img\s*\{[\s\S]*?scale\(1\.055\)[\s\S]*?translate3d\(/, 'project images must provide bounded inverse pointer depth');
+assert.match(globalCss, /@media \(hover: hover\) and \(pointer: fine\) \{[\s\S]*?\.project-index-row:hover \.project-visual \{[\s\S]*?perspective[\s\S]*?rotateX[\s\S]*?-4deg[\s\S]*?rotateY[\s\S]*?5deg[\s\S]*?translateY\(-6px\)[\s\S]*?box-shadow:/, 'fine-pointer hover must provide bounded tilt, lift, and coral shadow');
+const projectImageBase = globalCss.match(/\.project-visual img\s*\{([\s\S]*?)\n\}/)?.[1] ?? '';
+assert.doesNotMatch(projectImageBase, /\btransform\s*:/, 'resting project images must remain untransformed');
+assert.match(globalCss, /@media \(hover: hover\) and \(pointer: fine\) \{[\s\S]*?\.project-index-row:hover \.project-visual img\s*\{[\s\S]*?scale\(1\.055\)[\s\S]*?translate3d\(/, 'only fine-pointer hover may apply project image scale and inverse pointer depth');
 assert.match(globalCss, /\.project-index-row:focus-within \.project-visual\s*\{[\s\S]*?translateY\(-6px\)[\s\S]*?box-shadow: 0 6px 0 var\(--coral\)/, 'keyboard project depth must use a centered fallback');
 assert.match(globalCss, /\.project-index-row:focus-within \.project-visual img\s*\{[\s\S]*?scale\(1\.055\) translate3d\(0, 0, 0\)/, 'keyboard project depth must reset image parallax while preserving scale');
+assert.ok(
+  globalCss.indexOf('.project-index-row:focus-within .project-visual') > globalCss.indexOf('.project-index-row:hover .project-visual'),
+  'keyboard project depth must cascade after equal-specificity hover depth so focus wins during simultaneous hover',
+);
 assert.match(globalCss, /@media \(pointer: coarse\) \{[\s\S]*?\.project-index-row \.project-visual:active\s*\{[\s\S]*?scale\(\.985\)/, 'coarse pointers must have a pressed project state that can override project hover and focus transforms');
 assert.ok(
   globalCss.indexOf('@media (pointer: coarse)') > globalCss.indexOf('.project-index-row:focus-within .project-visual')
