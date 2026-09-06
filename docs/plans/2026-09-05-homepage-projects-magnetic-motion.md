@@ -160,9 +160,9 @@ git commit -m "feat: add homepage publication story beats"
 
 ---
 
-### Task 3: Apply Project Story Beats and approved onward prompt
+### Task 3: Apply Project Story Beats
 
-**Objective:** Apply the same one-shot motion language to the Projects page and add the approved final GitHub beat.
+**Objective:** Apply the same one-shot motion language to the Projects page.
 
 **Files:**
 - Modify: `src/pages/projects.astro`
@@ -175,18 +175,7 @@ Assert that `/projects`:
 - marks the page heading as a motion beat;
 - renders project visuals and project copy with motion hooks;
 - initializes `initPublicationMotion()` exactly once;
-- ends with the approved onward section and GitHub link;
 - contains no metrics, project-language metadata, or case-study framing.
-
-Approved copy:
-
-```text
-Still curious?
-I keep more experiments, tools, and unfinished threads on GitHub.
-Find me on GitHub →
-```
-
-The link target is `https://github.com/KalebCole`.
 
 **Step 2: Run certification to verify failure**
 
@@ -196,13 +185,11 @@ Run:
 GITHUB_TOKEN="" npm run certify
 ```
 
-Expected: FAIL on the new Projects motion/onward assertions.
+Expected: FAIL on the new Projects motion assertions.
 
-**Step 3: Implement page hooks and onward section**
+**Step 3: Implement page hooks**
 
 - Mark `.page-heading` with `data-motion-beat`.
-- Render a semantic onward section after `PinnedRepos` with the approved copy and one same-tab GitHub link.
-- Mark the onward section as the final motion beat.
 - Initialize `initPublicationMotion()` on this page only.
 - Preserve existing page title, description, and project data.
 
