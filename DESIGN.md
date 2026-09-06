@@ -460,8 +460,10 @@ system may overwrite the other.
 Under `prefers-reduced-motion: reduce`, remove Publication and Project Story
 Beats, tilt, image depth, Reading Nudge movement, and touch press transforms.
 Project visuals instead use the Static Mount: no transition or transform and a
-fixed `6px 7px 0 var(--coral)` shadow. Article pages have no publication-motion
-hooks or interactive prose motion.
+fixed `6px 7px 0 var(--coral)` shadow.
+
+**No Article-Page Motion.** Individual writing and article pages stay static and
+have no motion.
 
 ### Portrait and editorial imagery
 
