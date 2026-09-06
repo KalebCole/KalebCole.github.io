@@ -46,17 +46,23 @@ export function initPublicationMotion(root = document, browserWindow = window) {
       const { target } = entry;
       if (!entry.isIntersecting || !targetIndexes.has(target) || animatedTargets.has(target)) continue;
 
+      let animation;
+      try {
+        animation = target.animate(
+          buildPublicationKeyframes(targetIndexes.get(target), narrowScreen.matches),
+          {
+            duration: PUBLICATION_MOTION_DURATION,
+            easing: PUBLICATION_MOTION_EASING,
+            delay: publicationMotionDelay(targetIndexes.get(target)),
+            fill: 'both',
+          },
+        );
+      } catch {
+        continue;
+      }
+
       animatedTargets.add(target);
       observer.unobserve(target);
-      const animation = target.animate(
-        buildPublicationKeyframes(targetIndexes.get(target), narrowScreen.matches),
-        {
-          duration: PUBLICATION_MOTION_DURATION,
-          easing: PUBLICATION_MOTION_EASING,
-          delay: publicationMotionDelay(targetIndexes.get(target)),
-          fill: 'both',
-        },
-      );
       if (animation && typeof animation.cancel === 'function') animations.add(animation);
     }
   });

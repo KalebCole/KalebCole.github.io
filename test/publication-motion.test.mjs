@@ -7,24 +7,32 @@ import {
 
 function motionElement(top) {
   const calls = [];
-  return {
+  const element = {
     calls,
+    cancellations: 0,
     style: {},
     getBoundingClientRect() {
       return { top };
     },
     animate(keyframes, options) {
       calls.push({ keyframes, options });
-      return { cancel() {} };
+      return {
+        cancel() {
+          element.cancellations += 1;
+        },
+      };
     },
   };
+  return element;
 }
 
 function motionEnvironment(elements, { narrow = false, reduced = false } = {}) {
   const observers = [];
+  const mediaQueries = [];
   const browserWindow = {
     innerHeight: 600,
     matchMedia(query) {
+      mediaQueries.push(query);
       return { matches: query.includes('max-width') ? narrow : reduced };
     },
     IntersectionObserver: class {
@@ -51,6 +59,7 @@ function motionEnvironment(elements, { narrow = false, reduced = false } = {}) {
   };
   return {
     browserWindow,
+    mediaQueries,
     observers,
     root: { querySelectorAll: () => elements },
   };
@@ -67,15 +76,44 @@ test('observes only motion beats below the initial viewport', () => {
   assert.deepEqual(visible.calls, []);
 });
 
-test('animates an intersecting target once and immediately unobserves it', () => {
+test('starts an intersecting target animation before immediately unobserving it', () => {
   const target = motionElement(700);
   const { browserWindow, observers, root } = motionEnvironment([target]);
 
   initPublicationMotion(root, browserWindow);
+  const operations = [];
+  target.animate = () => {
+    operations.push('animate');
+    return { cancel() {} };
+  };
+  const unobserve = observers[0].unobserve.bind(observers[0]);
+  observers[0].unobserve = (element) => {
+    operations.push('unobserve');
+    unobserve(element);
+  };
   observers[0].callback([{ target, isIntersecting: true }]);
   observers[0].callback([{ target, isIntersecting: true }]);
 
-  assert.equal(target.calls.length, 1);
+  assert.deepEqual(operations, ['animate', 'unobserve']);
+  assert.deepEqual(observers[0].unobserved, [target]);
+});
+
+test('leaves a target observed and retryable when its animation cannot start', () => {
+  const target = motionElement(700);
+  const { browserWindow, observers, root } = motionEnvironment([target]);
+  let attempts = 0;
+  target.animate = () => {
+    attempts += 1;
+    if (attempts === 1) throw new Error('animation unavailable');
+    return { cancel() {} };
+  };
+
+  initPublicationMotion(root, browserWindow);
+  assert.doesNotThrow(() => observers[0].callback([{ target, isIntersecting: true }]));
+  assert.deepEqual(observers[0].unobserved, []);
+  observers[0].callback([{ target, isIntersecting: true }]);
+
+  assert.equal(attempts, 2);
   assert.deepEqual(observers[0].unobserved, [target]);
 });
 
@@ -112,6 +150,18 @@ test('uses the approved timing and a bounded source-order stagger', () => {
     fill: 'both',
   });
   assert.equal(later.calls[0].options.delay, 55);
+});
+
+test('uses the exact approved narrow-screen media query', () => {
+  const target = motionElement(700);
+  const { browserWindow, mediaQueries, root } = motionEnvironment([target]);
+
+  initPublicationMotion(root, browserWindow);
+
+  assert.deepEqual(mediaQueries, [
+    '(prefers-reduced-motion: reduce)',
+    '(max-width: 760px)',
+  ]);
 });
 
 test('keeps source-order delay when an earlier beat is initially visible', () => {
@@ -153,13 +203,38 @@ test('leaves content untouched when required browser APIs are unavailable', () =
   assert.deepEqual(noAnimateTarget.style, {});
 });
 
-test('never assigns a persistent hidden state before an entrance starts', () => {
+test('never assigns hidden state before or during an entrance callback', () => {
   const target = motionElement(700);
-  const { browserWindow, root } = motionEnvironment([target]);
+  const hiddenStateAssignments = [];
+  target.style = new Proxy({}, {
+    set(style, property, value) {
+      hiddenStateAssignments.push(`style.${String(property)}=${value}`);
+      style[property] = value;
+      return true;
+    },
+  });
+  Object.defineProperty(target, 'className', {
+    get() { return undefined; },
+    set(value) { hiddenStateAssignments.push(`className=${value}`); },
+  });
+  const { browserWindow, observers, root } = motionEnvironment([target]);
 
   initPublicationMotion(root, browserWindow);
+  observers[0].callback([{ target, isIntersecting: true }]);
 
   assert.equal(target.style.opacity, undefined);
   assert.equal(target.className, undefined);
-  assert.deepEqual(target.calls, []);
+  assert.deepEqual(hiddenStateAssignments, []);
+});
+
+test('cleanup disconnects the observer and cancels started animations', () => {
+  const target = motionElement(700);
+  const { browserWindow, observers, root } = motionEnvironment([target]);
+
+  const cleanup = initPublicationMotion(root, browserWindow);
+  observers[0].callback([{ target, isIntersecting: true }]);
+  cleanup();
+
+  assert.equal(observers[0].disconnected, true);
+  assert.equal(target.cancellations, 1);
 });
