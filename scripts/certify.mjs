@@ -242,6 +242,7 @@ const packageJson = JSON.parse(text(join(root, 'package.json')));
 const globalCss = text(join(root, 'src', 'styles', 'global.css'));
 const polaroidSource = text(join(root, 'src', 'components', 'Polaroid.astro'));
 const homepageSource = text(join(root, 'src', 'pages', 'index.astro'));
+const projectsSource = text(join(root, 'src', 'pages', 'projects.astro'));
 const breakpointMotionSource = text(join(root, 'src', 'scripts', 'home-breakpoint-motion.mjs'));
 assert.equal(packageJson.scripts.prebuild, 'npm run portrait', 'normal builds must regenerate every portrait derivative');
 assert.match(
@@ -331,6 +332,21 @@ assert.match(
 assert.match(pinnedReposSource, /const override = repoOverrides\[repo\.name as keyof typeof repoOverrides\]/, 'repository overrides must apply on every project surface');
 assert.doesNotMatch(pinnedReposSource, /variant === ['"]home['"]\s*\?\s*repoOverrides/, 'repository overrides must not be homepage-only');
 assert.match(projectsPage, /Build Your Personal Brand with Copilot/i, 'Projects index must include the published series title');
+assert.match(projectsPage, /<header\b[^>]*class="page-heading"[^>]*\bdata-motion-beat\b[^>]*>/i, 'Projects heading must be a publication motion beat');
+const projectsCards = matches(projectsPage, /<li\b[^>]*class="[^\"]*project-index-row[^\"]*"[^>]*>/gi);
+const projectsVisuals = matches(projectsPage, /<a\b[^>]*class="project-visual"[^>]*\bdata-motion-beat\b[^>]*>/gi);
+const projectsCopies = matches(projectsPage, /<div\b[^>]*class="project-index-copy"[^>]*\bdata-motion-beat\b[^>]*>/gi);
+assert.ok(projectsCards.length > 0, 'Projects index must render projects');
+assert.equal(projectsVisuals.length, projectsCards.length, 'every Projects visual must be a publication motion beat');
+assert.equal(projectsCopies.length, projectsCards.length, 'every Projects copy block must be a publication motion beat');
+assert.equal(matches(projectsSource, /\binitPublicationMotion\(\)/g).length, 1, 'Projects must initialize publication motion exactly once');
+const projectsOnward = projectsPage.match(/<section\b[^>]*class="projects-onward"[^>]*\bdata-motion-beat\b[^>]*>[\s\S]*?<\/section>/i)?.[0] ?? '';
+assert.match(projectsOnward, /<h2[^>]*>Still curious\?<\/h2>/i, 'Projects onward section must use the approved heading');
+assert.match(projectsOnward, /I keep more experiments, tools, and unfinished threads on GitHub\./i, 'Projects onward section must use the approved copy');
+assert.match(projectsOnward, /<a\b[^>]*href="https:\/\/github\.com\/KalebCole"[^>]*>\s*Find me on GitHub\s*→\s*<\/a>/i, 'Projects onward section must link to GitHub with the approved label');
+assert.doesNotMatch(projectsOnward, /\btarget=/i, 'Projects onward GitHub link must open in the same tab');
+assert.ok(projectsPage.lastIndexOf('class="projects-onward"') > projectsPage.lastIndexOf('class="project-index-row'), 'Projects onward section must be the final project motion beat');
+assert.doesNotMatch(projectsPage, /\b(?:case study|case-study|metrics?|stars|forks|language)\b/i, 'Projects index must not add metrics, project-language metadata, or case-study framing');
 for (const [surface, html] of [['homepage', homepage], ['Projects index', projectsPage]]) {
   if (/uprint-cli/i.test(html)) {
     assert.match(html, /href="https:\/\/kalebcole\.github\.io\/uprint-cli\/"/i, `${surface} uprint card must target its website`);
