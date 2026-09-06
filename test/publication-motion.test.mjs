@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   initPublicationMotion,
+  initProjectPointerMotion,
   buildPublicationKeyframes,
 } from '../src/scripts/publication-motion.mjs';
 
@@ -64,6 +65,85 @@ function motionEnvironment(elements, { narrow = false, reduced = false } = {}) {
     root: { querySelectorAll: () => elements },
   };
 }
+
+function pointerRow({ left = 100, top = 200, width = 400, height = 200 } = {}) {
+  const listeners = new Map();
+  const values = new Map();
+  return {
+    listeners,
+    style: {
+      setProperty(name, value) { values.set(name, value); },
+      getPropertyValue(name) { return values.get(name) ?? ''; },
+    },
+    addEventListener(type, listener, options) {
+      listeners.set(type, { listener, options });
+    },
+    removeEventListener(type, listener) {
+      if (listeners.get(type)?.listener === listener) listeners.delete(type);
+    },
+    getBoundingClientRect() { return { left, top, width, height }; },
+  };
+}
+
+function pointerEnvironment(rows, { reduced = false } = {}) {
+  return {
+    root: {
+      querySelectorAll(selector) {
+        return selector === '.project-index-row' ? rows : [];
+      },
+    },
+    browserWindow: {
+      matchMedia() { return { matches: reduced }; },
+    },
+  };
+}
+
+test('tracks bounded mouse position for each project row', () => {
+  const row = pointerRow();
+  const { root, browserWindow } = pointerEnvironment([row]);
+
+  initProjectPointerMotion(root, browserWindow);
+  const move = row.listeners.get('pointermove');
+  move.listener({ pointerType: 'mouse', clientX: 900, clientY: -100 });
+
+  assert.equal(move.options.passive, true);
+  assert.equal(row.style.getPropertyValue('--motion-x'), '1');
+  assert.equal(row.style.getPropertyValue('--motion-y'), '-1');
+  row.listeners.get('pointerleave').listener();
+  assert.equal(row.style.getPropertyValue('--motion-x'), '0');
+  assert.equal(row.style.getPropertyValue('--motion-y'), '0');
+});
+
+test('ignores non-mouse pointers without changing project hover state', () => {
+  const row = pointerRow();
+  const { root, browserWindow } = pointerEnvironment([row]);
+
+  initProjectPointerMotion(root, browserWindow);
+  row.listeners.get('pointermove').listener({ pointerType: 'touch', clientX: 450, clientY: 300 });
+
+  assert.equal(row.style.getPropertyValue('--motion-x'), '');
+  assert.equal(row.style.getPropertyValue('--motion-y'), '');
+});
+
+test('project pointer cleanup removes every listener', () => {
+  const rows = [pointerRow(), pointerRow()];
+  const { root, browserWindow } = pointerEnvironment(rows);
+
+  const cleanup = initProjectPointerMotion(root, browserWindow);
+  cleanup();
+
+  assert.deepEqual(rows.map((row) => [...row.listeners.keys()]), [[], []]);
+});
+
+test('reduced motion does not initialize project pointer tracking', () => {
+  const row = pointerRow();
+  const { root, browserWindow } = pointerEnvironment([row], { reduced: true });
+
+  const cleanup = initProjectPointerMotion(root, browserWindow);
+  cleanup();
+
+  assert.deepEqual([...row.listeners.keys()], []);
+});
 
 test('observes only motion beats below the initial viewport', () => {
   const visible = motionElement(120);

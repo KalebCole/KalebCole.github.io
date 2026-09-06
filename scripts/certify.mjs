@@ -240,11 +240,22 @@ assert.equal(
 
 const packageJson = JSON.parse(text(join(root, 'package.json')));
 const globalCss = text(join(root, 'src', 'styles', 'global.css'));
+const publicationMotionSource = text(join(root, 'src', 'scripts', 'publication-motion.mjs'));
 const polaroidSource = text(join(root, 'src', 'components', 'Polaroid.astro'));
 const homepageSource = text(join(root, 'src', 'pages', 'index.astro'));
 const projectsSource = text(join(root, 'src', 'pages', 'projects.astro'));
 const breakpointMotionSource = text(join(root, 'src', 'scripts', 'home-breakpoint-motion.mjs'));
 assert.equal(packageJson.scripts.prebuild, 'npm run portrait', 'normal builds must regenerate every portrait derivative');
+assert.match(publicationMotionSource, /initProjectPointerMotion/, 'publication motion must provide project pointer tracking');
+assert.match(globalCss, /\.project-visual\s*\{[\s\S]*?transform:/, 'project visual depth must use transform');
+assert.match(publicationMotionSource, /translate:/, 'project entrances must continue using translate');
+assert.match(globalCss, /@media \(hover: hover\) \{[\s\S]*?\.project-index-row:hover \.project-visual \{[\s\S]*?perspective[\s\S]*?rotateX[\s\S]*?-4deg[\s\S]*?rotateY[\s\S]*?5deg[\s\S]*?translateY\(-6px\)[\s\S]*?box-shadow:/, 'project hover must provide bounded tilt, lift, and coral shadow');
+assert.match(globalCss, /\.project-visual img\s*\{[\s\S]*?scale\(1\.055\)[\s\S]*?translate3d\(/, 'project images must provide bounded inverse pointer depth');
+assert.match(globalCss, /\.project-index-row:focus-within \.project-visual\s*\{[\s\S]*?translateY\(-6px\)[\s\S]*?box-shadow: 0 6px 0 var\(--coral\)/, 'keyboard project depth must use a centered fallback');
+assert.match(globalCss, /@media \(pointer: coarse\) \{[\s\S]*?\.project-visual:active\s*\{[\s\S]*?scale\(\.985\)/, 'coarse pointers must have a pressed project state');
+assert.match(globalCss, /\.writing-row:has\(a:hover\),[\s\S]*?\.home-recommendation-row:has\(a:hover\)\s*\{[\s\S]*?translateX\(\.55rem\)[\s\S]*?\.writing-row:has\(a:hover\) h3 a,[\s\S]*?color: var\(--blue\);/, 'writing and recommendations must retain their Reading Nudge');
+assert.match(globalCss, /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\.project-visual,[\s\S]*?\.project-visual img\s*\{[\s\S]*?transition: none;[\s\S]*?transform: none !important;[\s\S]*?\.project-visual\s*\{[\s\S]*?box-shadow: 6px 7px 0 var\(--coral\);/, 'reduced motion must provide the fixed project Static Mount');
+assert.doesNotMatch(globalCss, /\.prose[^,{]*(?::hover|:active|:focus-within)/, 'article prose must not gain interaction motion');
 assert.match(
   homepageSource,
   /import \{ initHomeBreakpointMotion \} from '\.\.\/scripts\/home-breakpoint-motion\.mjs';[\s\S]*?initHomeBreakpointMotion\(\);/,
